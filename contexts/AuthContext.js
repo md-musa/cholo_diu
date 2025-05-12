@@ -14,7 +14,7 @@ export const AuthProvider = ({ children }) => {
   const [authInitialized, setAuthInitialized] = useState(false);
 
   // Prevent splash screen from hiding automatically
-  SplashScreen.preventAutoHideAsync();
+  // SplashScreen.preventAutoHideAsync();
 
   // Load user data on initial render
   useEffect(() => {
