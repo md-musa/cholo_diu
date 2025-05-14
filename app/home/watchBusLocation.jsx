@@ -23,12 +23,11 @@ const WatchBusLocation = () => {
   const mapRef = useRef(null);
 
   const centerToUserLocation = () => {
+    setRecenterMap(true);
     setZoom(13);
-    mapRef.current?.setCamera({
-      center: [location.longitude, location.latitude] || [90.4125, 23.8103], // Default to Dhaka coordinates if location is not available
-      zoom: 12,
-      animationDuration: 500, // Smooth animation in ms
-    });
+    setTimeout(() => {
+      setRecenterMap(false);
+    }, 1000);
   };
 
   useEffect(() => {

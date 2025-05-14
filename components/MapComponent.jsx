@@ -6,17 +6,25 @@ import busMarker from "@/assets/images/navigatorArrow3.png";
 import UniIcon from "@/assets/images/uni-2.png";
 import pinIcon from "@/assets/images/red-pin-marker.png";
 
-const MapComponent = ({ location, zoom, recenterMap, userData, activeBuses, setZoom }) => {
+const MapComponent = ({
+  location,
+  mapRef,
+  zoom,
+  userData,
+  activeBuses,
+  cameraRef,
+  currentCenter,
+  handleRegionDidChange,
+}) => {
   return (
     <MapLibreGL.MapView
       attributionEnabled={true}
       style={styles.map}
-      onRegionDidChange={(event) => setZoom(event.properties.zoom)}
+      ref={mapRef}
+      onRegionDidChange={handleRegionDidChange}
     >
       {/*------ Recentering map -------- */}
-      {recenterMap && location && (
-        <MapLibreGL.Camera zoomLevel={zoom} centerCoordinate={[location.longitude, location.latitude]} />
-      )}
+      <MapLibreGL.Camera ref={cameraRef} zoomLevel={zoom} centerCoordinate={currentCenter} />
 
       {/* --------- Load tile --------- */}
       <MapLibreGL.RasterSource
@@ -26,11 +34,6 @@ const MapComponent = ({ location, zoom, recenterMap, userData, activeBuses, setZ
       >
         <MapLibreGL.RasterLayer id="osmLayer" sourceID="osm" />
       </MapLibreGL.RasterSource>
-
-      {/* --------- Campus Icon ------- */}
-      {/* <MapLibreGL.ShapeSource id="polygonSource" shape={campusArea}>
-        <MapLibreGL.FillLayer id="polygonLayer" style={{ fillColor: "rgba(255, 0, 100, 0.4)" }} />
-      </MapLibreGL.ShapeSource> */}
 
       {/* ----- Route highlighter ------ */}
       <MapLibreGL.ShapeSource id="routeSource" shape={selectRoutePolyline(userData?.route || "")}>

@@ -1,7 +1,7 @@
 import { io } from "socket.io-client";
 
-// const SERVER_URL = "http://192.168.1.2:4000/api/v1";
-const SERVER_URL = `https://tms-dcro.onrender.com`;
+const SERVER_URL = "http://192.168.1.4:4000";
+// const SERVER_URL = `https://tms-dcro.onrender.com`;
 
 const socket = io(SERVER_URL, {
   autoConnect: true, // Automatically connect when the socket is created

@@ -11,8 +11,6 @@ export default function Index() {
   const { location } = useLocation();
 
   const [activeBuses, setActiveBuses] = useState({});
-  const [recenterMap, setRecenterMap] = useState(true);
-  const [zoom, setZoom] = useState(12);
   const [currentlyConnectedUserCount, setCurrentlyConnectedUserCount] = useState(0);
 
   useEffect(() => {
@@ -20,7 +18,6 @@ export default function Index() {
       console.log("🚌", JSON.stringify(data, null, 2));
 
       if (!data) return console.log("⚠ error", data);
-      setRecenterMap(false);
       setActiveBuses((prevBuses) => ({ ...prevBuses, [data.trip.busName]: data }));
       setCurrentlyConnectedUserCount(data.currUserCnt || 0);
     });
@@ -33,8 +30,7 @@ export default function Index() {
       socket.off("bus-location-update");
     };
   }, [userData]);
-
-  //if (!location) return <Text>Loading...</Text>;
+  console.log("🚍", location);
 
   return (
     <View className="bg-[#e9e9e9] flex-1">
@@ -44,11 +40,8 @@ export default function Index() {
       {/* --- Show live locations buses-- */}
       <MapSection
         location={location}
-        zoom={zoom}
-        recenterMap={recenterMap}
         userData={userData}
         activeBuses={activeBuses}
-        setZoom={setZoom}
         currentlyConnectedUserCount={currentlyConnectedUserCount}
       />
     </View>

@@ -1,32 +1,58 @@
-import React, { useRef, useState } from "react";
+import React, { useCallback, useRef, useState } from "react";
 import { View, TouchableOpacity, Text } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import MapComponent from "@/components/MapComponent";
 import StatusOverlayComponent from "@/components/UI/StatusOverlayComponent";
+import useLocation from "@/hook/useLocation";
 
-const MapSection = ({ location, zoom, recenterMap, userData, activeBuses, setZoom, currentlyConnectedUserCount }) => {
+const MapSection = ({ location,  userData, activeBuses, currentlyConnectedUserCount }) => {
   const router = useRouter();
+  const cameraRef = useRef(null);
   const mapRef = useRef(null);
+  const [zoom, setZoom] = useState(14);
+  const [currentCenter, setCurrentCenter] = useState([90.320463, 23.87739]);
 
   const centerToUserLocation = () => {
-    setZoom(13);
-    mapRef.current?.setCamera({
-      center: [location.longitude, location.latitude] || [90.4125, 23.8103], // Default to Dhaka coordinates if location is not available
-      zoom: 12,
-      animationDuration: 500, // Smooth animation in ms
+    cameraRef.current?.setCamera({
+      centerCoordinate: [location.longitude, location.latitude],
+      zoomLevel: zoom,
     });
   };
+
+  // Handle map region changes
+  const handleRegionDidChange = useCallback(async () => {
+    if (!mapRef.current) return;
+
+    try {
+      const center = await mapRef.current.getCenter();
+      const currentZoom = await mapRef.current.getZoom();
+      console.log("Center:", center);
+      console.log("Zoom:", currentZoom);
+
+      setCurrentCenter(center);
+      setZoom(currentZoom);
+    } catch (error) {
+      console.warn("Map region change error:", error);
+    }
+  }, []);
+
+  // console.log("-->", cameraRef);
+  // console.log(mapRef);
 
   return (
     <View className="flex-1 relative mt-4 mx-2 rounded-md overflow-hidden border border-gray-300">
       <MapComponent
-        location={location} 
+        location={location}
         zoom={zoom}
-        recenterMap={recenterMap}
         userData={userData}
         activeBuses={activeBuses}
         setZoom={setZoom}
+        cameraRef={cameraRef}
+        mapRef={mapRef}
+        currentCenter={currentCenter}
+        setCurrentCenter={setCurrentCenter}
+        handleRegionDidChange={handleRegionDidChange}
       />
       <StatusOverlayComponent currentlyConnectedUserCount={currentlyConnectedUserCount} activeBuses={activeBuses} />
 
