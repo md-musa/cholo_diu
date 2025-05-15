@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useState, useEffect, useCallback } from "react";
 import { View, Text, StatusBar, StyleSheet, Alert, TouchableOpacity } from "react-native";
 import { useAuth } from "@/contexts/AuthContext";
 import useLocation from "@/hook/useLocation";
@@ -14,40 +14,60 @@ const WatchBusLocation = () => {
   const bottomSheetRef = useRef(null);
   const { userData } = useAuth();
   const { location } = useLocation();
-
   const [activeBuses, setActiveBuses] = useState({});
   const [currentlyConnectedUserCount, setCurrentlyConnectedUserCount] = useState(0);
-  const [recenterMap, setRecenterMap] = useState(true);
   const [zoom, setZoom] = useState(12);
 
+  const cameraRef = useRef(null);
   const mapRef = useRef(null);
+  const [currentCenter, setCurrentCenter] = useState([90.320463, 23.87739]);
 
   const centerToUserLocation = () => {
-    setRecenterMap(true);
-    setZoom(13);
-    setTimeout(() => {
-      setRecenterMap(false);
-    }, 1000);
+    cameraRef.current?.setCamera({
+      centerCoordinate: [location.longitude, location.latitude],
+      zoomLevel: 14,
+    });
+    setZoom(14);
+    setCurrentCenter([location.longitude, location.latitude]);
   };
+
+  const highlightBus = (cord) => {
+    cameraRef.current?.setCamera({
+      centerCoordinate: [...cord],
+      zoomLevel: 15,
+    });
+    setZoom(15);
+    setCurrentCenter([...cord]);
+  };
+
+  // Handle map region changes
+  const handleRegionDidChange = useCallback(async () => {
+    if (!mapRef.current) return;
+
+    try {
+      const center = await mapRef.current.getCenter();
+      const currentZoom = await mapRef.current.getZoom();
+      console.log("Center:", center);
+      console.log("Zoom:", currentZoom);
+
+      setCurrentCenter(center);
+      setZoom(currentZoom);
+    } catch (error) {
+      console.warn("Map region change error:", error);
+    }
+  }, []);
 
   useEffect(() => {
     socket.on("bus-location-update", (data) => {
-      console.log("🚌", JSON.stringify(data, null, 2));
-      if (!data) return console.log("⚠ error", data);
+      // console.log("------------------\n", JSON.stringify(data, null, 2));
 
-      setRecenterMap(false);
+      if (!data) return console.log("⚠ error", data);
       setActiveBuses((prevBuses) => ({ ...prevBuses, [data.trip.busName]: data }));
       setCurrentlyConnectedUserCount(data.currUserCnt || 0);
     });
 
-    if (userData) {
-      const routeId = userData?.route?._id;
-      if (routeId) {
-        socket.emit("join-route", routeId);
-        console.log(`Joined route: ${routeId}`);
-      } else {
-        Alert.alert("Route ID is null");
-      }
+    if (userData?.route?._id) {
+      socket.emit("join-route", userData.route._id);
     }
 
     return () => {
@@ -62,10 +82,14 @@ const WatchBusLocation = () => {
         <MapComponent
           location={location}
           zoom={zoom}
-          recenterMap={recenterMap}
           userData={userData}
           activeBuses={activeBuses}
           setZoom={setZoom}
+          cameraRef={cameraRef}
+          mapRef={mapRef}
+          currentCenter={currentCenter}
+          setCurrentCenter={setCurrentCenter}
+          handleRegionDidChange={handleRegionDidChange}
         />
         <StatusOverlayComponent currentlyConnectedUserCount={currentlyConnectedUserCount} activeBuses={activeBuses} />
 
@@ -88,6 +112,7 @@ const WatchBusLocation = () => {
         bottomSheetRef={bottomSheetRef}
         activeBuses={activeBuses}
         closeBottomSheet={() => bottomSheetRef.current?.close()}
+        highlightBus={highlightBus}
       />
     </View>
   );

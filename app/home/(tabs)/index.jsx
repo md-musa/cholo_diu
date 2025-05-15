@@ -5,6 +5,7 @@ import useLocation from "@/hook/useLocation";
 import RouteSelector from "@/components/RouteSelector";
 import MapSection from "@/components/MapSection";
 import socket from "@/config/socket";
+import Navbar from "@/components/Navbar";
 
 export default function Index() {
   const { userData } = useAuth();
@@ -33,17 +34,20 @@ export default function Index() {
   console.log("🚍", location);
 
   return (
-    <View className="bg-[#e9e9e9] flex-1">
-      {/* --- Select route and show Next bus schedule */}
-      <RouteSelector onRouteChange={(route) => setActiveBuses({})} />
+    <View className="flex-1 bg-white">
+      <View className="flex-1 mx-4">
+        <Navbar />
+        {/* --- Select route and show Next bus schedule */}
+        <RouteSelector onRouteChange={(route) => setActiveBuses({})} />
 
-      {/* --- Show live locations buses-- */}
-      <MapSection
-        location={location}
-        userData={userData}
-        activeBuses={activeBuses}
-        currentlyConnectedUserCount={currentlyConnectedUserCount}
-      />
+        {/* --- Show live locations buses-- */}
+        <MapSection
+          location={location}
+          userData={userData}
+          activeBuses={activeBuses}
+          currentlyConnectedUserCount={currentlyConnectedUserCount}
+        />
+      </View>
     </View>
   );
 }

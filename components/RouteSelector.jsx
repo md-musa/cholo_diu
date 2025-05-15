@@ -12,7 +12,6 @@ const RouteSelector = ({ onRouteChange }) => {
   const [currentRoute, setCurrentRoute] = useState(userData?.route);
   const [availRoutes, setAvailRoutes] = useState([]);
   const [schedules, setSchedules] = useState(null);
-  // console.log("🛣", currentRoute);
 
   useEffect(() => {
     const fetchRoutes = async () => {
@@ -66,21 +65,40 @@ const RouteSelector = ({ onRouteChange }) => {
   }
 
   return (
-    <View className="bg-primary-1000 p-4 mx-2 rounded-md">
-      <View className="flex flex-row items-center bg-white border border-gray-300 rounded-xl px-4">
-        <Image source={busImage} resizeMode="contain" style={{ width: 30, height: 30 }} />
+    <View className="bg-primary-1000 p-4 rounded-xl">
+      <View className="flex flex-row items-center bg-white border border-gray-300 rounded-xl px-3">
+        <Image source={busImage} className="rounded-md" resizeMode="contain" style={{ width: 30, height: 30 }} />
         <Picker
           selectedValue={currentRoute?._id}
           onValueChange={handleRouteChange}
-          style={{ flex: 1, backgroundColor: "white" }}
+          style={{
+            flex: 1,
+            backgroundColor: "white",
+            fontSize: 16,
+            fontWeight: "bold",
+            color: "black",
+          }}
           dropdownIconColor="black"
+          mode="dropdown"
         >
-          <Picker.Item label="Select a route" value="" />
+          <Picker.Item
+            label="Select a route"
+            value=""
+            style={{
+              fontWeight: "bold",
+              fontSize: 16,
+            }}
+          />
           {availRoutes?.map((route) => (
             <Picker.Item
               key={route?._id}
-              label={`${route.name}: ${route.startLocation} <> ${route.endLocation}`}
+              label={`${route.endLocation} Route`}
               value={route._id}
+              style={{
+                fontWeight: "bold",
+                fontSize: 16,
+                color: "black",
+              }}
             />
           ))}
         </Picker>
@@ -108,7 +126,7 @@ const RouteSelector = ({ onRouteChange }) => {
         </View>
 
         <View className="flex-row border-y border-white/50 py-2">
-          <Text className="text-white text-md flex-1">{`To ${currentRoute?.endLocation}`}</Text>
+          <Text className="text-white text-md flex-1">{`From ${currentRoute?.startLocation}`}</Text>
           <Text className="text-white text-md flex-1 text-center">
             {fromCampusStudent ? `${fromCampusStudent.formattedTime}` : "No schedule"}
           </Text>

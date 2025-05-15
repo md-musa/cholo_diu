@@ -3,7 +3,7 @@ import { View, Text, TouchableOpacity, FlatList } from "react-native";
 import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
 import AvailableBusListCard from "./AvailableBusListCard";
 
-const BottomSheetComponent = ({ bottomSheetRef, activeBuses, closeBottomSheet, centerMapAndHighLightBus }) => {
+const BottomSheetComponent = ({ bottomSheetRef, activeBuses, closeBottomSheet, highlightBus }) => {
   return (
     <BottomSheet ref={bottomSheetRef} snapPoints={["30%", "50%", "60%", "75%", "90%"]} initialsnapIndex={0}>
       <BottomSheetView className="px-5">
@@ -12,9 +12,7 @@ const BottomSheetComponent = ({ bottomSheetRef, activeBuses, closeBottomSheet, c
         {!activeBuses && <Text className="text-center">No buses available</Text>}
         <FlatList
           data={Object.values(activeBuses)}
-          renderItem={({ item }) => (
-            <AvailableBusListCard item={item} centerMapAndHighLightBus={centerMapAndHighLightBus} />
-          )}
+          renderItem={({ item }) => <AvailableBusListCard item={item} highlightBus={highlightBus} />}
           keyExtractor={(item) => item.trip.busName}
           className="w-full"
         />

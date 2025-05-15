@@ -95,13 +95,13 @@ function LiveLocationSharing() {
     );
   };
 
-  const mapRef = useRef(null);
+  const cameraRef = useRef(null);
 
   const centerToUserLocation = () => {
-    setZoom(13);
-    mapRef.current?.setCamera({
+    setZoom(15);
+    cameraRef.current?.setCamera({
       center: [location.longitude, location.latitude],
-      zoom: 13,
+      zoom: 15,
       animationDuration: 500,
     });
   };
@@ -121,7 +121,7 @@ function LiveLocationSharing() {
         onRegionDidChange={(event) => setZoom(event.properties.zoom)}
       >
         {/*------ Recentering map -------- */}
-        <MapLibreGL.Camera zoomLevel={zoom} centerCoordinate={[location.longitude, location.latitude]} />
+        <MapLibreGL.Camera ref={cameraRef} zoomLevel={zoom} centerCoordinate={[location.longitude, location.latitude]} />
 
         {/* --------- Load tile --------- */}
         <MapLibreGL.RasterSource
@@ -280,7 +280,7 @@ function LiveLocationSharing() {
           className="bg-red-700 py-2 rounded-xl shadow-md mt-6 mb-5 active:opacity-80"
           onPress={handleStopSharing}
         >
-          <Text className="text-white text-center font-semibold text-lg">Stop Bus Location Sharing</Text>
+          <Text className="text-white text-center font-semibold text-lg">Stop Sharing Bus Location</Text>
         </TouchableOpacity>
       </View>
     </View>

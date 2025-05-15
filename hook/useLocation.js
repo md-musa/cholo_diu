@@ -18,7 +18,7 @@ const useLocation = () => {
 
       // Start watching location updates
       locationSubscription = await Location.watchPositionAsync(
-        { accuracy: Location.Accuracy.BestForNavigation, timeInterval: 5000, distanceInterval: 5 },
+        { accuracy: Location.Accuracy.BestForNavigation, timeInterval: 10000, distanceInterval: 10 },
         (newLocation) => {
           setLocation({
             latitude: newLocation.coords.latitude,

@@ -5,20 +5,42 @@ import apiClient from "@/config/axiosConfig";
 import { processSchedules } from "@/utils/scheduleHelper";
 import ScheduleCard from "@/components/ScheduleCard";
 import { Feather } from "@expo/vector-icons";
+import Navbar from "@/components/Navbar";
+import { Picker } from "@react-native-picker/picker";
 
 const BusSchedule = () => {
-  const { userData } = useAuth();
-
+  const { userData, updateRoute } = useAuth();
   const [selectedFilter, setSelectedFilter] = useState(userData?.role == "student" ? "Student" : "Employee");
   const [schedules, setSchedules] = useState(null);
+  const [selectedType, setSelectedType] = useState("Regular");
+  const [selectedDay, setSelectedDay] = useState(
+    new Date().toLocaleString("en-US", { weekday: "long" }).toLowerCase() === "friday" ? "Friday" : "Weekdays"
+  );
+
+  const scheduleTypes = ["Regular", "Mid-Term", "Final", "Ramadan"];
+  const scheduleDays = ["Weekdays", "Friday"];
+
+  const [currentRoute, setCurrentRoute] = useState(userData?.route);
+  const [availRoutes, setAvailRoutes] = useState([]);
+
+  useEffect(() => {
+    const fetchRoutes = async () => {
+      try {
+        const res = await apiClient.get("/routes");
+        setAvailRoutes(res.data.data);
+      } catch (err) {
+        console.error("API Error:", err.message);
+      }
+    };
+
+    fetchRoutes();
+  }, []);
 
   useEffect(() => {
     const fetchSchedules = async () => {
       try {
-        const today = new Date().toLocaleString("en-US", { weekday: "long" }).toLowerCase();
-
         const { data } = await apiClient.get(`/schedules/get-single-route-schedule`, {
-          params: { routeId: userData?.route?._id, day: today },
+          params: { routeId: userData?.route?._id, day: selectedDay.toLocaleLowerCase() },
         });
 
         setSchedules(data.data);
@@ -28,7 +50,7 @@ const BusSchedule = () => {
     };
 
     fetchSchedules();
-  }, [userData]);
+  }, [userData, selectedDay]);
 
   let toCampusStudent, fromCampusStudent, toCampusEmployee, fromCampusEmployee;
   if (schedules) {
@@ -38,29 +60,54 @@ const BusSchedule = () => {
     fromCampusEmployee = processSchedules(schedules?.from_campus.employee);
   }
 
+  const handleRouteChange = (selectedRouteId) => {
+    const selectedRouteData = availRoutes.find((r) => r._id === selectedRouteId);
+    setCurrentRoute(selectedRouteData);
+    updateRoute(selectedRouteData);
+  };
+
   return (
-    <ScrollView className="flex-1 bg-white p-4">
+    <ScrollView className="flex-1 bg-white px-4">
+      {/* <Navbar /> */}
       {/* View Stoppage Button */}
-      <View className="mt-4">
-        {schedules && (
-          <View className="flex-row">
-            <Text className="mx- px-4 capitalize py-2 border bg-indigo-500 rounded-full text-white border-gray-300">
-              {/* {schedules?.to_campus?.student[0].mode} Routine */}
-              Regular Routine
-            </Text>
-            <Text className="text-3xl font-light text-gray-400"> | </Text>
-            <Text className="mx-1 px-4 capitalize py-2 border bg-indigo-500 rounded-full text-white border-gray-300">
-              {/* {schedules?.to_campus.student[0].operatingDays} */}
-              Weekdays
-            </Text>
+      <View className="">
+        <View className="mt-4 my-2">
+          {/* ---- Schedule Type ----- */}
+          <View className="flex-row flex-wrap mb-3">
+            {scheduleTypes.map((type) => (
+              <TouchableOpacity
+                key={type}
+                className={`mx-1 px-4 py-1 border rounded-full ${
+                  selectedType === type ? "bg-indigo-500" : "bg-gray-100"
+                } border-gray-300`}
+                disabled={true} // Disabled as requested
+              >
+                <Text className={`capitalize ${selectedType === type ? "text-white" : "text-gray-500"}`}>{type}</Text>
+              </TouchableOpacity>
+            ))}
           </View>
-        )}
+
+          {/* ---- Schedule days ----- */}
+          <View className="flex-row flex-wrap">
+            {scheduleDays.map((day) => (
+              <TouchableOpacity
+                key={day}
+                className={`mx-1 px-4 py-1 border rounded-full ${
+                  selectedDay === day ? "bg-indigo-500" : "bg-white"
+                } border-gray-300`}
+                onPress={() => setSelectedDay(day)}
+              >
+                <Text className={`capitalize ${selectedDay === day ? "text-white" : "text-black"}`}>{day}</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+        </View>
       </View>
 
       <View className="bg-tertiary-900 rounded-3xl my-4 p-1">
         {/*----- Date & Route Selector --------- */}
         <View className="mt-4 flex-row justify-between items-center px-4">
-          <Text className="text-lg font-semibold text-white">
+          <Text className="flex-[0.6] text-lg font-semibold text-white">
             {new Date().toLocaleDateString("en-GB", {
               weekday: "long",
               day: "numeric",
@@ -68,8 +115,38 @@ const BusSchedule = () => {
               year: "numeric",
             })}
           </Text>
-          <View className="">
-            <Text className="text-md bg-white px-2 py-1 rounded-md">{`${userData?.route?.endLocation} Route`}</Text>
+
+          <View className="flex-[0.4] rounded-lg overflow-hidden">
+            <Picker
+              selectedValue={currentRoute?._id}
+              onValueChange={handleRouteChange}
+              style={{
+                flex: 1,
+                backgroundColor: "white",
+                fontSize: 14,
+                color: "black",
+              }}
+              dropdownIconColor="black"
+              mode="dropdown"
+            >
+              <Picker.Item
+                label="Select a route"
+                value=""
+                style={{
+                  fontSize: 14,
+                }}
+              />
+              {availRoutes?.map((route) => (
+                <Picker.Item
+                  key={route?._id}
+                  label={`${route.endLocation}`}
+                  value={route._id}
+                  style={{
+                    fontSize: 14,
+                  }}
+                />
+              ))}
+            </Picker>
           </View>
         </View>
 
@@ -88,7 +165,7 @@ const BusSchedule = () => {
                 className={`text-center font-semibold 
                           ${selectedFilter === "Student" ? "text-white" : "text-gray-700"}`}
               >
-                Student Sche.
+                Student
               </Text>
             </TouchableOpacity>
 
@@ -104,7 +181,7 @@ const BusSchedule = () => {
                 className={`text-center font-semibold 
                           ${selectedFilter === "Employee" ? "text-white" : "text-gray-700"}`}
               >
-                Employee Sche.
+                Employee
               </Text>
             </TouchableOpacity>
           </View>

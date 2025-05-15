@@ -60,11 +60,11 @@ export const AuthProvider = ({ children }) => {
       setLoading(true);
       await SecureStorage.setItem("route", JSON.stringify(routeData));
       setUserData((prev) => ({ ...prev, route: routeData }));
-      Toast.show({
-        type: "success",
-        text1: "Route Updated",
-        text2: "Your bus route has been updated",
-      });
+      // Toast.show({
+      //   type: "success",
+      //   text1: "Route Updated",
+      //   text2: "Your bus route has been updated",
+      // });
     } catch (err) {
       console.error("Update Route Error:", err);
       Toast.show({

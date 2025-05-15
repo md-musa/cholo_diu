@@ -4,9 +4,8 @@ import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import MapComponent from "@/components/MapComponent";
 import StatusOverlayComponent from "@/components/UI/StatusOverlayComponent";
-import useLocation from "@/hook/useLocation";
 
-const MapSection = ({ location,  userData, activeBuses, currentlyConnectedUserCount }) => {
+const MapSection = ({ location, userData, activeBuses, currentlyConnectedUserCount }) => {
   const router = useRouter();
   const cameraRef = useRef(null);
   const mapRef = useRef(null);
@@ -16,8 +15,10 @@ const MapSection = ({ location,  userData, activeBuses, currentlyConnectedUserCo
   const centerToUserLocation = () => {
     cameraRef.current?.setCamera({
       centerCoordinate: [location.longitude, location.latitude],
-      zoomLevel: zoom,
+      zoomLevel: 14,
     });
+    setZoom(14);
+    setCurrentCenter([location.longitude, location.latitude]);
   };
 
   // Handle map region changes
@@ -27,8 +28,8 @@ const MapSection = ({ location,  userData, activeBuses, currentlyConnectedUserCo
     try {
       const center = await mapRef.current.getCenter();
       const currentZoom = await mapRef.current.getZoom();
-      console.log("Center:", center);
-      console.log("Zoom:", currentZoom);
+      // console.log("Center:", center);
+      // console.log("Zoom:", currentZoom);
 
       setCurrentCenter(center);
       setZoom(currentZoom);
@@ -41,7 +42,7 @@ const MapSection = ({ location,  userData, activeBuses, currentlyConnectedUserCo
   // console.log(mapRef);
 
   return (
-    <View className="flex-1 relative mt-4 mx-2 rounded-md overflow-hidden border border-gray-300">
+    <View className="flex-1 relative mt-4 rounded-xl overflow-hidden border border-gray-300">
       <MapComponent
         location={location}
         zoom={zoom}

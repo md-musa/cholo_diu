@@ -55,7 +55,7 @@ const Index = () => {
       return;
     }
 
-    Alert.alert("Confirm Sharing", `Start sharing location of ${selectedBus.name} bus for ${busType}?`, [
+    Alert.alert("Confirm Sharing", `Start sharing location of ${selectedBus.name}`, [
       { text: "Cancel", style: "cancel" },
       {
         text: "Confirm",
@@ -92,8 +92,10 @@ const Index = () => {
       <ScrollView contentContainerStyle={{ paddingBottom: 100 }} className="p-3">
         {/* Header */}
         <View className="mb-3 items-center">
-          <Text className="text-xl font-semibold text-gray-900 mb-1">Start Location Sharing</Text>
-          <Text className="text-sm text-gray-600">Select your bus and start broadcasting</Text>
+          <Text className="text-xl font-semibold text-gray-900 mb-1">Share Live Bus Location</Text>{" "}
+          <Text className="text-sm text-gray-600 text-center">
+            Share live bus location to help campus community track shuttles in real-time
+          </Text>{" "}
         </View>
 
         {/* Bus Search */}
@@ -122,15 +124,15 @@ const Index = () => {
                     <TouchableOpacity
                       key={bus._id}
                       className={`py-2 px-2 mt-1 border-b border-gray-300 ${
-                        isSelected ? "bg-green-100 border border-green-300 rounded-md" : ""
+                        isSelected ? "bg-primary-100 border border-primary-600 rounded-md" : ""
                       }`}
                       onPress={() => setSelectedBus(bus)}
                     >
                       <View className="flex-row items-center mb-1">
-                        <Ionicons name="bus" size={20} color={isSelected ? "#00C89B" : "#828282"} />
+                        <Ionicons name="bus" size={20} color={isSelected ? "#00C89BE6" : "#111827"} />
                         <Text className="flex-1 text-base text-gray-900 ml-3 capitalize">{bus.name}</Text>
 
-                        {isSelected && <Ionicons name="checkmark-circle" size={20} color="#00C89B" />}
+                        {isSelected && <Ionicons name="checkmark-circle" size={20} color="#00C89BE6" />}
                       </View>
                     </TouchableOpacity>
                   );
@@ -149,12 +151,12 @@ const Index = () => {
             {["student", "employee"].map((type) => (
               <TouchableOpacity
                 key={type}
-                className={`flex-1 p-3 mx-1 rounded-lg items-center ${
-                  busType === type ? "bg-green-100 border border-green-600" : "bg-gray-100"
+                className={`flex-1 p-3 mx-1 rounded-lg items-center border border-gray-200 ${
+                  busType === type ? "bg-primary-100 border-primary-700 border" : "bg-gray-100"
                 }`}
                 onPress={() => setBusType(type)}
               >
-                <Text className={`text-sm font-medium ${busType === type ? "text-green-600" : "text-gray-900"}`}>
+                <Text className={`text-md font-medium ${busType === type ? "#00C89BE6" : "text-gray-900"}`}>
                   {type.charAt(0).toUpperCase() + type.slice(1)}
                 </Text>
               </TouchableOpacity>
@@ -180,13 +182,14 @@ const Index = () => {
       {/* Start Button Fixed at Bottom */}
       <View className="absolute bottom-8 left-5 right-5">
         <TouchableOpacity
-          className={`rounded-lg p-3 items-center justify-center ${isValid ? "bg-green-600" : "bg-gray-500"}`}
+          className={`flex-row rounded-lg p-3 items-center justify-center ${
+            isValid ? "bg-tertiary-900" : "bg-gray-500"
+          }`}
           onPress={handleStartSharing}
           disabled={!isValid}
         >
-          <Text className="text-white text-base font-bold">
-            <Ionicons name="location" size={18} color="white" /> Start Sharing
-          </Text>
+          <Ionicons name="location" size={18} color="white" />
+          <Text className="text-white mx-2 text-lg font-bold">Start Sharing</Text>
         </TouchableOpacity>
       </View>
     </KeyboardAvoidingView>

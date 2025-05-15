@@ -2,7 +2,7 @@ import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import busImage from "@/assets/images/icon.png";
 
-export default AvailableBusListCard = ({ item, centerMapAndHighLightBus }) => {
+export default AvailableBusListCard = ({ item, highlightBus }) => {
   if (!item) return <Text>Not available</Text>;
   const { trip, latitude, longitude, speed, heading } = item;
 
@@ -32,7 +32,7 @@ export default AvailableBusListCard = ({ item, centerMapAndHighLightBus }) => {
       </View>
       <View style={{ marginLeft: 4 }}>
         <TouchableOpacity
-          onPress={() => centerMapAndHighLightBus(latitude, longitude)}
+          onPress={() => highlightBus([longitude, latitude])}
           className="bg-green-500 px-2 py-1 rounded-full flex-row items-center"
         >
           <Icon name="location-on" size={16} color="white" style={{ marginRight: 4 }} />
