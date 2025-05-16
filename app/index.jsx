@@ -66,9 +66,9 @@ const Index = () => {
         </Link>
       </View>
 
-      <Text className="text-center text-gray-400 text-xs mb-5">
+      {/* <Text className="text-center text-gray-400 text-xs mb-5">
         © 2024 Daffodil International University
-      </Text>
+      </Text> */}
     </SafeAreaView>
   );
 };

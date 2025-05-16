@@ -1,10 +1,10 @@
 {
   "expo": {
-    "name": "Chalo",
+    "name": "Cholo",
     "slug": "client-2",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
+    "icon": "./assets/images/play_store_512.png",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
@@ -13,7 +13,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/icon.png",
+        "foregroundImage": "./assets/images/play_store_512.png",
         "backgroundColor": "#ffffff"
       },
       "package": "com.md_musa.client2"
@@ -39,7 +39,8 @@
       [
         "expo-location",
         {
-          "locationAlwaysAndWhenInUsePermission": "Allow TMS to use your location."
+          "locationAlwaysAndWhenInUsePermission": "Allow CHOLO app to use your location.",
+          "isBackgroundLocationEnabled": true
         }
       ]
     ],
@@ -59,6 +60,5 @@
       }
     },
     "owner": "md_musa"
-    
   }
 }

@@ -1,8 +1,8 @@
 import axios from "axios";
 
 
-const SERVER_URL = "http://192.168.1.10:4000/api/v1";
-// const SERVER_URL = `https://tms-dcro.onrender.com/api/v1`;
+// const SERVER_URL = "http://192.168.1.3:4000/api/v1";
+const SERVER_URL = `https://tms-dcro.onrender.com/api/v1`;
 
 const apiClient = axios.create({
   baseURL: SERVER_URL,

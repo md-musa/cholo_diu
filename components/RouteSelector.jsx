@@ -111,26 +111,26 @@ const RouteSelector = ({ onRouteChange }) => {
 
         <View className="flex-row border-b border-white/70 pb-2">
           <Text className="text-white text-md font-semibold flex-1">Route</Text>
-          <Text className="text-white text-md font-semibold flex-1 text-center">Student Bus</Text>
-          <Text className="text-white text-md font-semibold flex-1 text-right">Employee Bus</Text>
+          <Text className="text-white text-md font-semibold flex-1 text-center">Student </Text>
+          <Text className="text-white text-md font-semibold flex-1 text-right">Employee </Text>
         </View>
 
         <View className="flex-row py-2">
           <Text className="text-white text-md flex-1">{`To ${currentRoute?.startLocation}`}</Text>
-          <Text className="text-white text-md flex-1 text-center">
+          <Text className="text-white text-lg flex-1 text-center">
             {toCampusStudent ? `${toCampusStudent.formattedTime}` : "No schedule"}
           </Text>
-          <Text className="text-white text-md flex-1 text-right">
+          <Text className="text-white text-lg flex-1 text-right">
             {toCampusEmployee ? `${toCampusEmployee.formattedTime}` : "No schedule"}
           </Text>
         </View>
 
         <View className="flex-row border-y border-white/50 py-2">
           <Text className="text-white text-md flex-1">{`From ${currentRoute?.startLocation}`}</Text>
-          <Text className="text-white text-md flex-1 text-center">
+          <Text className="text-white text-lg flex-1 text-center">
             {fromCampusStudent ? `${fromCampusStudent.formattedTime}` : "No schedule"}
           </Text>
-          <Text className="text-white text-md flex-1 text-right">
+          <Text className="text-white text-lg flex-1 text-right">
             {fromCampusEmployee ? `${fromCampusEmployee.formattedTime}` : "No schedule"}
           </Text>
         </View>

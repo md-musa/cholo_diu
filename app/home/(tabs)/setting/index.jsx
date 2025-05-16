@@ -1,97 +1,150 @@
 import React from "react";
 import { View, Text, TouchableOpacity, Image, Linking, ScrollView } from "react-native";
-import { Ionicons, FontAwesome, Feather } from "@expo/vector-icons";
+import { Ionicons, MaterialIcons, Feather, FontAwesome } from "@expo/vector-icons";
 import { useAuth } from "@/contexts/AuthContext";
 import Constants from "expo-constants";
-import developer1Img from "../../../../assets/images/musa.jpg";
 
 export default function Settings() {
   const { userData, logout } = useAuth();
   const { name, email, role, route } = userData;
 
-  const handleLinkPress = (url) => {
-    Linking.openURL(url);
-  };
-
-  const handleSendFeedback = () => {
-    Linking.openURL("mailto:mohammad.musa706@gmail.com?subject=App Feedback");
-  };
-
   const handleLogout = () => {
     logout();
   };
 
+  const handleContact = () => {
+    Linking.openURL("mailto:mohammad.musa706@gmail.com");
+  };
+
   return (
-    <ScrollView className="flex-1 bg-gray-100 px-3">
+    <ScrollView className="flex-1 bg-gray-100">
       {/* Profile Header */}
-      <View className="items-start bg-primary-700 px-6 py-10 rounded-xl space-y-2">
-        <Text className="text-title-2 font-bold text-white">
-          Name: <Text className="font-normal capitalize">{name}</Text>
-        </Text>
-        <Text className="text-subhead text-white">
-          Email: <Text className="text-gray-200">{email}</Text>
-        </Text>
-        <Text className="text-subhead text-white">
-          Role: <Text className="text-gray-200 capitalize">{role}</Text>
-        </Text>
-        <Text className="text-subhead text-white">
-          Route: <Text className="text-gray-200 capitalize">{route.endLocation}</Text>
-        </Text>
-      </View>
-
-      {/* Setting Options */}
-      <View className="bg-white rounded-lg p-4 my-4 shadow-md border border-gray-200">
-        <SettingOption icon="mail" text="Send Feedback" onPress={handleSendFeedback} />
-        {/* <SettingOption icon="help-circle" text="Help / FAQ" onPress={() => handleLinkPress("https://example.com/help")} />
-        <SettingOption icon="document-text" text="Terms of Service" onPress={() => handleLinkPress("https://example.com/terms")} />
-        <SettingOption icon="shield-checkmark" text="Privacy Policy" onPress={() => handleLinkPress("https://example.com/privacy")} /> */}
-        <SettingOption icon="log-out" text="Logout" color="red" onPress={handleLogout} />
-      </View>
-
-      {/* <View className="bg-gray-400 h-[1px] my-6" /> */}
-
-      {/* Developer Info */}
-      {/* <View className="bg-white rounded-lg p-4 mb-2 shadow-md border border-gray-200">
-        <Text className="text-title-3 font-semibold text-gray-800 mb-3">Developed By</Text>
-        <View className="flex-row items-center">
-          <View className="flex-[0.3] items-center">
-            <Image
-              source={developer1Img}
-              className="w-24 h-24 rounded-full border-2 border-tertiary-500"
-            />
+      <View className="bg-indigo-600 pb-8 pt-12 px-6 rounded-b-3xl shadow-lg">
+        <View className="items-center -mt-16">
+          <View className="bg-white p-1 rounded-full shadow-xl">
+            {/* <Image
+              source={require('../../../../assets/images/profile_placeholder.png')}
+              className="w-32 h-32 rounded-full border-4 border-indigo-100"
+            /> */}
           </View>
-          <View className="flex-[0.7] pl-4">
-            <Text className="text-md font-bold text-gray-800">Mohammad Musa</Text>
-            <Text className="text-sm text-gray-600 mt-1">
-              Passionate Backend Developer with expertise in Node.js, WebSocket, and modern web technologies.
-            </Text>
-            <View className="flex-row mt-3">
-              <TouchableOpacity onPress={() => handleLinkPress("https://facebook.com/md-musa")} className="mr-4">
-                <FontAwesome name="facebook" size={24} color="#1877F2" />
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => handleLinkPress("mailto:mohammad.musa706@gmail.com")} className="mr-4">
-                <Ionicons name="mail" size={24} color="#D44638" />
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => handleLinkPress("https://github.com/md-musa")}>
-                <FontAwesome name="github" size={24} color="black" />
-              </TouchableOpacity>
+          <Text className="text-2xl font-bold text-white mt-4">{name}</Text>
+          <Text className="text-indigo-100">{email}</Text>
+          
+          <View className="flex-row mt-4 space-x-4">
+            <View className="bg-indigo-500 px-4 py-2 rounded-full">
+              <Text className="text-white text-sm capitalize">{role}</Text>
+            </View>
+            <View className="bg-indigo-500 px-4 mx-2 py-2 rounded-full">
+              <Text className="text-white text-sm">Route: {route?.endLocation || 'N/A'}</Text>
             </View>
           </View>
         </View>
-      </View> */}
+      </View>
 
-      {/* App Version Footer */}
-      <View className="items-center mb-6">
-        <Text className="text-footnote text-gray-500">App Version {Constants.expoConfig.version}</Text>
+      {/* Settings Cards */}
+      <View className="px-5 mt-2">
+        {/* Account Settings */}
+        <View className="bg-white rounded-2xl p-5 shadow-sm my-2">
+          <Text className="text-lg font-semibold text-gray-800 mb-4">Account Settings</Text>
+          <SettingOption 
+            icon="person-outline" 
+            text="Edit Profile" 
+            onPress={() => {}} 
+          />
+          <SettingOption 
+            icon="notifications-outline" 
+            text="Notification Preferences" 
+            onPress={() => {}} 
+          />
+          <SettingOption 
+            icon="lock-closed-outline" 
+            text="Change Password" 
+            onPress={() => {}} 
+          />
+        </View>
+
+        {/* App Settings */}
+        <View className="bg-white rounded-2xl p-5 shadow-sm my-2">
+          <Text className="text-lg font-semibold text-gray-800 mb-4">App Settings</Text>
+          <SettingOption 
+            icon="moon-outline" 
+            text="Dark Mode" 
+            rightComponent={<ToggleSwitch />}
+          />
+          <SettingOption 
+            icon="language" 
+            text="Language" 
+            rightComponent={<Text className="text-gray-500">English</Text>}
+          />
+          <SettingOption 
+            icon="location-outline" 
+            text="Location Services" 
+            rightComponent={<ToggleSwitch />}
+          />
+        </View>
+
+        {/* Support */}
+        <View className="bg-white rounded-2xl p-5 shadow-sm my-2">
+          <Text className="text-lg font-semibold text-gray-800 mb-4">Support</Text>
+          <SettingOption 
+            icon="help-circle-outline" 
+            text="Help Center" 
+            onPress={() => {}} 
+          />
+          <SettingOption 
+            icon="mail-outline" 
+            text="Contact Support" 
+            onPress={handleContact} 
+          />
+          <SettingOption 
+            icon="shield-checkmark-outline" 
+            text="Privacy Policy" 
+            onPress={() => {}} 
+          />
+        </View>
+
+        {/* Logout */}
+        <TouchableOpacity 
+          className="flex-row items-center justify-center bg-red-50 p-4 rounded-2xl border border-red-100 mt-5"
+          onPress={handleLogout}
+        >
+          <Ionicons name="log-out-outline" size={22} color="#dc2626" />
+          <Text className="text-red-600 font-medium ml-3">Log Out</Text>
+        </TouchableOpacity>
+      </View>
+
+      {/* App Version */}
+      <View className="items-center my-8">
+        <Text className="text-gray-400 text-sm">
+          CHOLO v{Constants.expoConfig.version}
+        </Text>
       </View>
     </ScrollView>
   );
 }
 
-// Reusable Option Row
-const SettingOption = ({ icon, text, onPress = () => {}, color = "black" }) => (
-  <TouchableOpacity className="flex-row items-center py-3 border-b border-gray-200" onPress={onPress}>
-    <Ionicons name={icon} size={22} color={color} className="mr-3" />
-    <Text className={`text-body ml-2 ${color === "red" ? "text-red-600" : "text-gray-800"}`}>{text}</Text>
+// Reusable Components
+const SettingOption = ({ icon, text, onPress, rightComponent, color = "gray" }) => (
+  <TouchableOpacity 
+    className="flex-row items-center justify-between py-4 border-b border-gray-100 last:border-b-0"
+    onPress={onPress}
+    disabled={!onPress}
+  >
+    <View className="flex-row items-center">
+      <Ionicons 
+        name={icon} 
+        size={22} 
+        color={color === "gray" ? "#6b7280" : color} 
+        style={{ marginRight: 12 }}
+      />
+      <Text className="text-gray-700">{text}</Text>
+    </View>
+    {rightComponent || <Ionicons name="chevron-forward" size={20} color="#9ca3af" />}
   </TouchableOpacity>
+);
+
+const ToggleSwitch = () => (
+  <View className="w-12 h-6 bg-gray-200 rounded-full p-1">
+    <View className="w-4 h-4 bg-white rounded-full shadow-md"></View>
+  </View>
 );

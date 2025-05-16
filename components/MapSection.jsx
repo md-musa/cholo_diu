@@ -37,6 +37,8 @@ const MapSection = ({ location, userData, activeBuses, currentlyConnectedUserCou
       console.warn("Map region change error:", error);
     }
   }, []);
+  console.log("Zoom-> ", zoom);
+  console.log("Current Center-> ", currentCenter);
 
   // console.log("-->", cameraRef);
   // console.log(mapRef);

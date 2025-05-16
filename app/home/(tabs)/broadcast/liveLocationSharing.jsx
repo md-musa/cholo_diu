@@ -1,5 +1,15 @@
-import React, { useEffect, useRef, useState } from "react";
-import { View, Text, TouchableOpacity, Alert, StyleSheet, Image, ActivityIndicator, StatusBar } from "react-native";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  Alert,
+  StyleSheet,
+  Image,
+  ActivityIndicator,
+  StatusBar,
+  BackHandler,
+} from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import useLocation from "@/hook/useLocation";
 import { useAuth } from "@/contexts/AuthContext";
@@ -11,7 +21,7 @@ import busMarker from "@/assets/images/navigatorArrow.png";
 import UniIcon from "@/assets/images/uni-2.png";
 import pinIcon from "@/assets/images/red-pin-marker.png";
 import StatusOverlayComponent from "@/components/UI/StatusOverlayComponent";
-import { useRouter } from "expo-router";
+import { useFocusEffect, useRouter } from "expo-router";
 
 function cpfl(string) {
   return string.charAt(0).toUpperCase() + string.slice(1);
@@ -19,16 +29,16 @@ function cpfl(string) {
 
 function LiveLocationSharing() {
   const router = useRouter();
-  const { location } = useLocation();
+  const { location } = useLocation(true);
   const { userData } = useAuth();
   const { broadcastData } = useBroadcast();
   const [routeName] = useState("Campus to Uttara");
-  const [isSharing, setIsSharing] = useState(true); // Track if sharing is active
-  const [isLoading, setIsLoading] = useState(true); // Track loading state
+  const [isSharing, setIsSharing] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
 
   const [currentlyConnectedUserCount, setCurrentlyConnectedUserCount] = useState(0);
-  const [recenterMap, setRecenterMap] = useState(true);
   const [zoom, setZoom] = useState(12);
+  const cameraRef = useRef(null);
 
   // Check if data is loaded
   useEffect(() => {
@@ -37,8 +47,8 @@ function LiveLocationSharing() {
     }
   }, [userData, location, broadcastData]);
 
-  console.log("👤", JSON.stringify(userData, null, 2));
-  console.log("📍", JSON.stringify(location, null, 2));
+  console.log("👤", JSON.stringify(broadcastData, null, 2));
+  console.log("📍", location);
 
   // Join the room when userData is available
   useEffect(() => {
@@ -72,15 +82,15 @@ function LiveLocationSharing() {
   // Handle stopping location sharing
   const handleStopSharing = () => {
     Alert.alert(
-      "Stop Sharing?",
-      "Are you sure you want to stop sharing the bus location?",
+      "Stop Sharing Live Location?",
+      "Campus community members will no longer see this bus's live position",
       [
         {
-          text: "Cancel",
+          text: "Stay",
           style: "cancel",
         },
         {
-          text: "Confirm",
+          text: "Leave",
           onPress: () => {
             if (userData?.route?._id) {
               socket.emit("stop-broadcast", userData.route._id);
@@ -95,8 +105,6 @@ function LiveLocationSharing() {
     );
   };
 
-  const cameraRef = useRef(null);
-
   const centerToUserLocation = () => {
     setZoom(15);
     cameraRef.current?.setCamera({
@@ -105,6 +113,28 @@ function LiveLocationSharing() {
       animationDuration: 500,
     });
   };
+
+  useFocusEffect(
+    useCallback(() => {
+      const onBackPress = () => {
+        Alert.alert(
+          "Stop Sharing Live Location?",
+          "Campus community members will no longer see this bus's live position",
+          [
+            { text: "Stay", style: "cancel" },
+            { text: "Leave", onPress: () => router.back() },
+          ]
+        );
+        return true;
+      };
+
+      BackHandler.addEventListener("hardwareBackPress", onBackPress);
+
+      return () => {
+        BackHandler.removeEventListener("hardwareBackPress", onBackPress);
+      };
+    }, [router])
+  );
 
   // Show loading state if data is not ready
   if (isLoading) {
@@ -121,7 +151,11 @@ function LiveLocationSharing() {
         onRegionDidChange={(event) => setZoom(event.properties.zoom)}
       >
         {/*------ Recentering map -------- */}
-        <MapLibreGL.Camera ref={cameraRef} zoomLevel={zoom} centerCoordinate={[location.longitude, location.latitude]} />
+        <MapLibreGL.Camera
+          ref={cameraRef}
+          zoomLevel={zoom}
+          centerCoordinate={[location.longitude, location.latitude]}
+        />
 
         {/* --------- Load tile --------- */}
         <MapLibreGL.RasterSource
@@ -241,7 +275,7 @@ function LiveLocationSharing() {
 
       <TouchableOpacity
         className="absolute top-10 left-5 bg-white border border-gray-300 rounded-full shadow flex-row p-2 items-center justify-center"
-        onPress={() => router.back()}
+        onPress={handleStopSharing}
       >
         <Ionicons name="arrow-back" size={25} color="black" />
       </TouchableOpacity>
