@@ -5,6 +5,7 @@ import { MaterialCommunityIcons, MaterialIcons, Ionicons } from "@expo/vector-ic
 import { useAuth } from "@/contexts/AuthContext";
 import Toast from "react-native-toast-message";
 import { Link } from "expo-router";
+import { showToast } from "@/utils/toastUtil";
 
 const Login = () => {
   const { login, authLoading } = useAuth();
@@ -14,10 +15,10 @@ const Login = () => {
 
   const handleLogin = async () => {
     if (!email || !password) {
-      Toast.show({
-        type: "error",
-        text1: "Validation Error",
-        text2: "Please fill all fields",
+      showToast({
+        type: "info",
+        text1: "Missing Information",
+        text2: "Please enter both email and password to continue.",
       });
       return;
     }

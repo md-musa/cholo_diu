@@ -15,5 +15,5 @@
     "expo-env.d.ts",
     "babel.config.js",
     "nativewind-env.d.ts"
-, "contexts/AuthContext.js", "app/home/(tabs)/index.jsx", "app/home/(tabs)/broadcast/index.jsx", "app/home/(tabs)/broadcast/liveLocationSharing.jsx", "app/index.jsx", "app/register.jsx", "app/home/(tabs)/schedules/index.jsx", "app/home/(tabs)/setting/index.jsx"  ]
+, "contexts/AuthContext.js", "app/home/(tabs)/index.jsx", "app/home/(tabs)/broadcast/index.jsx", "app/home/(tabs)/broadcast/liveLocationSharing.jsx", "app/index.jsx", "app/register.jsx", "app/home/(tabs)/schedules/index.jsx", "app/home/(tabs)/setting/index.jsx", "utils/authUtil.js"  ]
 }

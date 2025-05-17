@@ -4,6 +4,7 @@ import { loginUser, registerUser } from "@/services/authService";
 import { useRouter } from "expo-router";
 import Toast from "react-native-toast-message";
 import * as SplashScreen from "expo-splash-screen";
+import { showToast } from "@/utils/toastUtil";
 
 const AuthContext = createContext();
 
@@ -12,9 +13,6 @@ export const AuthProvider = ({ children }) => {
   const [userData, setUserData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [authInitialized, setAuthInitialized] = useState(false);
-
-  // Prevent splash screen from hiding automatically
-  // SplashScreen.preventAutoHideAsync();
 
   // Load user data on initial render
   useEffect(() => {
@@ -39,7 +37,7 @@ export const AuthProvider = ({ children }) => {
         }
       } catch (err) {
         console.error("Error retrieving auth data:", err);
-        Toast.show({
+        showToast({
           type: "error",
           text1: "Session Error",
           text2: "Failed to load your session",
@@ -60,14 +58,9 @@ export const AuthProvider = ({ children }) => {
       setLoading(true);
       await SecureStorage.setItem("route", JSON.stringify(routeData));
       setUserData((prev) => ({ ...prev, route: routeData }));
-      // Toast.show({
-      //   type: "success",
-      //   text1: "Route Updated",
-      //   text2: "Your bus route has been updated",
-      // });
     } catch (err) {
       console.error("Update Route Error:", err);
-      Toast.show({
+      showToast({
         type: "error",
         text1: "Update Failed",
         text2: "Failed to update your route",
@@ -101,7 +94,7 @@ export const AuthProvider = ({ children }) => {
 
       setUserData({ userId: _id, accessToken, name, email, role, route: routeId });
 
-      Toast.show({
+      showToast({
         type: "success",
         text1: "Registration Successful",
         text2: `Welcome ${name}!`,
@@ -111,7 +104,7 @@ export const AuthProvider = ({ children }) => {
     } catch (err) {
       console.error("Registration Error:", err);
       const errorMessage = err.message || "Registration failed. Please try again.";
-      Toast.show({
+      showToast({
         type: "error",
         text1: "Registration Failed",
         text2: errorMessage,
@@ -145,7 +138,7 @@ export const AuthProvider = ({ children }) => {
 
       setUserData({ userId: _id, accessToken, name, email, role, route: routeId });
 
-      Toast.show({
+      showToast({
         type: "success",
         text1: "Login Successful",
         text2: `Welcome back, ${name}!`,
@@ -154,7 +147,7 @@ export const AuthProvider = ({ children }) => {
       router.replace("/home");
     } catch (err) {
       const errorMessage = err.message || "Invalid credentials. Please try again.";
-      Toast.show({
+      showToast({
         type: "error",
         text1: "Login Failed",
         text2: errorMessage,
@@ -171,7 +164,7 @@ export const AuthProvider = ({ children }) => {
 
       setUserData(null); // ✔ clears auth context
 
-      Toast.show({
+      showToast({
         type: "success",
         text1: "Logged Out",
         text2: "You have been successfully logged out",
@@ -180,7 +173,7 @@ export const AuthProvider = ({ children }) => {
       router.replace("/"); // ✔ navigate back to root
     } catch (err) {
       console.error("Logout Error:", err);
-      Toast.show({
+      showToast({
         type: "error",
         text1: "Logout Error",
         text2: "Failed to logout properly",

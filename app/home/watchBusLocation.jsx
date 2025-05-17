@@ -8,19 +8,30 @@ import BottomSheetComponent from "@/components/UI/BottomSheetComponent";
 import socket from "@/config/socket";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
+import { useBusLocation } from "@/contexts/BusLocationContext";
 
 const WatchBusLocation = () => {
   const router = useRouter();
   const bottomSheetRef = useRef(null);
   const { userData } = useAuth();
   const { location } = useLocation();
-  const [activeBuses, setActiveBuses] = useState({});
-  const [currentlyConnectedUserCount, setCurrentlyConnectedUserCount] = useState(0);
+  // const [activeBuses, setActiveBuses] = useState({});
+  // const [currentlyConnectedUserCount, setCurrentlyConnectedUserCount] = useState(0);
   const [zoom, setZoom] = useState(12);
 
   const cameraRef = useRef(null);
   const mapRef = useRef(null);
   const [currentCenter, setCurrentCenter] = useState([90.320463, 23.87739]);
+
+  const { activeBuses, currentlyConnectedUserCount, joinRoute } = useBusLocation();
+
+  // useEffect(() => {
+  //   if (userData?.route?._id) {
+  //     joinRoute(userData.route._id);
+  //   }
+  // }, [userData]);
+
+  console.log("👤 UserData", userData.route._id);
 
   const centerToUserLocation = () => {
     cameraRef.current?.setCamera({
@@ -47,8 +58,8 @@ const WatchBusLocation = () => {
     try {
       const center = await mapRef.current.getCenter();
       const currentZoom = await mapRef.current.getZoom();
-      console.log("Center:", center);
-      console.log("Zoom:", currentZoom);
+      // console.log("Center:", center);
+      // console.log("Zoom:", currentZoom);
 
       setCurrentCenter(center);
       setZoom(currentZoom);
@@ -57,23 +68,23 @@ const WatchBusLocation = () => {
     }
   }, []);
 
-  useEffect(() => {
-    socket.on("bus-location-update", (data) => {
-      // console.log("------------------\n", JSON.stringify(data, null, 2));
+  // useEffect(() => {
+  //   socket.on("bus-location-update", (data) => {
+  //     // console.log("------------------\n", JSON.stringify(data, null, 2));
 
-      if (!data) return console.log("⚠ error", data);
-      setActiveBuses((prevBuses) => ({ ...prevBuses, [data.trip.busName]: data }));
-      setCurrentlyConnectedUserCount(data.currUserCnt || 0);
-    });
+  //     if (!data) return console.log("⚠ error", data);
+  //     setActiveBuses((prevBuses) => ({ ...prevBuses, [data.trip.busName]: data }));
+  //     setCurrentlyConnectedUserCount(data.currUserCnt || 0);
+  //   });
 
-    if (userData?.route?._id) {
-      socket.emit("join-route", userData.route._id);
-    }
+  //   if (userData?.route?._id) {
+  //     socket.emit("join-route", userData.route._id);
+  //   }
 
-    return () => {
-      socket.off("bus-location-update");
-    };
-  }, [userData]);
+  //   return () => {
+  //     socket.off("bus-location-update");
+  //   };
+  // }, [userData]);
 
   return (
     <View style={styles.container}>

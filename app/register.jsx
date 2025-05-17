@@ -8,6 +8,9 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Link } from "expo-router";
 import Toast from "react-native-toast-message";
 import apiClient from "@/config/axiosConfig";
+import RouteService from "@/services/routeService";
+import { showToast } from "@/utils/toastUtil";
+import { AuthUtil } from "@/utils/authUtil";
 
 const Register = () => {
   const { registration, authLoading } = useAuth();
@@ -24,12 +27,12 @@ const Register = () => {
   useEffect(() => {
     const fetchRoutes = async () => {
       try {
-        const res = await apiClient.get("/routes");
+        const res = await RouteService.getRoutes();
         setAvailRoutes(res.data.data || []);
-        console.log(JSON.stringify(availRoutes, 0, 2));
       } catch (err) {
         console.error("API Error:", err);
-        Toast.show({
+
+        showToast({
           type: "error",
           text1: "Network Error",
           text2: "Failed to load routes. Please try again.",
@@ -41,69 +44,9 @@ const Register = () => {
   }, []);
 
   const handleRegister = async () => {
-    if (!validateForm()) return;
+    if (!AuthUtil.validateRegistrationForm(formData)) return;
 
     await registration(formData);
-  };
-
-  const validateForm = () => {
-    const { name, routeId, role, email, password } = formData;
-
-    if (!name.trim()) {
-      Toast.show({
-        type: "error",
-        text1: "Name Required",
-        text2: "Please enter your full name",
-      });
-      return false;
-    }
-
-    if (!routeId) {
-      Toast.show({
-        type: "error",
-        text1: "Route Required",
-        text2: "Please select your bus route",
-      });
-      return false;
-    }
-
-    if (!role) {
-      Toast.show({
-        type: "error",
-        text1: "Role Required",
-        text2: "Please select your role",
-      });
-      return false;
-    }
-
-    if (!email.trim()) {
-      Toast.show({
-        type: "error",
-        text1: "Email Required",
-        text2: "Please enter your email address",
-      });
-      return false;
-    }
-
-    if (!/^\S+@\S+\.\S+$/.test(email)) {
-      Toast.show({
-        type: "error",
-        text1: "Invalid Email",
-        text2: "Please enter a valid email address",
-      });
-      return false;
-    }
-
-    if (!password || password.length < 6) {
-      Toast.show({
-        type: "error",
-        text1: "Password Required",
-        text2: "Password must be at least 6 characters",
-      });
-      return false;
-    }
-
-    return true;
   };
 
   const handleInputChange = (name, value) => {

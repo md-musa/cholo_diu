@@ -110,7 +110,6 @@ function LiveLocationSharing() {
     cameraRef.current?.setCamera({
       center: [location.longitude, location.latitude],
       zoom: 15,
-      animationDuration: 500,
     });
   };
 

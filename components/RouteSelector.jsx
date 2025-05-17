@@ -7,11 +7,14 @@ import apiClient from "@/config/axiosConfig";
 import { findOngoingOrNextSchedule } from "@/utils/scheduleHelper";
 import { Link } from "expo-router";
 
-const RouteSelector = ({ onRouteChange }) => {
+const RouteSelector = () => {
   const { userData, updateRoute } = useAuth();
   const [currentRoute, setCurrentRoute] = useState(userData?.route);
   const [availRoutes, setAvailRoutes] = useState([]);
   const [schedules, setSchedules] = useState(null);
+  const [selectedDay, setSelectedDay] = useState(
+    new Date().toLocaleString("en-US", { weekday: "long" }).toLowerCase() === "friday" ? "Friday" : "Weekdays"
+  );
 
   useEffect(() => {
     const fetchRoutes = async () => {
@@ -29,24 +32,24 @@ const RouteSelector = ({ onRouteChange }) => {
   useEffect(() => {
     const fetchSchedules = async () => {
       try {
-        const today = new Date().toLocaleString("en-US", { weekday: "long" }).toLowerCase();
         const { data } = await apiClient.get(`/schedules/get-single-route-schedule`, {
-          params: { routeId: currentRoute._id, day: today },
+          params: { routeId: userData?.route?._id, day: selectedDay.toLocaleLowerCase() },
         });
+
         setSchedules(data.data);
       } catch (err) {
-        console.log(err);
+        console.log("Error fetching schedules:", err);
       }
     };
 
-    if (currentRoute) fetchSchedules();
-  }, [currentRoute]);
+    fetchSchedules();
+  }, [currentRoute, userData, selectedDay]);
 
   const handleRouteChange = (selectedRouteId) => {
     const selectedRouteData = availRoutes.find((r) => r._id === selectedRouteId);
     setCurrentRoute(selectedRouteData);
     updateRoute(selectedRouteData);
-    onRouteChange(selectedRouteData);
+    // onRouteChange(selectedRouteData);
   };
 
   // if (!schedules) return <ActivityIndicator size="large" color="#0000ff" />;
