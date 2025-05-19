@@ -4,7 +4,6 @@ import { useAuth } from "@/contexts/AuthContext";
 import useLocation from "@/hook/useLocation";
 import RouteSelector from "@/components/RouteSelector";
 import MapSection from "@/components/MapSection";
-import socket from "@/config/socket";
 import Navbar from "@/components/Navbar";
 import { useBusLocation } from "@/contexts/BusLocationContext";
 
@@ -19,29 +18,7 @@ export default function Index() {
     }
   }, [userData]);
 
-  console.log("👤 UserData", userData.route._id);
-
-  // const [activeBuses, setActiveBuses] = useState({});
-  // const [currentlyConnectedUserCount, setCurrentlyConnectedUserCount] = useState(0);
-
-  // useEffect(() => {
-  //   socket.on("bus-location-update", (data) => {
-  //     console.log("🚌-----------------------\n", JSON.stringify(data, null, 2));
-
-  //     if (!data) return console.log("⚠ error", data);
-  //     setActiveBuses((prevBuses) => ({ ...prevBuses, [data.trip.busName]: data }));
-  //     setCurrentlyConnectedUserCount(data.currUserCnt || 0);
-  //   });
-
-  //   if (userData?.route?._id) {
-  //     socket.emit("join-route", userData.route._id);
-  //   }
-
-  //   return () => {
-  //     socket.off("bus-location-update");
-  //   };
-  // }, [userData]);
-  // console.log("🚍", location);
+  // // console.log("👤 UserData", userData.route._id);
 
   return (
     <View className="flex-1 bg-white">

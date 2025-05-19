@@ -1,6 +1,6 @@
 import React, { useCallback, useRef, useState } from "react";
 import { View, TouchableOpacity, Text } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import MapComponent from "@/components/MapComponent";
 import StatusOverlayComponent from "@/components/UI/StatusOverlayComponent";
@@ -28,8 +28,8 @@ const MapSection = ({ location, userData, activeBuses, currentlyConnectedUserCou
     try {
       const center = await mapRef.current.getCenter();
       const currentZoom = await mapRef.current.getZoom();
-      // console.log("Center:", center);
-      // console.log("Zoom:", currentZoom);
+      // // console.log("Center:", center);
+      // // console.log("Zoom:", currentZoom);
 
       setCurrentCenter(center);
       setZoom(currentZoom);
@@ -37,11 +37,11 @@ const MapSection = ({ location, userData, activeBuses, currentlyConnectedUserCou
       console.warn("Map region change error:", error);
     }
   }, []);
-  // console.log("Zoom-> ", zoom);
-  // console.log("Current Center-> ", currentCenter);
+  // // console.log("Zoom-> ", zoom);
+  // // console.log("Current Center-> ", currentCenter);
 
-  // console.log("-->", cameraRef);
-  // console.log(mapRef);
+  // // console.log("-->", cameraRef);
+  // // console.log(mapRef);
 
   return (
     <View className="flex-1 relative mt-4 rounded-xl overflow-hidden border border-gray-300">
@@ -58,6 +58,11 @@ const MapSection = ({ location, userData, activeBuses, currentlyConnectedUserCou
         handleRegionDidChange={handleRegionDidChange}
       />
       <StatusOverlayComponent currentlyConnectedUserCount={currentlyConnectedUserCount} activeBuses={activeBuses} />
+
+      <TouchableOpacity className="absolute top-3 left-3 bg-white border border-gray-300 rounded-md shadow flex-row p-1 items-center justify-center">
+        <MaterialIcons name="route" size={18} color="#4b4b4b" />{" "}
+        <Text className="text-sm capitalize color-[#2c2c2c]"> {userData?.route?.endLocation} Route</Text>
+      </TouchableOpacity>
 
       <TouchableOpacity
         className="absolute bottom-20 right-3 bg-white  border border-gray-300 rounded-full shadow flex-row p-3 items-center justify-center"

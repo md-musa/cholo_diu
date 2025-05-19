@@ -69,7 +69,7 @@ export const BusLocationProvider = ({ children }: { children: ReactNode }) => {
         console.warn("Invalid data received:", data);
         return;
       }
-      console.log("🚌🚌🚌🚌🚌🚌🚌🚌\n", JSON.stringify(data));
+      // console.log("🚌🚌🚌🚌🚌🚌🚌🚌\n", JSON.stringify(data));
 
       setActiveBuses((prev) => ({
         ...prev,
@@ -94,7 +94,7 @@ export const BusLocationProvider = ({ children }: { children: ReactNode }) => {
   }, [routeId]);
 
   const joinRoute = (id: string) => {
-    console.log("➕JoinRoute()");
+    // console.log("➕JoinRoute()");
     if (routeId) {
       socket.emit(SOCKET_EVENTS.LEAVE_ROUTE_ROOM, routeId);
       // socket.off(SOCKET_EVENTS.BUS_LOCATION_UPDATE);

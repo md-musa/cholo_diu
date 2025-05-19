@@ -5,7 +5,7 @@ import { Ionicons } from "@expo/vector-icons";
 
 const Header = () => {
   const { userData } = useAuth();
-  console.log("userdata hader ", userData);
+  // console.log("userdata hader ", userData);
   return (
     <View className="py-4 px-4 items-center text-black font-semibold flex-row justify-between">
       <View className="flex-row items-center">

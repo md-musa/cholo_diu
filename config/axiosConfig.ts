@@ -1,8 +1,9 @@
 import { showToast } from "@/utils/toastUtil";
 import axios from "axios";
 
-const SERVER_URL = "http://192.168.1.10:4000/api/v1";
+// const SERVER_URL = "http://192.168.1.9:4000/api/v1";
 // const SERVER_URL = `https://tms-dcro.onrender.com/api/v1`;
+const SERVER_URL = "https://choloserver-production.up.railway.app/api/v1";
 
 const apiClient = axios.create({
   baseURL: SERVER_URL,
@@ -29,12 +30,12 @@ apiClient.interceptors.request.use(
 apiClient.interceptors.response.use(
   (response) => response,
   (error) => {
-    console.error("API Error:", error.response?.data || error.message);
+    // // console.error("[axios] API Error:", JSON.stringify(error.response?.data?.errorMessages[0].message, null, 2));
 
     showToast({
       type: "error",
       text1: "API Error",
-      text2: error.message || "Something went wrong!",
+      text2: error.response?.data?.errorMessages[0].message || "Something went wrong!",
     });
     return Promise.reject(error);
   }

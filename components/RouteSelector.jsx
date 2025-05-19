@@ -22,7 +22,7 @@ const RouteSelector = () => {
         const res = await apiClient.get("/routes");
         setAvailRoutes(res.data.data);
       } catch (err) {
-        console.error("API Error:", err.message);
+        // console.error("API Error:", err.message);
       }
     };
 
@@ -38,7 +38,7 @@ const RouteSelector = () => {
 
         setSchedules(data.data);
       } catch (err) {
-        console.log("Error fetching schedules:", err);
+        // console.log("Error fetching schedules:", err);
       }
     };
 
@@ -56,15 +56,15 @@ const RouteSelector = () => {
 
   let toCampusStudent, fromCampusStudent, toCampusEmployee, fromCampusEmployee;
   if (schedules) {
-    // console.log("schedules", schedules);
+    // // console.log("schedules", schedules);
     toCampusStudent = findOngoingOrNextSchedule(schedules.to_campus.student);
     fromCampusStudent = findOngoingOrNextSchedule(schedules.from_campus.student);
     toCampusEmployee = findOngoingOrNextSchedule(schedules.to_campus.employee);
     fromCampusEmployee = findOngoingOrNextSchedule(schedules.from_campus.employee);
-    //   console.log("toCampusEmployee", toCampusEmployee);
-    //   console.log("fromCampusEmployee", fromCampusEmployee);
-    //   console.log("toCampusStudent", toCampusStudent);
-    //   console.log("fromCampusStudent", fromCampusStudent);
+    //   // console.log("toCampusEmployee", toCampusEmployee);
+    //   // console.log("fromCampusEmployee", fromCampusEmployee);
+    //   // console.log("toCampusStudent", toCampusStudent);
+    //   // console.log("fromCampusStudent", fromCampusStudent);
   }
 
   return (

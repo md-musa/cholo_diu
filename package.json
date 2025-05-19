@@ -5,6 +5,7 @@
   "scripts": {
     "start": "npx expo start",
     "build:dev": "eas build --profile development --platform android",
+    "build:production": "eas build --profile production-apk --platform android",
     "reset-project": "node ./scripts/reset-project.js",
     "android": "expo run:android",
     "ios": "expo run:ios",

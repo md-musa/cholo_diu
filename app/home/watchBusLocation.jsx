@@ -15,8 +15,6 @@ const WatchBusLocation = () => {
   const bottomSheetRef = useRef(null);
   const { userData } = useAuth();
   const { location } = useLocation();
-  // const [activeBuses, setActiveBuses] = useState({});
-  // const [currentlyConnectedUserCount, setCurrentlyConnectedUserCount] = useState(0);
   const [zoom, setZoom] = useState(12);
 
   const cameraRef = useRef(null);
@@ -24,14 +22,6 @@ const WatchBusLocation = () => {
   const [currentCenter, setCurrentCenter] = useState([90.320463, 23.87739]);
 
   const { activeBuses, currentlyConnectedUserCount, joinRoute } = useBusLocation();
-
-  // useEffect(() => {
-  //   if (userData?.route?._id) {
-  //     joinRoute(userData.route._id);
-  //   }
-  // }, [userData]);
-
-  console.log("👤 UserData", userData.route._id);
 
   const centerToUserLocation = () => {
     cameraRef.current?.setCamera({
@@ -58,8 +48,8 @@ const WatchBusLocation = () => {
     try {
       const center = await mapRef.current.getCenter();
       const currentZoom = await mapRef.current.getZoom();
-      // console.log("Center:", center);
-      // console.log("Zoom:", currentZoom);
+      // // console.log("Center:", center);
+      // // console.log("Zoom:", currentZoom);
 
       setCurrentCenter(center);
       setZoom(currentZoom);
@@ -67,24 +57,6 @@ const WatchBusLocation = () => {
       console.warn("Map region change error:", error);
     }
   }, []);
-
-  // useEffect(() => {
-  //   socket.on("bus-location-update", (data) => {
-  //     // console.log("------------------\n", JSON.stringify(data, null, 2));
-
-  //     if (!data) return console.log("⚠ error", data);
-  //     setActiveBuses((prevBuses) => ({ ...prevBuses, [data.trip.busName]: data }));
-  //     setCurrentlyConnectedUserCount(data.currUserCnt || 0);
-  //   });
-
-  //   if (userData?.route?._id) {
-  //     socket.emit("join-route", userData.route._id);
-  //   }
-
-  //   return () => {
-  //     socket.off("bus-location-update");
-  //   };
-  // }, [userData]);
 
   return (
     <View style={styles.container}>
@@ -105,7 +77,7 @@ const WatchBusLocation = () => {
         <StatusOverlayComponent currentlyConnectedUserCount={currentlyConnectedUserCount} activeBuses={activeBuses} />
 
         <TouchableOpacity
-          className="absolute bottom-60 right-5 bg-white border border-gray-300 rounded-full shadow flex-row p-3 items-center justify-center"
+          className="absolute bottom-80 right-5 bg-white border border-gray-300 rounded-full shadow flex-row p-3 items-center justify-center"
           onPress={centerToUserLocation}
         >
           <Ionicons name="locate" size={28} color="black" />

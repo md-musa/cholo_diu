@@ -29,7 +29,7 @@ const BusSchedule = () => {
         const res = await apiClient.get("/routes");
         setAvailRoutes(res.data.data);
       } catch (err) {
-        console.error("API Error:", err.message);
+        // console.error("shce[home] API Error:", err.message);
       }
     };
 
@@ -45,7 +45,7 @@ const BusSchedule = () => {
 
         setSchedules(data.data);
       } catch (err) {
-        console.log("Error fetching schedules:", err);
+        // console.log("Error fetching schedules:", err);
       }
     };
 
@@ -118,7 +118,7 @@ const BusSchedule = () => {
 
           <View className="flex-[0.4] rounded-lg overflow-hidden">
             <Picker
-              selectedValue={currentRoute?._id}
+              selectedValue={userData?.route?._id}
               onValueChange={handleRouteChange}
               style={{
                 flex: 1,

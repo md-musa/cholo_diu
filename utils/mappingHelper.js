@@ -2,8 +2,8 @@ import uttaraToDiuRoute from "@/assets/routes/uttara_diu.json";
 import mirpur10ToDiuRoute from "@/assets/routes/mirpur_10_diu.json";
 
 export function selectRoutePolyline(currentRoute) {
-  if (currentRoute.endLocation == "Uttara") return uttaraToDiuRoute;
-  else if (currentRoute.endLocation == "Mirpur-10") return mirpur10ToDiuRoute;
+  if (currentRoute == "Uttara") return uttaraToDiuRoute;
+  else if (currentRoute == "Mirpur") return mirpur10ToDiuRoute;
   else return { type: "FeatureCollection", features: [] };
 }
 
@@ -16,9 +16,7 @@ export function generateMarkers(activeBuses) {
     },
     properties: {
       icon: "marker",
-      title: `${cpfl(data.trip.busName)}\n${
-        cpfl(data.trip.busType) + " bus"
-      }\n${(data.speed * 3.6).toFixed(2)} km/h`,
+      title: `${cpfl(data.trip.busName)}\n${cpfl(data.trip.busType) + " bus"}\n${(data.speed * 3.6).toFixed(2)} km/h`,
       direction: data.trip.direction,
       heading: data.heading,
       speed: data.speed,

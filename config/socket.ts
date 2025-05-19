@@ -1,8 +1,8 @@
 import { showToast } from "@/utils/toastUtil";
 import { io } from "socket.io-client";
 
-const SERVER_URL = "http://192.168.1.10:4000";
-// const SERVER_URL = `https://tms-dcro.onrender.com`;
+// const SERVER_URL = "http://192.168.1.9:4000";
+const SERVER_URL = "https://choloserver-production.up.railway.app";
 
 const socket = io(SERVER_URL, {
   autoConnect: true, // Automatically connect when the socket is created
@@ -14,7 +14,7 @@ const socket = io(SERVER_URL, {
 
 // Listen for successful connection
 socket.on("connect", () => {
-  console.log("✅ Connected to socket server");
+  // console.log("✅ Connected to socket server");
 });
 
 // Handle disconnection
@@ -30,7 +30,7 @@ socket.on("disconnect", () => {
 
 // Handle connection error
 socket.on("connect_error", (error: any) => {
-  console.error("❌ Socket connection error:", error);
+  // console.error("❌ Socket connection error:", error);
 
   showToast({
     type: "error",

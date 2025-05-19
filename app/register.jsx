@@ -30,7 +30,7 @@ const Register = () => {
         const res = await RouteService.getRoutes();
         setAvailRoutes(res.data.data || []);
       } catch (err) {
-        console.error("API Error:", err);
+        // console.error("🛣 API Error:", err);
 
         showToast({
           type: "error",

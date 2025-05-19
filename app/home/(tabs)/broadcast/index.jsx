@@ -34,7 +34,7 @@ const Index = () => {
         const response = await apiClient.get("/buses");
         setAvailableBuses(response.data.data);
       } catch (error) {
-        console.error("Error loading buses:", error);
+        // console.error("Error loading buses:", error);
       } finally {
         setIsLoading(false);
       }
@@ -79,7 +79,7 @@ const Index = () => {
               navigation.navigate("liveLocationSharing");
             }
           } catch (error) {
-            console.error("Error creating trip:", error);
+            // console.error("Error creating trip:", error);
             Alert.alert("Error", "Failed to start sharing. Please try again.");
           }
         },

@@ -3,7 +3,7 @@ import React from "react";
 
 const ScheduleCard = (props) => {
   const { _id, status, formattedTime, userType, note } = props.schedule;
-  console.log("🚀 ~ file: ScheduleCard.jsx:5 ~ ScheduleCard ~ props:", JSON.stringify(props.schedule, 0, 2));
+  // console.log("🚀 ~ file: ScheduleCard.jsx:5 ~ ScheduleCard ~ props:", JSON.stringify(props.schedule, 0, 2));
   return (
     <View
       key={_id}

@@ -36,7 +36,7 @@ const MapComponent = ({
       </MapLibreGL.RasterSource>
 
       {/* ----- Route highlighter ------ */}
-      <MapLibreGL.ShapeSource id="routeSource" shape={selectRoutePolyline(userData?.route || "")}>
+      <MapLibreGL.ShapeSource id="routeSource" shape={selectRoutePolyline(userData?.route?.endLocation || "")}>
         <MapLibreGL.LineLayer
           id="routeLayer"
           style={{ lineColor: "#2e2e2e", lineWidth: 2, lineCap: "round", lineJoin: "round" }}

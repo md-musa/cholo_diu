@@ -22,6 +22,7 @@ import UniIcon from "@/assets/images/uni-2.png";
 import pinIcon from "@/assets/images/red-pin-marker.png";
 import StatusOverlayComponent from "@/components/UI/StatusOverlayComponent";
 import { useFocusEffect, useRouter } from "expo-router";
+import { useBusLocation } from "@/contexts/BusLocationContext";
 
 function cpfl(string) {
   return string.charAt(0).toUpperCase() + string.slice(1);
@@ -32,12 +33,11 @@ function LiveLocationSharing() {
   const { location } = useLocation(true);
   const { userData } = useAuth();
   const { broadcastData } = useBroadcast();
-  const [routeName] = useState("Campus to Uttara");
+  const { currentlyConnectedUserCount, activeBuses } = useBusLocation();
   const [isSharing, setIsSharing] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
 
-  const [currentlyConnectedUserCount, setCurrentlyConnectedUserCount] = useState(0);
-  const [zoom, setZoom] = useState(12);
+  const [zoom, setZoom] = useState(15);
   const cameraRef = useRef(null);
 
   // Check if data is loaded
@@ -47,19 +47,19 @@ function LiveLocationSharing() {
     }
   }, [userData, location, broadcastData]);
 
-  console.log("👤", JSON.stringify(broadcastData, null, 2));
-  console.log("📍", location);
+  // console.log("👤", JSON.stringify(broadcastData, null, 2));
+  // console.log("📍", location);
 
   // Join the room when userData is available
   useEffect(() => {
     if (userData?.route?._id) {
       const roomId = userData.route._id;
       socket.emit("join-room", roomId);
-      console.log(`Joined room: ${roomId}`);
+      // console.log(`Joined room: ${roomId}`);
 
       return () => {
         socket.emit("leave-room", roomId); // Leave the room
-        console.log(`Left room: ${roomId}`);
+        // console.log(`Left room: ${roomId}`);
       };
     }
   }, [userData?.route?._id]);
@@ -72,10 +72,10 @@ function LiveLocationSharing() {
         ...location,
       });
 
-      console.log("📡 Broadcasted location data:", {
-        ...location,
-        tripId: broadcastData.tripId,
-      });
+      // console.log("📡 Broadcasted location data:", {
+      //   ...location,
+      //   tripId: broadcastData.tripId,
+      // });
     }
   }, [location, isSharing, userData?.route?._id, broadcastData]);
 
@@ -207,7 +207,7 @@ function LiveLocationSharing() {
         )}
 
         {/* ------ University and Trasnport Location Symbol */}
-        <MapLibreGL.MarkerView coordinate={[90.320463, 23.87739 + 0.002]}>
+        {/* <MapLibreGL.MarkerView coordinate={[90.320463, 23.87739 + 0.002]}>
           <MapLibreGL.Callout>
             <View style={styles.calloutContainer}>
               <Text style={styles.calloutDescription} className="capitalize">
@@ -215,7 +215,7 @@ function LiveLocationSharing() {
               </Text>
             </View>
           </MapLibreGL.Callout>
-        </MapLibreGL.MarkerView>
+        </MapLibreGL.MarkerView> */}
         <MapLibreGL.ShapeSource
           id="userLocation-2"
           shape={{
@@ -263,7 +263,7 @@ function LiveLocationSharing() {
         </MapLibreGL.ShapeSource>
       </MapLibreGL.MapView>
 
-      <StatusOverlayComponent currentlyConnectedUserCount={currentlyConnectedUserCount} activeBuses={0} />
+      <StatusOverlayComponent currentlyConnectedUserCount={currentlyConnectedUserCount} activeBuses={activeBuses} />
 
       <TouchableOpacity
         className="absolute bottom-60 right-5 bg-white border border-gray-300 rounded-full shadow flex-row p-3 items-center justify-center"
@@ -295,8 +295,8 @@ function LiveLocationSharing() {
           {/* Info Text */}
           <View className="flex-[0.65]">
             <Text className="text-sm text-gray-700">
-              Sharing <Text className="font-bold capitalize">{broadcastData.bus.name}</Text> location for route{" "}
-              <Text className="font-bold">{routeName}</Text>.
+              Sharing <Text className="font-bold capitalize">{broadcastData.bus.name}</Text>'s location for the{" "}
+              <Text className="font-bold">{userData?.route?.endLocation}</Text> route
             </Text>
           </View>
 
