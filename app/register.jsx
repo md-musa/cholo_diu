@@ -7,10 +7,9 @@ import { Picker } from "@react-native-picker/picker";
 import { useAuth } from "@/contexts/AuthContext";
 import { Link } from "expo-router";
 import Toast from "react-native-toast-message";
-import apiClient from "@/config/axiosConfig";
-import RouteService from "@/services/routeService";
 import { showToast } from "@/utils/toastUtil";
 import { AuthUtil } from "@/utils/authUtil";
+import { RouteService } from "@/services/routeService";
 
 const Register = () => {
   const { registration, authLoading } = useAuth();
@@ -28,9 +27,10 @@ const Register = () => {
     const fetchRoutes = async () => {
       try {
         const res = await RouteService.getRoutes();
+        // console.log("[register]", res.data);
         setAvailRoutes(res.data.data || []);
       } catch (err) {
-        // console.error("🛣 API Error:", err);
+        console.error("🛣 API Error:", err);
 
         showToast({
           type: "error",
