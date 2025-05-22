@@ -11,6 +11,7 @@ const MapComponent = ({
   mapRef,
   zoom,
   userData,
+  routeData,
   activeBuses,
   cameraRef,
   currentCenter,
@@ -36,7 +37,7 @@ const MapComponent = ({
       </MapLibreGL.RasterSource>
 
       {/* ----- Route highlighter ------ */}
-      <MapLibreGL.ShapeSource id="routeSource" shape={selectRoutePolyline(userData?.route?.endLocation || "")}>
+      <MapLibreGL.ShapeSource id="routeSource" shape={selectRoutePolyline(routeData?.endLocation || "")}>
         <MapLibreGL.LineLayer
           id="routeLayer"
           style={{ lineColor: "#2e2e2e", lineWidth: 2, lineCap: "round", lineJoin: "round" }}

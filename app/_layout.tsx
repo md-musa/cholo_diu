@@ -6,6 +6,9 @@ import { BroadcastProvider } from "@/contexts/BroadcastContext";
 import Toast from "react-native-toast-message";
 import { View } from "react-native";
 import { BusLocationProvider } from "@/contexts/BusLocationContext";
+import { createNavigationContainerRef } from '@react-navigation/native';
+
+
 
 export default function RootLayout() {
   return (

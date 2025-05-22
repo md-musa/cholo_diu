@@ -5,7 +5,7 @@ import { useRouter } from "expo-router";
 import MapComponent from "@/components/MapComponent";
 import StatusOverlayComponent from "@/components/UI/StatusOverlayComponent";
 
-const MapSection = ({ location, userData, activeBuses, currentlyConnectedUserCount }) => {
+const MapSection = ({ location, userData, routeData, activeBuses, currentlyConnectedUserCount }) => {
   const router = useRouter();
   const cameraRef = useRef(null);
   const mapRef = useRef(null);
@@ -61,7 +61,7 @@ const MapSection = ({ location, userData, activeBuses, currentlyConnectedUserCou
 
       <TouchableOpacity className="absolute top-3 left-3 bg-white border border-gray-300 rounded-md shadow flex-row p-1 items-center justify-center">
         <MaterialIcons name="route" size={18} color="#4b4b4b" />{" "}
-        <Text className="text-sm capitalize color-[#2c2c2c]"> {userData?.route?.endLocation} Route</Text>
+        <Text className="text-sm capitalize color-[#2c2c2c]"> {routeData.endLocation} Route</Text>
       </TouchableOpacity>
 
       <TouchableOpacity

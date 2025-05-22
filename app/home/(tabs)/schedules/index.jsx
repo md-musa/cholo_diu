@@ -9,7 +9,7 @@ import Navbar from "@/components/Navbar";
 import { Picker } from "@react-native-picker/picker";
 
 const BusSchedule = () => {
-  const { userData, updateRoute } = useAuth();
+  const { userData, updateRoute, routeData } = useAuth();
   const [selectedFilter, setSelectedFilter] = useState(userData?.role == "student" ? "Student" : "Employee");
   const [schedules, setSchedules] = useState(null);
   const [selectedType, setSelectedType] = useState("Regular");
@@ -20,14 +20,14 @@ const BusSchedule = () => {
   const scheduleTypes = ["Regular", "Mid-Term", "Final", "Ramadan"];
   const scheduleDays = ["Weekdays", "Friday"];
 
-  const [currentRoute, setCurrentRoute] = useState(userData?.route);
+  const [currentRoute, setCurrentRoute] = useState(routeData);
   const [availRoutes, setAvailRoutes] = useState([]);
 
   useEffect(() => {
     const fetchRoutes = async () => {
       try {
         const res = await apiClient.get("/routes");
-        setAvailRoutes(res.data.data);
+        setAvailRoutes(res.data);
       } catch (err) {
         // console.error("shce[home] API Error:", err.message);
       }
@@ -40,17 +40,17 @@ const BusSchedule = () => {
     const fetchSchedules = async () => {
       try {
         const { data } = await apiClient.get(`/schedules/get-single-route-schedule`, {
-          params: { routeId: userData?.route?._id, day: selectedDay.toLocaleLowerCase() },
+          params: { routeId: routeData._id, day: selectedDay.toLocaleLowerCase() },
         });
 
-        setSchedules(data.data);
+        setSchedules(data);
       } catch (err) {
         // console.log("Error fetching schedules:", err);
       }
     };
 
     fetchSchedules();
-  }, [userData, selectedDay]);
+  }, [routeData, selectedDay]);
 
   let toCampusStudent, fromCampusStudent, toCampusEmployee, fromCampusEmployee;
   if (schedules) {
@@ -118,7 +118,7 @@ const BusSchedule = () => {
 
           <View className="flex-[0.4] rounded-lg overflow-hidden">
             <Picker
-              selectedValue={userData?.route?._id}
+              selectedValue={routeData._id}
               onValueChange={handleRouteChange}
               style={{
                 flex: 1,
@@ -193,9 +193,9 @@ const BusSchedule = () => {
                 <>
                   <View className="">
                     <View className="flex-row items-center justify-center bg-white px-4 py-1 rounded-2xl my-2  border-gray-300">
-                      <Text className="text-gray-600 font-semibold text-md">{userData?.route?.endLocation}</Text>
+                      <Text className="text-gray-600 font-semibold text-md">{routeData?.endLocation}</Text>
                       <Feather name="arrow-right-circle" size={20} color="#2563EB" className="mx-2" />
-                      <Text className="text-gray-600 font-semibold text-md">{userData?.route?.startLocation}</Text>
+                      <Text className="text-gray-600 font-semibold text-md">{routeData?.startLocation}</Text>
                     </View>
 
                     {toCampusStudent?.length > 0 &&
@@ -208,9 +208,9 @@ const BusSchedule = () => {
                   </View>
                   <View className="">
                     <View className="flex-row items-center justify-center bg-white px-4 py-1 rounded-2xl my-2 mt-5  border-gray-300">
-                      <Text className="text-gray-600 font-semibold text-md">{userData?.route?.startLocation}</Text>
+                      <Text className="text-gray-600 font-semibold text-md">{routeData?.startLocation}</Text>
                       <Feather name="arrow-right-circle" size={20} color="#2563EB" className="mx-2" />
-                      <Text className="text-gray-600 font-semibold text-md">{userData?.route?.endLocation}</Text>
+                      <Text className="text-gray-600 font-semibold text-md">{routeData?.endLocation}</Text>
                     </View>
 
                     {fromCampusStudent?.length > 0 &&
@@ -226,9 +226,9 @@ const BusSchedule = () => {
                 <>
                   <View className="">
                     <View className="flex-row items-center justify-center bg-white px-4 py-1 rounded-2xl my-2  border-gray-300">
-                      <Text className="text-gray-600 font-semibold text-md">{userData?.route?.endLocation}</Text>
+                      <Text className="text-gray-600 font-semibold text-md">{routeData?.endLocation}</Text>
                       <Feather name="arrow-right-circle" size={20} color="#2563EB" className="mx-2" />
-                      <Text className="text-gray-600 font-semibold text-md">{userData?.route?.startLocation}</Text>
+                      <Text className="text-gray-600 font-semibold text-md">{routeData?.startLocation}</Text>
                     </View>
 
                     {toCampusEmployee?.length > 0 &&
@@ -241,9 +241,9 @@ const BusSchedule = () => {
                   </View>
                   <View className="">
                     <View className="flex-row items-center justify-center bg-white px-4 py-1 rounded-2xl my-2 mt-5  border-gray-300">
-                      <Text className="text-gray-600 font-semibold text-md">{userData?.route?.startLocation}</Text>
+                      <Text className="text-gray-600 font-semibold text-md">{routeData?.startLocation}</Text>
                       <Feather name="arrow-right-circle" size={20} color="#2563EB" className="mx-2" />
-                      <Text className="text-gray-600 font-semibold text-md">{userData?.route?.endLocation}</Text>
+                      <Text className="text-gray-600 font-semibold text-md">{routeData?.endLocation}</Text>
                     </View>
 
                     {fromCampusEmployee?.length > 0 &&

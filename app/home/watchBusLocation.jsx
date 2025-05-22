@@ -13,7 +13,7 @@ import { useBusLocation } from "@/contexts/BusLocationContext";
 const WatchBusLocation = () => {
   const router = useRouter();
   const bottomSheetRef = useRef(null);
-  const { userData } = useAuth();
+  const { userData, routeData } = useAuth();
   const { location } = useLocation();
   const [zoom, setZoom] = useState(12);
 
@@ -66,6 +66,7 @@ const WatchBusLocation = () => {
           location={location}
           zoom={zoom}
           userData={userData}
+          routeData={routeData}
           activeBuses={activeBuses}
           setZoom={setZoom}
           cameraRef={cameraRef}

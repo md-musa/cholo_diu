@@ -5,8 +5,8 @@ import { useAuth } from "@/contexts/AuthContext";
 import Constants from "expo-constants";
 
 export default function Settings() {
-  const { userData, logout } = useAuth();
-  const { name, email, role, route } = userData;
+  const { currentUserData, logout } = useAuth();
+  // const { name, email, role, route } = userData;
 
   const handleLogout = () => {
     logout();
@@ -19,14 +19,14 @@ export default function Settings() {
   return (
     <ScrollView className="flex-1 bg-gray-100">
       {/* Profile Header */}
-      <View className="bg-indigo-600 pb-8 pt-12 px-6 rounded-b-3xl shadow-lg">
+      {/* <View className="bg-indigo-600 pb-8 pt-12 px-6 rounded-b-3xl shadow-lg">
         <View className="items-center -mt-16">
           <View className="bg-white p-1 rounded-full shadow-xl">
             {/* <Image
               source={require('../../../../assets/images/profile_placeholder.png')}
               className="w-32 h-32 rounded-full border-4 border-indigo-100"
             /> */}
-          </View>
+          {/* </View>
           <Text className="text-2xl font-bold text-white mt-4">{name}</Text>
           <Text className="text-indigo-100">{email}</Text>
           
@@ -39,7 +39,7 @@ export default function Settings() {
             </View>
           </View>
         </View>
-      </View>
+      </View> */} 
 
       {/* Settings Cards */}
       <View className="px-5 mt-2">

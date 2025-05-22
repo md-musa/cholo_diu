@@ -1,8 +1,8 @@
 import { showToast } from "@/utils/toastUtil";
 import { io } from "socket.io-client";
 
-// const SERVER_URL = "http://192.168.1.9:4000";
-const SERVER_URL = "https://choloserver-production.up.railway.app";
+const SERVER_URL = "http://192.168.1.2:4000";
+// const SERVER_URL = "https://choloserver-production.up.railway.app";
 
 const socket = io(SERVER_URL, {
   autoConnect: true, // Automatically connect when the socket is created

@@ -11,7 +11,7 @@ SplashScreen.preventAutoHideAsync();
 
 const Index = () => {
   const router = useRouter();
-  const { useData, authLoading, authInitialized } = useAuth();
+  const { currentUserData, authLoading, authInitialized } = useAuth();
   const [appReady, setAppReady] = useState(false);
 
   useEffect(() => {
@@ -29,24 +29,13 @@ const Index = () => {
     }
   }, [appReady]);
 
-  if (!appReady) return null; 
+  if (!appReady) return null;
 
   return (
-    <SafeAreaView
-      className="flex justify-end h-full bg-white"
-      onLayout={onLayoutRootView}
-    >
-      <Image
-        source={coverImage}
-        className="w-4/5 h-[30%] mx-auto rounded-lg mt-5"
-        resizeMode="contain"
-      />
-      <Text className="text-3xl font-bold text-center mt-10 mb-2 px-5 text-slate-800">
-        DIU Bus Tracker
-      </Text>
-      <Text className="text-lg text-gray-500 text-center px-8 mb-4">
-        Track your university buses in real-time
-      </Text>
+    <SafeAreaView className="flex justify-end h-full bg-white" onLayout={onLayoutRootView}>
+      <Image source={coverImage} className="w-4/5 h-[30%] mx-auto rounded-lg mt-5" resizeMode="contain" />
+      <Text className="text-3xl font-bold text-center mt-10 mb-2 px-5 text-slate-800">DIU Bus Tracker</Text>
+      <Text className="text-lg text-gray-500 text-center px-8 mb-4">Track your university buses in real-time</Text>
       <Text className="text-footnote text-gray-400 text-center px-8 mb-8">
         Never miss your bus again! Get live updates on bus locations and schedules.
       </Text>

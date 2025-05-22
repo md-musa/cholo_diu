@@ -1,6 +1,7 @@
 import { STUDENT_DENSITY, USER_ROLES } from "@/constants";
 
 export interface IRoute {
+  _id: string;
   name: string;
   startLocation: string;
   endLocation: string;
@@ -20,11 +21,9 @@ export interface IUser {
   name: string;
   email: string;
   role: USER_ROLES.ADMIN | USER_ROLES.EMPLOYEE | USER_ROLES.STUDENT | USER_ROLES.SUPER_ADMIN;
-  password: string;
   phoneNumber: string;
   houseLocation: {
     latitude: number;
     longitude: number;
   };
-  routeId: IRoute;
 }

@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "Cholo",
-    "slug": "client-2",
+    "slug": "cholo",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/play_store_512.png",
@@ -16,7 +16,11 @@
         "foregroundImage": "./assets/images/play_store_512.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.md_musa.client2"
+      "package": "com.md_musa.client2",
+      "permissions": [
+        "android.permission.ACCESS_COARSE_LOCATION",
+        "android.permission.ACCESS_FINE_LOCATION"
+      ]
     },
     "web": {
       "bundler": "metro",
@@ -34,7 +38,6 @@
           "backgroundColor": "#ffffff"
         }
       ],
-      "expo-secure-store",
       "@maplibre/maplibre-react-native",
       [
         "expo-location",
@@ -53,12 +56,12 @@
         "origin": false
       },
       "eas": {
-        "projectId": "92e6dd70-394b-4543-95d0-4cc157e36c21"
+        "projectId": "b808a2a4-e198-4985-aa38-2b226967eede"
       },
       "androidMetadata": {
         "com.mapbox.token": "your_dummy_mapbox_token"
       }
     },
-    "owner": "md_musa"
+    "owner": "mdmusa12"
   }
 }

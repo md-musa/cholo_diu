@@ -1,229 +1,250 @@
-import React, { createContext, useState, useContext, useEffect, ReactNode } from "react";
-import SecureStorage from "@/utils/asyncStorage";
-import { loginUser, registerUser } from "@/services/authService";
+import React, { createContext, useState, useContext, useEffect, ReactNode, useCallback } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
+import { jwtDecode } from "jwt-decode";
+import { loginUser, registerUser } from "@/services/authService";
 import { showToast } from "@/utils/toastUtil";
-import { RouteService } from "@/services/routeService";
-import { STUDENT_DENSITY, USER_ROLES } from "@/constants";
+import { USER_ROLES } from "@/constants";
 import { IRoute, IUser } from "@/interfaces/route";
 
-// ==================== INTERFACES ====================
-
-export interface IAuthData {
-  userId: string;
-  accessToken: string;
-  name: string;
-  email: string;
+interface DecodedToken {
+  _id: string;
   role: USER_ROLES;
-  route?: IRoute;
+  email: string;
+}
+
+interface AuthUserData {
+  _id: string;
+  role: USER_ROLES;
+  email: string;
 }
 
 interface IAuthContext {
-  userData: IAuthData | null;
+  userData: AuthUserData | null;
+  routeData: IRoute | null;
   authLoading: boolean;
   isAuthenticated: boolean;
   authInitialized: boolean;
   login: (data: { email: string; password: string }) => Promise<void>;
-  registration: (data: IUser) => Promise<void>;
+  register: (data: IUser) => Promise<void>;
   logout: () => Promise<void>;
   updateRoute: (routeData: IRoute) => Promise<void>;
 }
 
-// ==================== CONTEXT ====================
 const AuthContext = createContext<IAuthContext | undefined>(undefined);
 
 interface AuthProviderProps {
   children: ReactNode;
 }
 
-// ==================== HELPER FUNCTIONS ====================
-const storeAuthData = async (data: Partial<IAuthData>, routeData?: IRoute) => {
-  await Promise.all([
-    SecureStorage.setItem("auth-1", JSON.stringify(data)),
-    routeData && SecureStorage.setItem("route", JSON.stringify(routeData)),
-  ]);
-};
-
-const clearAuthData = async () => {
-  await Promise.all([SecureStorage.deleteItem("auth-1"), SecureStorage.deleteItem("route")]);
-};
-
-// ==================== PROVIDER ====================
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const router = useRouter();
-  const [userData, setUserData] = useState<IAuthData | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [userData, setUserData] = useState<AuthUserData | null>(null);
+  const [routeData, setRouteData] = useState<IRoute | null>(null);
+  const [authLoading, setAuthLoading] = useState(true);
   const [authInitialized, setAuthInitialized] = useState(false);
 
-  // Initialize auth state
-  useEffect(() => {
-    const initializeAuth = async () => {
-      try {
-        setLoading(true);
-        const [auth, route] = await Promise.all([SecureStorage.getItem("auth-1"), SecureStorage.getItem("route")]);
+  console.log("🟢 User", JSON.stringify(userData, null, 2));
+  console.log("🟢 Route", JSON.stringify(routeData, null, 2));
 
-        if (auth) {
-          const parsedAuth = JSON.parse(auth) as IAuthData;
-          const parsedRoute = route ? (JSON.parse(route) as IRoute) : undefined;
-
-          setUserData({
-            ...parsedAuth,
-            route: parsedRoute,
-          });
-
-          if (parsedAuth.accessToken) {
-            router.replace("/home");
-          }
-        }
-      } catch (err) {
-        // console.error("Auth initialization error:", err);
-        showToast({
-          type: "error",
-          text1: "Session Error",
-          text2: "Failed to load your session",
-        });
-      } finally {
-        setLoading(false);
-        setAuthInitialized(true);
+  // Save session data to storage and state
+  const saveSession = useCallback(async (token: string, route: IRoute) => {
+    try {
+      await AsyncStorage.setItem("auth-token", token);
+      if (route) {
+        await AsyncStorage.setItem("route-data", JSON.stringify(route));
       }
-    };
 
-    const fetchRoutes = async () => {
-      try {
-        const res = await RouteService.getRoutes();
-      } catch (err) {
-        // console.error("Route fetch error:", err);
+      // Decode token to get user data
+      const decoded = jwtDecode<DecodedToken>(token);
+      console.log("✅Decoded token:", JSON.stringify(decoded, null, 2));
+
+      const userData: AuthUserData = {
+        _id: decoded._id,
+        role: decoded.role,
+        email: decoded.email,
+      };
+
+      // Update state
+      setUserData(userData);
+      if (route) {
+        setRouteData(route);
       }
-    };
-
-    Promise.all([initializeAuth(), fetchRoutes()]).finally(() => {
-      SplashScreen.hideAsync();
-    });
+    } catch (error) {
+      console.error("Failed to save session:", error);
+      throw error;
+    }
   }, []);
 
-  const updateRoute = async (routeData: IRoute) => {
+  // Clear all auth data
+  const clearSession = useCallback(async () => {
     try {
-      setLoading(true);
-      await SecureStorage.setItem("route", JSON.stringify(routeData));
-      setUserData((prev) => (prev ? { ...prev, route: routeData } : null));
-    } catch (err) {
-      // console.error("Route update error:", err);
-      showToast({
-        type: "error",
-        text1: "Update Failed",
-        text2: "Failed to update route",
-      });
-    } finally {
-      setLoading(false);
+      await AsyncStorage.removeItem("auth-token");
+      await AsyncStorage.removeItem("route-data");
+      setUserData(null);
+      setRouteData(null);
+    } catch (error) {
+      console.error("Failed to clear session:", error);
+      throw error;
     }
-  };
+  }, []);
 
-  const registration = async (data: Omit<IUser, "_id">) => {
+  // Initialize auth state from storage
+  const initializeAuth = useCallback(async () => {
     try {
-      setLoading(true);
-      const result = await registerUser(data);
-      const { accessToken, user } = result.data.data;
-      const { _id, name, email, role, routeId } = user;
+      setAuthLoading(true);
+      const token = await AsyncStorage.getItem("auth-token");
+      const routeJson = await AsyncStorage.getItem("route-data");
 
-      await storeAuthData({ userId: _id, accessToken, name, email, role }, routeId);
+      if (!token) {
+        router.replace("/");
+        return;
+      }
 
-      setUserData({ userId: _id, accessToken, name, email, role, route: routeId });
+      // Decode token to get user data
+      const decoded = jwtDecode<DecodedToken>(token);
+      const userData: AuthUserData = {
+        _id: decoded._id,
+        role: decoded.role,
+        email: decoded.email,
+      };
 
-      showToast({
-        type: "success",
-        text1: "Registration Successful",
-        text2: `Welcome ${name}!`,
-      });
+      // Update state
+      setUserData(userData);
+
+      if (routeJson) {
+        const route = JSON.parse(routeJson) as IRoute;
+        setRouteData(route);
+      }
 
       router.replace("/home");
-    } catch (err) {
-      // console.error("Registration error:", err);
-      showToast({
-        type: "error",
-        text1: "Registration Failed",
-        text2: err.response?.data?.errorMessage[0].message || "Something went wrong",
-      });
+    } catch (error) {
+      console.error("Auth initialization error:", error);
+      await clearSession();
+      router.replace("/login");
     } finally {
-      setLoading(false);
+      setAuthLoading(false);
+      setAuthInitialized(true);
+      await SplashScreen.hideAsync();
     }
-  };
+  }, [clearSession, router]);
 
-  const login = async (data: { email: string; password: string }) => {
+  useEffect(() => {
+    initializeAuth();
+  }, [initializeAuth]);
+
+  const login = async (credentials: { email: string; password: string }) => {
     try {
-      setLoading(true);
-      const result = await loginUser(data);
-      console.log("🟢 Result: ----\n", JSON.stringify(result, null, 2));
-      const { accessToken, user } = result.data.data;
-      const { _id, name, email, role, routeId } = user;
+      setAuthLoading(true);
+      const res = await loginUser(credentials);
+      console.log("Login credentials:", JSON.stringify(res.data));
+      const { accessToken, user } = res.data;
 
-      await storeAuthData({ userId: _id, accessToken, name, email, role }, routeId);
-
-      setUserData({ userId: _id, accessToken, name, email, role, route: routeId });
+      await saveSession(accessToken, user.routeId);
 
       showToast({
         type: "success",
         text1: "Login Successful",
-        text2: `Welcome back, ${name}!`,
+        text2: `Welcome back, ${res.data.user.name}!`,
       });
 
       router.replace("/home");
-    } catch (err) {
-      // // console.error("Login error:🔴---------\n", JSON.stringify(err.response?.data?.errorMessage[0].message, null, 2));
+    } catch (error: any) {
+      console.error("Login error:", error);
       showToast({
         type: "error",
         text1: "Login Failed",
-        text2: err.response?.data?.errorMessage[0].message || "Something went wrong",
+        text2: error?.response?.data?.errorMessage[0]?.message || "Invalid credentials",
       });
+      throw error;
     } finally {
-      setLoading(false);
+      setAuthLoading(false);
+    }
+  };
+
+  const register = async (userData: IUser) => {
+    try {
+      setAuthLoading(true);
+      const res = await registerUser(userData);
+      const { accessToken, user } = res.data;
+      await saveSession(accessToken, user.routeId);
+
+      showToast({
+        type: "success",
+        text1: "Registration Successful",
+        text2: `Welcome ${res.data.user.name}!`,
+      });
+
+      router.replace("/home");
+    } catch (error: any) {
+      showToast({
+        type: "error",
+        text1: "Registration Failed",
+        text2: error?.response?.data?.errorMessage[0]?.message || "Registration failed",
+      });
+      throw error;
+    } finally {
+      setAuthLoading(false);
     }
   };
 
   const logout = async () => {
     try {
-      setLoading(true);
-      await clearAuthData();
-      setUserData(null);
-
+      setAuthLoading(true);
+      await clearSession();
       showToast({
         type: "success",
         text1: "Logged Out",
         text2: "You have been successfully logged out",
       });
-
-      router.replace("/");
-    } catch (err) {
-      // console.error("Logout error:", err);
+      router.replace("/login");
+    } catch (error) {
+      console.error("Logout error:", error);
       showToast({
         type: "error",
         text1: "Logout Error",
         text2: "Failed to logout properly",
       });
+      throw error;
     } finally {
-      setLoading(false);
+      setAuthLoading(false);
     }
   };
 
-  return (
-    <AuthContext.Provider
-      value={{
-        userData,
-        login,
-        registration,
-        logout,
-        updateRoute,
-        authLoading: loading,
-        isAuthenticated: !!userData?.accessToken,
-        authInitialized,
-      }}
-    >
-      {children}
-    </AuthContext.Provider>
-  );
+  const updateRoute = async (route: IRoute) => {
+    try {
+      setAuthLoading(true);
+      await AsyncStorage.setItem("route-data", JSON.stringify(route));
+      setRouteData(route);
+    } catch (error) {
+      console.error("Route update error:", error);
+      showToast({
+        type: "error",
+        text1: "Update Failed",
+        text2: "Failed to update route",
+      });
+      throw error;
+    } finally {
+      setAuthLoading(false);
+    }
+  };
+
+  const contextValue: IAuthContext = {
+    userData,
+    routeData,
+    authLoading,
+    authInitialized,
+    isAuthenticated: !!userData,
+    login,
+    register,
+    logout,
+    updateRoute,
+  };
+
+  return <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>;
 };
 
-// ==================== HOOK ====================
 export const useAuth = (): IAuthContext => {
   const context = useContext(AuthContext);
   if (!context) {
@@ -231,257 +252,3 @@ export const useAuth = (): IAuthContext => {
   }
   return context;
 };
-
-// import React, { createContext, useState, useContext, useEffect } from "react";
-// import SecureStorage from "@/utils/asyncStorage";
-// import { loginUser, registerUser } from "@/services/authService";
-// import { useRouter } from "expo-router";
-// import * as SplashScreen from "expo-splash-screen";
-// import { showToast } from "@/utils/toastUtil";
-// import { RouteService } from "@/services/routeService";
-// import { STUDENT_DENSITY, USER_ROLES } from "@/constants";
-
-// export interface IRoute {
-//   name: string;
-//   startLocation: string;
-//   endLocation: string;
-//   totalDistance?: number; // in kilometers
-//   estimatedTime?: number; // in minutes
-//   wayline?: JSON; // matches Mongoose Mixed
-//   assignedBuses?: string[]; // array of ObjectIds as strings
-//   waypoints?: {
-//     location?: string;
-//     latitude?: number;
-//     longitude?: number;
-//     studentDensity?: STUDENT_DENSITY.LOW | STUDENT_DENSITY.MEDIUM | STUDENT_DENSITY.HIGH;
-//   }[];
-// }
-// export interface IUser {
-//   name: string;
-//   email: string;
-//   role: USER_ROLES.ADMIN | USER_ROLES.EMPLOYEE | USER_ROLES.STUDENT | USER_ROLES.SUPER_ADMIN;
-//   password: string;
-//   phoneNumber: string;
-//   houseLocation: {
-//     latitude: number;
-//     longitude: number;
-//   };
-//   routeId: IRoute;
-// }
-
-// const AuthContext = createContext();
-
-// export const AuthProvider = ({ children }) => {
-//   const router = useRouter();
-//   const [userData, setUserData] = useState(null);
-//   const [loading, setLoading] = useState(true);
-//   const [authInitialized, setAuthInitialized] = useState(false);
-//   const [availRoutes, setAvailRoutes] = useState([]);
-
-//   // Load user data on initial render
-//   useEffect(() => {
-//     // --- Restart server ------- remove this function later
-//     const fetchRoutes = async () => {
-//       try {
-//         const res = await RouteService.getRoutes();
-//         setAvailRoutes(res.data.data);
-//       } catch (err) {
-//         // console.error("API Error:", err.message);
-//       } finally {
-//         await SplashScreen.hideAsync();
-//       }
-//     };
-
-//     const loadUserData = async () => {
-//       try {
-//         setLoading(true);
-//         const [auth, route] = await Promise.all([SecureStorage.getItem("auth-1"), SecureStorage.getItem("route")]);
-
-//         if (auth) {
-//           const parsedAuth = JSON.parse(auth);
-//           const parsedRoute = route ? JSON.parse(route) : null;
-
-//           setUserData({
-//             ...parsedAuth,
-//             route: parsedRoute,
-//           });
-
-//           // Only redirect if we have essential auth data
-//           if (parsedAuth.accessToken) {
-//             router.replace("/home");
-//           }
-//         }
-//       } catch (err) {
-//         // console.error("Error retrieving auth data:", err);
-//         showToast({
-//           type: "error",
-//           text1: "Session Error",
-//           text2: "Failed to load your session",
-//         });
-//       } finally {
-//         setLoading(false);
-//         setAuthInitialized(true);
-//         // Hide splash screen when auth state is initialized
-//         // await SplashScreen.hideAsync();
-//       }
-//     };
-
-//     fetchRoutes();
-//     loadUserData();
-//   }, []);
-
-//   const updateRoute = async (routeData) => {
-//     try {
-//       setLoading(true);
-//       await SecureStorage.setItem("route", JSON.stringify(routeData));
-//       setUserData((prev) => ({ ...prev, route: routeData }));
-//     } catch (err) {
-//       // console.error("Update Route Error:", err);
-//       showToast({
-//         type: "error",
-//         text1: "Update Failed",
-//         text2: "Failed to update your route",
-//       });
-//     } finally {
-//       setLoading(false);
-//     }
-//   };
-
-//   const registration = async (data) => {
-//     try {
-//       setLoading(true);
-//       const result = await registerUser(data);
-
-//       const { accessToken, user } = result.data.data;
-//       const { _id, name, email, role, routeId } = user;
-
-//       await Promise.all([
-//         SecureStorage.setItem(
-//           "auth-1",
-//           JSON.stringify({
-//             userId: _id,
-//             accessToken,
-//             name,
-//             email,
-//             role,
-//           })
-//         ),
-//         SecureStorage.setItem("route", JSON.stringify({ route: routeId })),
-//       ]);
-
-//       setUserData({ userId: _id, accessToken, name, email, role, route: routeId });
-
-//       showToast({
-//         type: "success",
-//         text1: "Registration Successful",
-//         text2: `Welcome ${name}!`,
-//       });
-
-//       router.replace("/home");
-//     } catch (err) {
-//       // console.error("Registration Error:", err);
-//       const errorMessage = err.message || "Registration failed. Please try again.";
-//       showToast({
-//         type: "error",
-//         text1: "Registration Failed",
-//         text2: errorMessage,
-//       });
-//     } finally {
-//       setLoading(false);
-//     }
-//   };
-
-//   const login = async (data) => {
-//     try {
-//       setLoading(true);
-//       const result = await loginUser(data);
-
-//       const { accessToken, user } = result.data.data;
-//       const { _id, name, email, role, routeId } = user;
-
-//       await Promise.all([
-//         SecureStorage.setItem(
-//           "auth-1",
-//           JSON.stringify({
-//             userId: _id,
-//             accessToken,
-//             name,
-//             email,
-//             role,
-//           })
-//         ),
-//         SecureStorage.setItem("route", JSON.stringify({ route: routeId })),
-//       ]);
-
-//       setUserData({ userId: _id, accessToken, name, email, role, route: routeId });
-
-//       showToast({
-//         type: "success",
-//         text1: "Login Successful",
-//         text2: `Welcome back, ${name}!`,
-//       });
-
-//       router.replace("/home");
-//     } catch (err) {
-//       const errorMessage = err.message || "Invalid credentials. Please try again.";
-//       showToast({
-//         type: "error",
-//         text1: "Login Failed",
-//         text2: errorMessage,
-//       });
-//     } finally {
-//       setLoading(false);
-//     }
-//   };
-
-//   const logout = async () => {
-//     try {
-//       setLoading(true);
-//       await Promise.all([SecureStorage.deleteItem("auth-1"), SecureStorage.deleteItem("route")]);
-
-//       setUserData(null); // ✔ clears auth context
-
-//       showToast({
-//         type: "success",
-//         text1: "Logged Out",
-//         text2: "You have been successfully logged out",
-//       });
-
-//       router.replace("/"); // ✔ navigate back to root
-//     } catch (err) {
-//       // console.error("Logout Error:", err);
-//       showToast({
-//         type: "error",
-//         text1: "Logout Error",
-//         text2: "Failed to logout properly",
-//       });
-//     } finally {
-//       setLoading(false);
-//     }
-//   };
-
-//   return (
-//     <AuthContext.Provider
-//       value={{
-//         userData,
-//         login,
-//         registration,
-//         logout,
-//         updateRoute,
-//         authLoading: loading,
-//         isAuthenticated: !!userData?.accessToken,
-//         authInitialized,
-//       }}
-//     >
-//       {children}
-//     </AuthContext.Provider>
-//   );
-// };
-
-// export const useAuth = () => {
-//   const context = useContext(AuthContext);
-//   if (!context) {
-//     throw new Error("useAuth must be used within an AuthProvider");
-//   }
-//   return context;
-// };

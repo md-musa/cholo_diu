@@ -18,7 +18,7 @@ import { useAuth } from "@/contexts/AuthContext";
 
 const Index = () => {
   const { setBroadcastData } = useBroadcast();
-  const { userData } = useAuth();
+  const { userData, routeData } = useAuth();
   const navigation = useNavigation();
   const [busType, setBusType] = useState("");
   const [selectedBus, setSelectedBus] = useState(null);
@@ -31,8 +31,8 @@ const Index = () => {
   useEffect(() => {
     const loadBuses = async () => {
       try {
-        const response = await apiClient.get("/buses");
-        setAvailableBuses(response.data.data);
+        const res = await apiClient.get("/buses");
+        setAvailableBuses(res.data);
       } catch (error) {
         // console.error("Error loading buses:", error);
       } finally {
@@ -62,8 +62,8 @@ const Index = () => {
         onPress: async () => {
           try {
             const res = await apiClient.post("/trips", {
-              routeId: userData.route._id,
-              hostId: userData.userId,
+              routeId: routeData._id,
+              hostId: userData._id,
               busName: selectedBus.name,
               busType: busType,
               note: note,
@@ -73,7 +73,7 @@ const Index = () => {
               setBroadcastData({
                 bus: selectedBus,
                 busType,
-                tripId: res.data.data._id,
+                tripId: res.data._id,
                 note,
               });
               navigation.navigate("liveLocationSharing");

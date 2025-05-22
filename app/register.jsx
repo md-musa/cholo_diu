@@ -12,7 +12,7 @@ import { AuthUtil } from "@/utils/authUtil";
 import { RouteService } from "@/services/routeService";
 
 const Register = () => {
-  const { registration, authLoading } = useAuth();
+  const { register, authLoading } = useAuth();
   const [formData, setFormData] = useState({
     name: "",
     routeId: "",
@@ -20,6 +20,7 @@ const Register = () => {
     email: "",
     password: "",
   });
+  console.log("[register] formData", formData);
   const [availRoutes, setAvailRoutes] = useState([]);
   const [showPassword, setShowPassword] = useState(false);
 
@@ -27,8 +28,7 @@ const Register = () => {
     const fetchRoutes = async () => {
       try {
         const res = await RouteService.getRoutes();
-        // console.log("[register]", res.data);
-        setAvailRoutes(res.data.data || []);
+        setAvailRoutes(res.data || []);
       } catch (err) {
         console.error("🛣 API Error:", err);
 
@@ -44,9 +44,11 @@ const Register = () => {
   }, []);
 
   const handleRegister = async () => {
+    console.log("---------");
+    console.log("[register] formData", formData);
     if (!AuthUtil.validateRegistrationForm(formData)) return;
 
-    await registration(formData);
+    await register(formData);
   };
 
   const handleInputChange = (name, value) => {

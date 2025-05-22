@@ -1,7 +1,4 @@
-import React, { createContext, useState, useContext, useEffect } from "react";
-import SecureStorage from "@/utils/asyncStorage";
-import { loginUser, registerUser } from "@/services/authService";
-import { useRouter } from "expo-router";
+import { createContext, useState, useContext } from "react";
 
 const ScheduleContext = createContext();
 

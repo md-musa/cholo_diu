@@ -6,10 +6,11 @@ import { useAuth } from "@/contexts/AuthContext";
 import apiClient from "@/config/axiosConfig";
 import { findOngoingOrNextSchedule } from "@/utils/scheduleHelper";
 import { Link } from "expo-router";
+import { RouteService } from "@/services/routeService";
 
 const RouteSelector = () => {
-  const { userData, updateRoute } = useAuth();
-  const [currentRoute, setCurrentRoute] = useState(userData?.route);
+  const { userData, routeData, updateRoute } = useAuth();
+  const [currentRoute, setCurrentRoute] = useState(routeData);
   const [availRoutes, setAvailRoutes] = useState([]);
   const [schedules, setSchedules] = useState(null);
   const [selectedDay, setSelectedDay] = useState(
@@ -19,8 +20,8 @@ const RouteSelector = () => {
   useEffect(() => {
     const fetchRoutes = async () => {
       try {
-        const res = await apiClient.get("/routes");
-        setAvailRoutes(res.data.data);
+        const res = await RouteService.getRoutes();
+        setAvailRoutes(res.data);
       } catch (err) {
         // console.error("API Error:", err.message);
       }
@@ -33,17 +34,17 @@ const RouteSelector = () => {
     const fetchSchedules = async () => {
       try {
         const { data } = await apiClient.get(`/schedules/get-single-route-schedule`, {
-          params: { routeId: userData?.route?._id, day: selectedDay.toLocaleLowerCase() },
+          params: { routeId: routeData._id, day: selectedDay.toLocaleLowerCase() },
         });
 
-        setSchedules(data.data);
+        setSchedules(data);
       } catch (err) {
         // console.log("Error fetching schedules:", err);
       }
     };
 
     fetchSchedules();
-  }, [currentRoute, userData, selectedDay]);
+  }, [currentRoute, routeData, selectedDay]);
 
   const handleRouteChange = (selectedRouteId) => {
     const selectedRouteData = availRoutes.find((r) => r._id === selectedRouteId);
@@ -72,7 +73,7 @@ const RouteSelector = () => {
       <View className="flex flex-row items-center bg-white border border-gray-300 rounded-xl px-3">
         <Image source={busImage} className="rounded-md" resizeMode="contain" style={{ width: 30, height: 30 }} />
         <Picker
-          selectedValue={currentRoute?._id}
+          selectedValue={currentRoute._id}
           onValueChange={handleRouteChange}
           style={{
             flex: 1,

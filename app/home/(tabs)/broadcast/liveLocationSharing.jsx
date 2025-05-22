@@ -31,7 +31,7 @@ function cpfl(string) {
 function LiveLocationSharing() {
   const router = useRouter();
   const { location } = useLocation(true);
-  const { userData } = useAuth();
+  const { userData, routeData } = useAuth();
   const { broadcastData } = useBroadcast();
   const { currentlyConnectedUserCount, activeBuses } = useBusLocation();
   const [isSharing, setIsSharing] = useState(true);
@@ -53,7 +53,7 @@ function LiveLocationSharing() {
   // Join the room when userData is available
   useEffect(() => {
     if (userData?.route?._id) {
-      const roomId = userData.route._id;
+      const roomId = routeData._id;
       socket.emit("join-room", roomId);
       // console.log(`Joined room: ${roomId}`);
 
@@ -93,7 +93,7 @@ function LiveLocationSharing() {
           text: "Leave",
           onPress: () => {
             if (userData?.route?._id) {
-              socket.emit("stop-broadcast", userData.route._id);
+              socket.emit("stop-broadcast", routeData._id);
               setIsSharing(false);
               router.back();
             }

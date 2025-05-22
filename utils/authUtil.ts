@@ -1,6 +1,15 @@
 import { showToast } from "./toastUtil";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const validateRegistrationForm = (formData) => {
+interface RegistrationFormData {
+  name: string;
+  routeId: string;
+  role: string;
+  email: string;
+  password: string;
+}
+
+const validateRegistrationForm = (formData: RegistrationFormData): boolean => {
   const { name, routeId, role, email, password } = formData;
 
   if (!name.trim()) {
@@ -58,6 +67,19 @@ const validateRegistrationForm = (formData) => {
   }
 
   return true;
+};
+
+export const getAccessToken = async () => {
+  return await AsyncStorage.getItem("auth-token");
+};
+
+export const setAccessToken = async (token: string) => {
+  return await AsyncStorage.setItem("auth-token", token);
+};
+
+export const logoutUser = async () => {
+  await AsyncStorage.removeItem("auth-token");
+  // Optionally remove user data or tokens
 };
 
 export const AuthUtil = {

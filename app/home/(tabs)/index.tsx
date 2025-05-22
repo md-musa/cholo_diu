@@ -6,19 +6,20 @@ import RouteSelector from "@/components/RouteSelector";
 import MapSection from "@/components/MapSection";
 import Navbar from "@/components/Navbar";
 import { useBusLocation } from "@/contexts/BusLocationContext";
+import { useRoute } from "@react-navigation/native";
 
 export default function Index() {
-  const { userData } = useAuth();
+  const { userData, routeData } = useAuth();
   const { location } = useLocation();
   const { activeBuses, currentlyConnectedUserCount, joinRoute } = useBusLocation();
 
   useEffect(() => {
-    if (userData?.route?._id) {
-      joinRoute(userData.route._id);
+    if (routeData) {
+      joinRoute(routeData._id);
     }
-  }, [userData]);
+  }, [routeData]);
 
-  // // console.log("👤 UserData", userData.route._id);
+  console.log("👤 UserData", JSON.stringify(userData, null, 2));
 
   return (
     <View className="flex-1 bg-white">
@@ -31,6 +32,7 @@ export default function Index() {
         <MapSection
           location={location}
           userData={userData}
+          routeData={routeData}
           activeBuses={activeBuses}
           currentlyConnectedUserCount={currentlyConnectedUserCount}
         />
