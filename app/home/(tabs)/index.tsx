@@ -19,7 +19,7 @@ export default function Index() {
     }
   }, [routeData]);
 
-  console.log("👤 UserData", JSON.stringify(userData, null, 2));
+  // console.log("👤 UserData", JSON.stringify(userData, null, 2));
 
   return (
     <View className="flex-1 bg-white">

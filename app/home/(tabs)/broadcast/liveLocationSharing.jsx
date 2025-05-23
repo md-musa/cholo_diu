@@ -31,53 +31,53 @@ function cpfl(string) {
 function LiveLocationSharing() {
   const router = useRouter();
   const { location } = useLocation(true);
-  const { userData, routeData } = useAuth();
+  const { routeData } = useAuth();
   const { broadcastData } = useBroadcast();
   const { currentlyConnectedUserCount, activeBuses } = useBusLocation();
   const [isSharing, setIsSharing] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
 
-  const [zoom, setZoom] = useState(15);
+  const [zoom, setZoom] = useState(16);
   const cameraRef = useRef(null);
 
   // Check if data is loaded
   useEffect(() => {
-    if (userData && location && broadcastData) {
+    if (routeData && location && broadcastData) {
       setIsLoading(false); // Data is ready
     }
-  }, [userData, location, broadcastData]);
+  }, [routeData, location, broadcastData]);
 
-  // console.log("👤", JSON.stringify(broadcastData, null, 2));
-  // console.log("📍", location);
+  console.log("👤", JSON.stringify(broadcastData, null, 2));
+  console.log("📍", location);
 
   // Join the room when userData is available
   useEffect(() => {
-    if (userData?.route?._id) {
+    if (routeData?._id) {
       const roomId = routeData._id;
       socket.emit("join-room", roomId);
-      // console.log(`Joined room: ${roomId}`);
+      console.log(`Joined room: ${roomId}`);
 
       return () => {
         socket.emit("leave-room", roomId); // Leave the room
-        // console.log(`Left room: ${roomId}`);
+        console.log(`Left room: ${roomId}`);
       };
     }
-  }, [userData?.route?._id]);
+  }, [routeData?._id]);
 
   // Broadcast location updates whenever location changes
   useEffect(() => {
-    if (isSharing && location && userData?.route?._id && broadcastData) {
+    if (isSharing && location && routeData?._id && broadcastData) {
       socket.emit("broadcast-bus-location", {
         tripId: broadcastData.tripId,
         ...location,
       });
 
-      // console.log("📡 Broadcasted location data:", {
-      //   ...location,
-      //   tripId: broadcastData.tripId,
-      // });
+      console.log("📡 Broadcasted location data:", {
+        ...location,
+        tripId: broadcastData.tripId,
+      });
     }
-  }, [location, isSharing, userData?.route?._id, broadcastData]);
+  }, [location, isSharing, routeData?._id, broadcastData]);
 
   // Handle stopping location sharing
   const handleStopSharing = () => {
@@ -92,7 +92,7 @@ function LiveLocationSharing() {
         {
           text: "Leave",
           onPress: () => {
-            if (userData?.route?._id) {
+            if (routeData?._id) {
               socket.emit("stop-broadcast", routeData._id);
               setIsSharing(false);
               router.back();
@@ -106,10 +106,10 @@ function LiveLocationSharing() {
   };
 
   const centerToUserLocation = () => {
-    setZoom(15);
+    setZoom(16);
     cameraRef.current?.setCamera({
       center: [location.longitude, location.latitude],
-      zoom: 15,
+      zoom: 16,
     });
   };
 
@@ -166,7 +166,7 @@ function LiveLocationSharing() {
         </MapLibreGL.RasterSource>
 
         {/* ----- Route highlighter ------ */}
-        <MapLibreGL.ShapeSource id="routeSource" shape={selectRoutePolyline(userData?.route || "")}>
+        <MapLibreGL.ShapeSource id="routeSource" shape={selectRoutePolyline(routeData?.endLocation || "")}>
           <MapLibreGL.LineLayer
             id="routeLayer"
             style={{ lineColor: "#2e2e2e", lineWidth: 2, lineCap: "round", lineJoin: "round" }}
@@ -296,7 +296,7 @@ function LiveLocationSharing() {
           <View className="flex-[0.65]">
             <Text className="text-sm text-gray-700">
               Sharing <Text className="font-bold capitalize">{broadcastData.bus.name}</Text>'s location for the{" "}
-              <Text className="font-bold">{userData?.route?.endLocation}</Text> route
+              <Text className="font-bold">{routeData?.endLocation}</Text> route
             </Text>
           </View>
 

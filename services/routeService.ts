@@ -1,10 +1,8 @@
 import apiClient from "../config/axiosConfig";
-import { IRoute } from "@/interfaces/route";
 
-const getRoutes = async (): Promise<IRoute[]> => {
-  return await apiClient.get("/routes");
+const RouteService = {
+  getRoutes: async () => await apiClient.get("/routes"),
+  getRouteById: async (id: string) => await apiClient.get(`/routes/${id}`),
 };
 
-export const RouteService = {
-  getRoutes,
-};
+export default RouteService;

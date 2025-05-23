@@ -11,7 +11,7 @@ SplashScreen.preventAutoHideAsync();
 
 const Index = () => {
   const router = useRouter();
-  const { currentUserData, authLoading, authInitialized } = useAuth();
+  const { userData, authLoading, authInitialized } = useAuth();
   const [appReady, setAppReady] = useState(false);
 
   useEffect(() => {

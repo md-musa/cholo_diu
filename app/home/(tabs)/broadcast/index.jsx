@@ -15,11 +15,14 @@ import apiClient from "@/config/axiosConfig";
 import { useBroadcast } from "@/contexts/BroadcastContext";
 import { useNavigation } from "@react-navigation/native";
 import { useAuth } from "@/contexts/AuthContext";
+import { useRouter } from "expo-router";
+import BusService from "@/services/busService";
 
 const Index = () => {
   const { setBroadcastData } = useBroadcast();
   const { userData, routeData } = useAuth();
   const navigation = useNavigation();
+  const router = useRouter();
   const [busType, setBusType] = useState("");
   const [selectedBus, setSelectedBus] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
@@ -31,7 +34,7 @@ const Index = () => {
   useEffect(() => {
     const loadBuses = async () => {
       try {
-        const res = await apiClient.get("/buses");
+        const res = await BusService.getBuses();
         setAvailableBuses(res.data);
       } catch (error) {
         // console.error("Error loading buses:", error);
@@ -68,18 +71,24 @@ const Index = () => {
               busType: busType,
               note: note,
             });
+            console.log("🌊 Trip created:", res);
 
-            if (res.data.success) {
-              setBroadcastData({
-                bus: selectedBus,
-                busType,
-                tripId: res.data._id,
-                note,
-              });
-              navigation.navigate("liveLocationSharing");
-            }
+            // if (res.data.success) {
+            setBroadcastData({
+              bus: selectedBus,
+              busType,
+              tripId: res.data._id,
+              note,
+            });
+            console.log("Broadcast data set:", {
+              bus: selectedBus,
+              busType,
+              tripId: res.data._id,
+              note,
+            });
+            navigation.navigate("liveLocationSharing");
           } catch (error) {
-            // console.error("Error creating trip:", error);
+            console.error("[broadcast] Error creating trip:\n", JSON.stringify(error.response.data.message, null, 2));
             Alert.alert("Error", "Failed to start sharing. Please try again.");
           }
         },

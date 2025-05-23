@@ -3,10 +3,10 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { jwtDecode } from "jwt-decode";
-import { loginUser, registerUser } from "@/services/authService";
 import { showToast } from "@/utils/toastUtil";
 import { USER_ROLES } from "@/constants";
 import { IRoute, IUser } from "@/interfaces/route";
+import AuthService from "@/services/authService";
 
 interface DecodedToken {
   _id: string;
@@ -137,7 +137,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const login = async (credentials: { email: string; password: string }) => {
     try {
       setAuthLoading(true);
-      const res = await loginUser(credentials);
+      const res = await AuthService.loginUser(credentials);
       console.log("Login credentials:", JSON.stringify(res.data));
       const { accessToken, user } = res.data;
 
@@ -166,7 +166,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const register = async (userData: IUser) => {
     try {
       setAuthLoading(true);
-      const res = await registerUser(userData);
+      const res = await AuthService.registerUser(userData);
       const { accessToken, user } = res.data;
       await saveSession(accessToken, user.routeId);
 

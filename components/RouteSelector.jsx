@@ -6,10 +6,10 @@ import { useAuth } from "@/contexts/AuthContext";
 import apiClient from "@/config/axiosConfig";
 import { findOngoingOrNextSchedule } from "@/utils/scheduleHelper";
 import { Link } from "expo-router";
-import { RouteService } from "@/services/routeService";
+import RouteService from "@/services/routeService";
 
 const RouteSelector = () => {
-  const { userData, routeData, updateRoute } = useAuth();
+  const { routeData, updateRoute } = useAuth();
   const [currentRoute, setCurrentRoute] = useState(routeData);
   const [availRoutes, setAvailRoutes] = useState([]);
   const [schedules, setSchedules] = useState(null);
@@ -19,12 +19,8 @@ const RouteSelector = () => {
 
   useEffect(() => {
     const fetchRoutes = async () => {
-      try {
-        const res = await RouteService.getRoutes();
-        setAvailRoutes(res.data);
-      } catch (err) {
-        // console.error("API Error:", err.message);
-      }
+      const res = await RouteService.getRoutes();
+      setAvailRoutes(res.data);
     };
 
     fetchRoutes();
@@ -32,15 +28,8 @@ const RouteSelector = () => {
 
   useEffect(() => {
     const fetchSchedules = async () => {
-      try {
-        const { data } = await apiClient.get(`/schedules/get-single-route-schedule`, {
-          params: { routeId: routeData._id, day: selectedDay.toLocaleLowerCase() },
-        });
-
-        setSchedules(data);
-      } catch (err) {
-        // console.log("Error fetching schedules:", err);
-      }
+      const { data } = await ScheduleService.getScheduleByRoute(routeData._id, selectedDay);
+      setSchedules(data);
     };
 
     fetchSchedules();

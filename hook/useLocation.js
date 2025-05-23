@@ -21,8 +21,8 @@ const useLocation = (isDriver = true) => {
 
         let options = {
           accuracy: Location.Accuracy.BestForNavigation,
-          timeInterval: 5000,
-          distanceInterval: 5,
+          timeInterval: 2000,
+          distanceInterval: 1,
         };
 
         // if (isDriver) {

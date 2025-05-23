@@ -18,8 +18,8 @@ export const showToast = ({ type = "success", text1 = "", text2 = "", position =
     topOffset: 50,
     bottomOffset: 40,
     props: {
-      text1Style: { fontSize: 18, fontWeight: "bold" },
-      text2Style: { fontSize: 16 },
+      text1Style: { fontSize: 21, fontWeight: "bold" },
+      text2Style: { fontSize: 20 },
     },
   });
 };

@@ -9,8 +9,8 @@ import { showToast } from "@/utils/toastUtil";
 
 const Login = () => {
   const { login, authLoading } = useAuth();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("musa11@diu.edu.bd");
+  const [password, setPassword] = useState("qwerty");
   const [showPassword, setShowPassword] = useState(false);
 
   const handleLogin = async () => {

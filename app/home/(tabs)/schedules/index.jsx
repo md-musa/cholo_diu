@@ -7,6 +7,8 @@ import ScheduleCard from "@/components/ScheduleCard";
 import { Feather } from "@expo/vector-icons";
 import Navbar from "@/components/Navbar";
 import { Picker } from "@react-native-picker/picker";
+import RouteService from "@/services/routeService";
+import ScheduleService from "@/services/scheduleService";
 
 const BusSchedule = () => {
   const { userData, updateRoute, routeData } = useAuth();
@@ -26,7 +28,7 @@ const BusSchedule = () => {
   useEffect(() => {
     const fetchRoutes = async () => {
       try {
-        const res = await apiClient.get("/routes");
+        const res = await RouteService.getRoutes();
         setAvailRoutes(res.data);
       } catch (err) {
         // console.error("shce[home] API Error:", err.message);
@@ -38,15 +40,8 @@ const BusSchedule = () => {
 
   useEffect(() => {
     const fetchSchedules = async () => {
-      try {
-        const { data } = await apiClient.get(`/schedules/get-single-route-schedule`, {
-          params: { routeId: routeData._id, day: selectedDay.toLocaleLowerCase() },
-        });
-
-        setSchedules(data);
-      } catch (err) {
-        // console.log("Error fetching schedules:", err);
-      }
+      const { data } = await ScheduleService.getScheduleByRoute(routeData._id, selectedDay);
+      setSchedules(data);
     };
 
     fetchSchedules();
