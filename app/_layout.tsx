@@ -6,28 +6,30 @@ import { BroadcastProvider } from "@/contexts/BroadcastContext";
 import Toast from "react-native-toast-message";
 import { View } from "react-native";
 import { BusLocationProvider } from "@/contexts/BusLocationContext";
-import { createNavigationContainerRef } from '@react-navigation/native';
-
-
+import { createNavigationContainerRef } from "@react-navigation/native";
+import { Provider } from "react-redux";
+import { store } from "@/store/storeConfig";
 
 export default function RootLayout() {
   return (
-    <GestureHandlerRootView className="flex-1">
-      <View className="flex-1 bg-white">
-        <AuthProvider>
-          <BusLocationProvider>
-            <BroadcastProvider>
-              <Stack
-                screenOptions={{
-                  headerShown: false,
-                  contentStyle: { backgroundColor: "white" },
-                }}
-              />
-              <Toast />
-            </BroadcastProvider>
-          </BusLocationProvider>
-        </AuthProvider>
-      </View>
-    </GestureHandlerRootView>
+    <Provider store={store}>
+      <GestureHandlerRootView className="flex-1">
+        <View className="flex-1 bg-white">
+          <AuthProvider>
+            <BusLocationProvider>
+              <BroadcastProvider>
+                <Stack
+                  screenOptions={{
+                    headerShown: false,
+                    contentStyle: { backgroundColor: "white" },
+                  }}
+                />
+                <Toast />
+              </BroadcastProvider>
+            </BusLocationProvider>
+          </AuthProvider>
+        </View>
+      </GestureHandlerRootView>
+    </Provider>
   );
 }

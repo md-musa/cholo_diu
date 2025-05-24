@@ -5,7 +5,6 @@ import useLocation from "@/hook/useLocation";
 import MapComponent from "@/components/MapComponent";
 import StatusOverlayComponent from "@/components/UI/StatusOverlayComponent";
 import BottomSheetComponent from "@/components/UI/BottomSheetComponent";
-import socket from "@/config/socket";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { useBusLocation } from "@/contexts/BusLocationContext";

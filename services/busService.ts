@@ -1,4 +1,4 @@
-import apiClient from "@/config/axiosConfig";
+import apiClient from "@/config/axiosInstance";
 
 const BusService = {
   getBuses: async () => await apiClient.get("/buses"),

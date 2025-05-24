@@ -1,4 +1,4 @@
-import apiClient from "../config/axiosConfig";
+import apiClient from "../config/axiosInstance";
 
 const RouteService = {
   getRoutes: async () => await apiClient.get("/routes"),

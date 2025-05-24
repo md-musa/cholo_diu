@@ -14,7 +14,7 @@ import { Ionicons } from "@expo/vector-icons";
 import useLocation from "@/hook/useLocation";
 import { useAuth } from "@/contexts/AuthContext";
 import { useBroadcast } from "@/contexts/BroadcastContext";
-import socket from "@/config/socket";
+import socket from "@/config/socketIoConfig";
 import * as MapLibreGL from "@maplibre/maplibre-react-native";
 import { selectRoutePolyline } from "@/utils/mappingHelper";
 import busMarker from "@/assets/images/navigatorArrow.png";

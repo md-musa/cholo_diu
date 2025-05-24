@@ -6,6 +6,7 @@ import coverImage from "@/assets/images/login_bg.png";
 import * as SplashScreen from "expo-splash-screen";
 import { useRouter } from "expo-router";
 import { useAuth } from "@/contexts/AuthContext";
+import { useGerRoutesQuery } from "@/store/features/route/routeApi";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -13,6 +14,9 @@ const Index = () => {
   const router = useRouter();
   const { userData, authLoading, authInitialized } = useAuth();
   const [appReady, setAppReady] = useState(false);
+  const { isLoading, data: routeData } = useGerRoutesQuery();
+  console.log("Loading Routes:", isLoading);
+  console.log("Route Data:", routeData);
 
   useEffect(() => {
     const prepareApp = async () => {

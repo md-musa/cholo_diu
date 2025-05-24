@@ -1,4 +1,4 @@
-import socket from "@/config/socket";
+import socket from "@/config/socketIoConfig";
 import { SOCKET_EVENTS } from "@/constants";
 import { showToast } from "@/utils/toastUtil";
 import React, { createContext, useContext, useEffect, useState, ReactNode } from "react";

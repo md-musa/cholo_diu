@@ -11,7 +11,7 @@ import {
   ActivityIndicator,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import apiClient from "@/config/axiosConfig";
+import apiClient from "@/config/axiosInstance";
 import { useBroadcast } from "@/contexts/BroadcastContext";
 import { useNavigation } from "@react-navigation/native";
 import { useAuth } from "@/contexts/AuthContext";

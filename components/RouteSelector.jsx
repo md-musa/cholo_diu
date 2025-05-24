@@ -3,7 +3,7 @@ import { View, Text, Image, Alert, ActivityIndicator } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import busImage from "@/assets/images/icon.png";
 import { useAuth } from "@/contexts/AuthContext";
-import apiClient from "@/config/axiosConfig";
+import apiClient from "@/config/axiosInstance";
 import { findOngoingOrNextSchedule } from "@/utils/scheduleHelper";
 import { Link } from "expo-router";
 import RouteService from "@/services/routeService";

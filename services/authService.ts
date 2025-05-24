@@ -1,4 +1,4 @@
-import apiClient from "../config/axiosConfig";
+import apiClient from "../config/axiosInstance";
 import { Alert } from "react-native";
 
 interface RegisterUserData {

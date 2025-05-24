@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { View, Text, TouchableOpacity, ScrollView, ActivityIndicator } from "react-native";
 import { useAuth } from "@/contexts/AuthContext";
-import apiClient from "@/config/axiosConfig";
+import apiClient from "@/config/axiosInstance";
 import { processSchedules } from "@/utils/scheduleHelper";
 import ScheduleCard from "@/components/ScheduleCard";
 import { Feather } from "@expo/vector-icons";
