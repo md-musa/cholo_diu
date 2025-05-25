@@ -8,11 +8,13 @@ import BottomSheetComponent from "@/components/UI/BottomSheetComponent";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { useBusLocation } from "@/contexts/BusLocationContext";
+import { useAppSelector } from "@/store/storeConfig";
 
 const WatchBusLocation = () => {
   const router = useRouter();
+  const { user, route } = useAppSelector((state) => state.auth);
+
   const bottomSheetRef = useRef(null);
-  const { userData, routeData } = useAuth();
   const { location } = useLocation();
   const [zoom, setZoom] = useState(12);
 
@@ -64,8 +66,8 @@ const WatchBusLocation = () => {
         <MapComponent
           location={location}
           zoom={zoom}
-          userData={userData}
-          routeData={routeData}
+          userData={user}
+          routeData={route}
           activeBuses={activeBuses}
           setZoom={setZoom}
           cameraRef={cameraRef}

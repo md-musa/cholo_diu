@@ -8,49 +8,32 @@ import {
   KeyboardAvoidingView,
   Platform,
   Alert,
-  ActivityIndicator,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import apiClient from "@/config/axiosInstance";
-import { useBroadcast } from "@/contexts/BroadcastContext";
 import { useNavigation } from "@react-navigation/native";
-import { useAuth } from "@/contexts/AuthContext";
 import { useRouter } from "expo-router";
-import BusService from "@/services/busService";
 import Loading from "@/components/UI/Loading";
+import { useGetBusesQuery } from "@/store/features/bus/busApi";
+import { useAppDispatch, useAppSelector } from "@/store/storeConfig";
+import { useCreateTripMutation } from "@/store/features/trip/tripApi";
+import { TripUtil } from "@/utils/tripUtil";
+import { startBroadcasting } from "@/store/features/broadcast/broadcastSlice";
 
 const Index = () => {
-  const { setBroadcastData } = useBroadcast();
-  const { userData, routeData } = useAuth();
-  const navigation = useNavigation();
   const router = useRouter();
+  const dispatch = useAppDispatch();
+  const { user, route } = useAppSelector((state) => state.auth);
+  const [createTrip] = useCreateTripMutation();
+
   const [busType, setBusType] = useState("");
   const [selectedBus, setSelectedBus] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [note, setNote] = useState("");
-  const [availableBuses, setAvailableBuses] = useState([]);
-  const [recentBuses, setRecentBuses] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    const loadBuses = async () => {
-      try {
-        const res = await BusService.getBuses();
-        setAvailableBuses(res.data);
-      } catch (error) {
-        // console.error("Error loading buses:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
+  const { data: buses, isLoading: isBusesLoading } = useGetBusesQuery();
+  if (isBusesLoading) return <Loading />;
 
-    loadBuses();
-  }, []);
-
-  const filteredBuses = availableBuses
-    .filter((bus) => bus.name.toLowerCase().includes(searchQuery.toLowerCase()))
-    .sort((a, b) => a.name.localeCompare(b.name));
-
+  const filteredBuses = TripUtil.searchBus(buses, searchQuery);
   const isValid = selectedBus && busType;
 
   const handleStartSharing = async () => {
@@ -65,29 +48,32 @@ const Index = () => {
         text: "Confirm",
         onPress: async () => {
           try {
-            const res = await apiClient.post("/trips", {
-              routeId: routeData._id,
-              hostId: userData._id,
+            const { data } = await createTrip({
+              routeId: route._id,
+              hostId: user._id,
               busName: selectedBus.name,
               busType: busType,
               note: note,
             });
-            console.log("🌊 Trip created:", res);
 
-            // if (res.data.success) {
-            setBroadcastData({
-              bus: selectedBus,
-              busType,
-              tripId: res.data._id,
-              note,
-            });
+            console.log("🌊 Trip created:", data);
+            dispatch(
+              startBroadcasting({
+                bus: selectedBus,
+                tripId: data._id,
+                busType,
+                note,
+              })
+            );
+
             console.log("Broadcast data set:", {
               bus: selectedBus,
               busType,
-              tripId: res.data._id,
+              tripId: data._id,
               note,
             });
-            navigation.navigate("liveLocationSharing");
+
+            router.push("/home/(tabs)/broadcast/liveLocationSharing");
           } catch (error) {
             console.error("[broadcast] Error creating trip:\n", JSON.stringify(error.response.data.message, null, 2));
             Alert.alert("Error", "Failed to start sharing. Please try again.");
@@ -123,7 +109,7 @@ const Index = () => {
           </View>
 
           {/* Bus List */}
-          {isLoading ? (
+          {isBusesLoading ? (
             <Loading />
           ) : (
             <ScrollView className="max-h-72" nestedScrollEnabled>

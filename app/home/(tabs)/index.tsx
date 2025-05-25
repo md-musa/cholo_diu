@@ -18,8 +18,8 @@ export default function Index() {
     }
   }, [route]);
 
-  console.log("👤 UserData", JSON.stringify(user, null, 2));
-  console.log("👤 route", JSON.stringify(route, null, 2));
+  // console.log("👤 UserData", JSON.stringify(user, null, 2));
+  // console.log("👤 route", JSON.stringify(route, null, 2));
   // return <Loading />;
 
   return (

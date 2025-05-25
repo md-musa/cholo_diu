@@ -1,13 +1,20 @@
 import { useState, useEffect } from "react";
 import * as Location from "expo-location";
-import { Alert } from "react-native";
+
+interface LocationData {
+  latitude: number;
+  longitude: number;
+  speed: number | null;
+  heading: number | null;
+  timestamp: number;
+}
 
 const useLocation = (isDriver = true) => {
-  const [location, setLocation] = useState(null);
-  const [errorMsg, setErrorMsg] = useState(null);
+  const [location, setLocation] = useState<LocationData | null>(null);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
   useEffect(() => {
-    let locationSubscription;
+    let locationSubscription: Location.LocationSubscription | undefined;
 
     const startLocationTracking = async () => {
       try {
@@ -55,7 +62,11 @@ const useLocation = (isDriver = true) => {
           });
         });
       } catch (error) {
-        setErrorMsg(error.message);
+        if (error instanceof Error) {
+          setErrorMsg(error.message);
+        } else {
+          setErrorMsg(String(error));
+        }
       }
     };
 

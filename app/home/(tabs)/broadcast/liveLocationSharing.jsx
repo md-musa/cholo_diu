@@ -24,6 +24,8 @@ import StatusOverlayComponent from "@/components/UI/StatusOverlayComponent";
 import { useFocusEffect, useRouter } from "expo-router";
 import { useBusLocation } from "@/contexts/BusLocationContext";
 import Loading from "@/components/UI/Loading";
+import { useAppDispatch, useAppSelector } from "@/store/storeConfig";
+import { startBroadcasting, stopBroadcasting } from "@/store/features/broadcast/broadcastSlice";
 
 function cpfl(string) {
   return string.charAt(0).toUpperCase() + string.slice(1);
@@ -31,56 +33,18 @@ function cpfl(string) {
 
 function LiveLocationSharing() {
   const router = useRouter();
+  const dispatch = useAppDispatch();
   const { location } = useLocation(true);
-  const { routeData } = useAuth();
-  const { broadcastData } = useBroadcast();
+  const { route } = useAppSelector((state) => state.auth);
+  const { activeTrip } = useAppSelector((state) => state.trip);
   const { currentlyConnectedUserCount, activeBuses } = useBusLocation();
-  const [isSharing, setIsSharing] = useState(true);
-  const [isLoading, setIsLoading] = useState(true);
 
   const [zoom, setZoom] = useState(16);
   const cameraRef = useRef(null);
 
-  // Check if data is loaded
-  useEffect(() => {
-    if (routeData && location && broadcastData) {
-      setIsLoading(false); // Data is ready
-    }
-  }, [routeData, location, broadcastData]);
-
-  console.log("👤", JSON.stringify(broadcastData, null, 2));
+  console.log("👤", JSON.stringify(activeTrip, null, 2));
   console.log("📍", location);
 
-  // Join the room when userData is available
-  useEffect(() => {
-    if (routeData?._id) {
-      const roomId = routeData._id;
-      socket.emit("join-room", roomId);
-      console.log(`Joined room: ${roomId}`);
-
-      return () => {
-        socket.emit("leave-room", roomId); // Leave the room
-        console.log(`Left room: ${roomId}`);
-      };
-    }
-  }, [routeData?._id]);
-
-  // Broadcast location updates whenever location changes
-  useEffect(() => {
-    if (isSharing && location && routeData?._id && broadcastData) {
-      socket.emit("broadcast-bus-location", {
-        tripId: broadcastData.tripId,
-        ...location,
-      });
-
-      console.log("📡 Broadcasted location data:", {
-        ...location,
-        tripId: broadcastData.tripId,
-      });
-    }
-  }, [location, isSharing, routeData?._id, broadcastData]);
-
-  // Handle stopping location sharing
   const handleStopSharing = () => {
     Alert.alert(
       "Stop Sharing Live Location?",
@@ -93,11 +57,8 @@ function LiveLocationSharing() {
         {
           text: "Leave",
           onPress: () => {
-            if (routeData?._id) {
-              socket.emit("stop-broadcast", routeData._id);
-              setIsSharing(false);
-              router.back();
-            }
+            dispatch(stopBroadcasting());
+            router.back();
           },
           style: "destructive",
         },
@@ -136,10 +97,7 @@ function LiveLocationSharing() {
     }, [router])
   );
 
-  // Show loading state if data is not ready
-  if (isLoading) {
-    return <Loading />;
-  }
+  if (!location || !route || !activeTrip) return <Loading />;
 
   return (
     <View className="flex-1 bg-gray-100">
@@ -167,7 +125,7 @@ function LiveLocationSharing() {
         </MapLibreGL.RasterSource>
 
         {/* ----- Route highlighter ------ */}
-        <MapLibreGL.ShapeSource id="routeSource" shape={selectRoutePolyline(routeData?.endLocation || "")}>
+        <MapLibreGL.ShapeSource id="routeSource" shape={selectRoutePolyline(route?.endLocation || "")}>
           <MapLibreGL.LineLayer
             id="routeLayer"
             style={{ lineColor: "#2e2e2e", lineWidth: 2, lineCap: "round", lineJoin: "round" }}
@@ -192,7 +150,7 @@ function LiveLocationSharing() {
                   },
                   properties: {
                     icon: "marker",
-                    title: `${cpfl(broadcastData.bus.name)}\n${cpfl(broadcastData.busType)} bus\n${(
+                    title: `${cpfl(activeTrip.bus.name)}\n${cpfl(activeTrip.busType)} bus\n${(
                       location.speed * 3.6
                     ).toFixed(2)} km/h`,
                     heading: location.heading,
@@ -296,8 +254,8 @@ function LiveLocationSharing() {
           {/* Info Text */}
           <View className="flex-[0.65]">
             <Text className="text-sm text-gray-700">
-              Sharing <Text className="font-bold capitalize">{broadcastData.bus.name}</Text>'s location for the{" "}
-              <Text className="font-bold">{routeData?.endLocation}</Text> route
+              Sharing <Text className="font-bold capitalize">{activeTrip.bus.name}</Text>'s location for the{" "}
+              <Text className="font-bold">{route?.endLocation}</Text> route
             </Text>
           </View>
 

@@ -2,8 +2,9 @@ import axios from "axios";
 import { showToast } from "@/utils/toastUtil";
 import { logoutUser, getAccessToken, setAccessToken } from "@/utils/authUtil";
 import { router } from "expo-router";
+import { store } from "@/store/storeConfig";
 
-const SERVER_URL = "http://192.168.1.2:4000/api/v1";
+const SERVER_URL = "http://192.168.1.15:4000/api/v1";
 // const SERVER_URL = `https://tms-dcro.onrender.com/api/v1`;
 // const SERVER_URL = "https://choloserver-production.up.railway.app/api/v1";
 
@@ -65,7 +66,9 @@ const apiClient = axios.create({
 // 🧾 Attach token to request
 apiClient.interceptors.request.use(
   async (config) => {
-    const token = await getAccessToken();
+    const state = store.getState();
+    const token = state?.auth.accessToken;
+
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }

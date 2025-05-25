@@ -6,11 +6,13 @@ import { BroadcastProvider } from "@/contexts/BroadcastContext";
 import Toast from "react-native-toast-message";
 import { View } from "react-native";
 import { BusLocationProvider } from "@/contexts/BusLocationContext";
-import { createNavigationContainerRef } from "@react-navigation/native";
 import { Provider } from "react-redux";
 import { store } from "@/store/storeConfig";
+import { useBusLocationBroadcast } from "@/hook/useBusLocationBroadcast";
 
 export default function RootLayout() {
+  useBusLocationBroadcast();
+
   return (
     <Provider store={store}>
       <GestureHandlerRootView className="flex-1">

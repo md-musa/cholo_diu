@@ -6,8 +6,11 @@ import { authApi } from "./features/auth/authApi";
 
 import routeReducer from "./features/route/routeSlice";
 import scheduleReducer from "./features/schedule/scheduleSlice";
+import broadcastReducer from "./features/broadcast/broadcastSlice";
 import { routeApi } from "./features/route/routeApi";
 import { scheduleApi } from "./features/schedule/scheduleApi";
+import { busApi } from "./features/bus/busApi";
+import { tripApi } from "./features/trip/tripApi";
 
 // 1. Create the store
 export const store = configureStore({
@@ -15,12 +18,21 @@ export const store = configureStore({
     auth: authReducer,
     route: routeReducer,
     schedule: scheduleReducer,
+    broadcast: broadcastReducer,
     [authApi.reducerPath]: authApi.reducer,
     [routeApi.reducerPath]: routeApi.reducer,
     [scheduleApi.reducerPath]: scheduleApi.reducer,
+    [busApi.reducerPath]: busApi.reducer,
+    [tripApi.reducerPath]: tripApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(authApi.middleware, routeApi.middleware, scheduleApi.middleware),
+    getDefaultMiddleware().concat(
+      authApi.middleware,
+      routeApi.middleware,
+      scheduleApi.middleware,
+      busApi.middleware,
+      tripApi.middleware
+    ),
 });
 
 // 2. Define RootState and AppDispatch types
