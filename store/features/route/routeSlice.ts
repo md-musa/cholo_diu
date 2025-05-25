@@ -1,5 +1,5 @@
 import { USER_ROLES } from "@/constants";
-import { IRoute } from "@/interfaces/route";
+import { IRoute } from "@/store/features/route/route.interface";
 import { createSlice } from "@reduxjs/toolkit";
 
 

@@ -17,6 +17,7 @@ import { useNavigation } from "@react-navigation/native";
 import { useAuth } from "@/contexts/AuthContext";
 import { useRouter } from "expo-router";
 import BusService from "@/services/busService";
+import Loading from "@/components/UI/Loading";
 
 const Index = () => {
   const { setBroadcastData } = useBroadcast();
@@ -123,7 +124,7 @@ const Index = () => {
 
           {/* Bus List */}
           {isLoading ? (
-            <ActivityIndicator size="large" color="#00C89B" className="mt-4" />
+            <Loading />
           ) : (
             <ScrollView className="max-h-72" nestedScrollEnabled>
               {filteredBuses.length > 0 ? (

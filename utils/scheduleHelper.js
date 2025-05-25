@@ -1,9 +1,9 @@
 import moment from "moment";
 
 export function findOngoingOrNextSchedule(schedules) {
-  if (!schedules || schedules.length === 0) return null; 
+  if (!schedules || schedules.length === 0) return null;
 
-  const now = moment(); 
+  const now = moment();
   let ongoingSchedule = null;
   let nextSchedule = null;
   let nextScheduleTimeDiff = Infinity; // Store min difference for next schedule

@@ -3,7 +3,7 @@ import { showToast } from "@/utils/toastUtil";
 import { logoutUser, getAccessToken, setAccessToken } from "@/utils/authUtil";
 import { router } from "expo-router";
 
-const SERVER_URL = "http://192.168.1.3:4000/api/v1";
+const SERVER_URL = "http://192.168.1.2:4000/api/v1";
 // const SERVER_URL = `https://tms-dcro.onrender.com/api/v1`;
 // const SERVER_URL = "https://choloserver-production.up.railway.app/api/v1";
 

@@ -4,26 +4,50 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { MaterialCommunityIcons, MaterialIcons, Ionicons } from "@expo/vector-icons";
 import { useAuth } from "@/contexts/AuthContext";
 import Toast from "react-native-toast-message";
-import { Link } from "expo-router";
+import { Link, useRouter } from "expo-router";
 import { showToast } from "@/utils/toastUtil";
+import Loading from "@/components/UI/Loading";
+import { useLoginMutation } from "@/store/features/auth/authApi";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { ASYNC_STORAGE_KEYS } from "@/constants";
+import { useAppDispatch } from "@/store/storeConfig";
+import { setCredentials } from "@/store/features/auth/authSlice";
 
 const Login = () => {
-  const { login, authLoading } = useAuth();
+  const dispatch = useAppDispatch();
+  const router = useRouter();
   const [email, setEmail] = useState("musa11@diu.edu.bd");
   const [password, setPassword] = useState("qwerty");
   const [showPassword, setShowPassword] = useState(false);
 
-  const handleLogin = async () => {
-    if (!email || !password) {
-      showToast({
-        type: "info",
-        text1: "Missing Information",
-        text2: "Please enter both email and password to continue.",
-      });
-      return;
-    }
+  const [login, { isLoading }] = useLoginMutation();
 
-    await login({ email, password });
+  const handleLogin = async () => {
+    try {
+      const result = await login({ email, password }).unwrap();
+
+      const { accessToken, user } = result;
+
+      await AsyncStorage.setItem(ASYNC_STORAGE_KEYS.AUTH_TOKEN, accessToken);
+      await AsyncStorage.setItem(ASYNC_STORAGE_KEYS.CURRENT_ROUTE, JSON.stringify(user.routeId));
+
+      dispatch(setCredentials({ user, route: user.routeId, accessToken }));
+
+      showToast({
+        type: "success",
+        text1: "Login Successful",
+        text2: `Welcome, ${user.name}!`,
+      });
+
+      router.replace("/home");
+    } catch (err) {
+      console.log("🟥 Login Error", JSON.stringify(err, null, 2));
+      showToast({
+        type: "error",
+        text1: "Login Failed",
+        text2: err.response.data.errorMessages[0].message,
+      });
+    }
   };
 
   return (
@@ -79,14 +103,10 @@ const Login = () => {
           <View className="mt-6">
             <TouchableOpacity
               onPress={handleLogin}
-              disabled={authLoading}
+              disabled={isLoading}
               className="w-full bg-tertiary-900 p-3 rounded-xl flex-row justify-center"
             >
-              {authLoading ? (
-                <ActivityIndicator color="white" />
-              ) : (
-                <Text className="text-body text-center text-white">Login</Text>
-              )}
+              {isLoading ? <Loading color="white" /> : <Text className="text-body text-center text-white">Login</Text>}
             </TouchableOpacity>
           </View>
 

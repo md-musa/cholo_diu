@@ -1,60 +1,36 @@
-import React, { useState, useEffect } from "react";
-import { View, Text, Image, Alert, ActivityIndicator } from "react-native";
+import React, { useState } from "react";
+import { View, Text, Image } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import busImage from "@/assets/images/icon.png";
-import { useAuth } from "@/contexts/AuthContext";
-import apiClient from "@/config/axiosInstance";
 import { findOngoingOrNextSchedule } from "@/utils/scheduleHelper";
 import { Link } from "expo-router";
-import RouteService from "@/services/routeService";
+import { useAppDispatch, useAppSelector } from "@/store/storeConfig";
+import { updateRoute } from "@/store/features/auth/authSlice";
+import { useGetRoutesQuery } from "@/store/features/route/routeApi";
+import { useGetScheduleByRouteQuery } from "@/store/features/schedule/scheduleApi";
 
 const RouteSelector = () => {
-  const { routeData, updateRoute } = useAuth();
-  const [currentRoute, setCurrentRoute] = useState(routeData);
-  const [availRoutes, setAvailRoutes] = useState([]);
-  const [schedules, setSchedules] = useState(null);
+  const dispatch = useAppDispatch();
+  const { route } = useAppSelector((state) => state.auth);
   const [selectedDay, setSelectedDay] = useState(
     new Date().toLocaleString("en-US", { weekday: "long" }).toLowerCase() === "friday" ? "Friday" : "Weekdays"
   );
 
-  useEffect(() => {
-    const fetchRoutes = async () => {
-      const res = await RouteService.getRoutes();
-      setAvailRoutes(res.data);
-    };
-
-    fetchRoutes();
-  }, []);
-
-  useEffect(() => {
-    const fetchSchedules = async () => {
-      const { data } = await ScheduleService.getScheduleByRoute(routeData._id, selectedDay);
-      setSchedules(data);
-    };
-
-    fetchSchedules();
-  }, [currentRoute, routeData, selectedDay]);
+  const { data: routes } = useGetRoutesQuery();
+  const { data: schedules } = useGetScheduleByRouteQuery({ routeId: route._id, day: selectedDay });
+  // console.log("📅 schedules", schedules);
 
   const handleRouteChange = (selectedRouteId) => {
-    const selectedRouteData = availRoutes.find((r) => r._id === selectedRouteId);
-    setCurrentRoute(selectedRouteData);
-    updateRoute(selectedRouteData);
-    // onRouteChange(selectedRouteData);
+    const selectedRouteData = routes.find((r) => r._id === selectedRouteId);
+    dispatch(updateRoute(selectedRouteData));
   };
-
-  // if (!schedules) return <ActivityIndicator size="large" color="#0000ff" />;
 
   let toCampusStudent, fromCampusStudent, toCampusEmployee, fromCampusEmployee;
   if (schedules) {
-    // // console.log("schedules", schedules);
     toCampusStudent = findOngoingOrNextSchedule(schedules.to_campus.student);
     fromCampusStudent = findOngoingOrNextSchedule(schedules.from_campus.student);
     toCampusEmployee = findOngoingOrNextSchedule(schedules.to_campus.employee);
     fromCampusEmployee = findOngoingOrNextSchedule(schedules.from_campus.employee);
-    //   // console.log("toCampusEmployee", toCampusEmployee);
-    //   // console.log("fromCampusEmployee", fromCampusEmployee);
-    //   // console.log("toCampusStudent", toCampusStudent);
-    //   // console.log("fromCampusStudent", fromCampusStudent);
   }
 
   return (
@@ -62,7 +38,7 @@ const RouteSelector = () => {
       <View className="flex flex-row items-center bg-white border border-gray-300 rounded-xl px-3">
         <Image source={busImage} className="rounded-md" resizeMode="contain" style={{ width: 30, height: 30 }} />
         <Picker
-          selectedValue={currentRoute._id}
+          selectedValue={route._id}
           onValueChange={handleRouteChange}
           style={{
             flex: 1,
@@ -82,7 +58,7 @@ const RouteSelector = () => {
               fontSize: 16,
             }}
           />
-          {availRoutes?.map((route) => (
+          {routes?.map((route) => (
             <Picker.Item
               key={route?._id}
               label={`${route.endLocation} Route`}
@@ -109,7 +85,7 @@ const RouteSelector = () => {
         </View>
 
         <View className="flex-row py-2">
-          <Text className="text-white text-md flex-1">{`To ${currentRoute?.startLocation}`}</Text>
+          <Text className="text-white text-md flex-1">{`To ${route?.startLocation}`}</Text>
           <Text className="text-white text-lg flex-1 text-center">
             {toCampusStudent ? `${toCampusStudent.formattedTime}` : "No schedule"}
           </Text>
@@ -119,7 +95,7 @@ const RouteSelector = () => {
         </View>
 
         <View className="flex-row border-y border-white/50 py-2">
-          <Text className="text-white text-md flex-1">{`From ${currentRoute?.startLocation}`}</Text>
+          <Text className="text-white text-md flex-1">{`From ${route?.startLocation}`}</Text>
           <Text className="text-white text-lg flex-1 text-center">
             {fromCampusStudent ? `${fromCampusStudent.formattedTime}` : "No schedule"}
           </Text>

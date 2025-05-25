@@ -5,7 +5,7 @@ import * as SplashScreen from "expo-splash-screen";
 import { jwtDecode } from "jwt-decode";
 import { showToast } from "@/utils/toastUtil";
 import { USER_ROLES } from "@/constants";
-import { IRoute, IUser } from "@/interfaces/route";
+import { IRoute, IUser } from "@/store/features/route/route.interface";
 import AuthService from "@/services/authService";
 
 interface DecodedToken {

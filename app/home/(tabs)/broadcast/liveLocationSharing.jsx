@@ -23,6 +23,7 @@ import pinIcon from "@/assets/images/red-pin-marker.png";
 import StatusOverlayComponent from "@/components/UI/StatusOverlayComponent";
 import { useFocusEffect, useRouter } from "expo-router";
 import { useBusLocation } from "@/contexts/BusLocationContext";
+import Loading from "@/components/UI/Loading";
 
 function cpfl(string) {
   return string.charAt(0).toUpperCase() + string.slice(1);
@@ -137,7 +138,7 @@ function LiveLocationSharing() {
 
   // Show loading state if data is not ready
   if (isLoading) {
-    return <ActivityIndicator size="large" color="#0000ff" />;
+    return <Loading />;
   }
 
   return (

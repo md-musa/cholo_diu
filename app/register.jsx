@@ -1,18 +1,25 @@
-import { View, Text, TextInput, TouchableOpacity, ActivityIndicator, ScrollView } from "react-native";
-import React, { useEffect, useState } from "react";
+import { View, Text, TextInput, TouchableOpacity, ScrollView } from "react-native";
+import React, { useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons, MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 import { Picker } from "@react-native-picker/picker";
-import { useAuth } from "@/contexts/AuthContext";
-import { Link } from "expo-router";
+import { Link, useRouter } from "expo-router";
 import Toast from "react-native-toast-message";
 import { showToast } from "@/utils/toastUtil";
+import Loading from "@/components/UI/Loading";
+import { useLoginMutation, useRegisterMutation } from "@/store/features/auth/authApi";
+import { useGetRoutesQuery } from "@/store/features/route/routeApi";
+import { ASYNC_STORAGE_KEYS } from "@/constants";
+import { useAppDispatch } from "@/store/storeConfig";
 import { AuthUtil } from "@/utils/authUtil";
-import { RouteService } from "@/services/routeService";
+import { setCredentials } from "@/store/features/auth/authSlice";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Register = () => {
-  const { register, authLoading } = useAuth();
+  const router = useRouter();
+  const dispatch = useAppDispatch();
+  const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     routeId: "",
@@ -20,42 +27,52 @@ const Register = () => {
     email: "",
     password: "",
   });
-  console.log("[register] formData", formData);
-  const [availRoutes, setAvailRoutes] = useState([]);
-  const [showPassword, setShowPassword] = useState(false);
 
-  useEffect(() => {
-    const fetchRoutes = async () => {
-      try {
-        const res = await RouteService.getRoutes();
-        setAvailRoutes(res.data || []);
-      } catch (err) {
-        console.error("🛣 API Error:", err);
-
-        showToast({
-          type: "error",
-          text1: "Network Error",
-          text2: "Failed to load routes. Please try again.",
-        });
-      }
-    };
-
-    fetchRoutes();
-  }, []);
-
-  const handleRegister = async () => {
-    console.log("---------");
-    console.log("[register] formData", formData);
+  const { data: routes } = useGetRoutesQuery();
+  const [register, { isLoading }] = useRegisterMutation();
+  const handleRegistration = async () => {
     if (!AuthUtil.validateRegistrationForm(formData)) return;
 
-    await register(formData);
+    try {
+      const result = await register(formData);
+
+      if ("error" in result) {
+        showToast({
+          type: "error",
+          text1: result.error?.data.messsage,
+          text2: result.error?.data?.errorMessage?.[0]?.message,
+        });
+        return;
+      }
+
+      // Registration successful
+      const { accessToken, user } = result.data;
+
+      await AsyncStorage.setItem(ASYNC_STORAGE_KEYS.AUTH_TOKEN, accessToken);
+      await AsyncStorage.setItem(ASYNC_STORAGE_KEYS.CURRENT_ROUTE, JSON.stringify(user.routeId));
+
+      dispatch(setCredentials({ user, route: user.routeId, accessToken }));
+
+      showToast({
+        type: "success",
+        text1: "Registration Successful",
+        text2: `Welcome, ${user.name}!`,
+      });
+
+      router.replace("/home");
+    } catch (err) {
+      console.log("🟥 Catch Error", err);
+      showToast({
+        type: "error",
+        text1: "Registration Failed",
+        text2: err?.message || "Unexpected error occurred",
+      });
+    }
   };
 
   const handleInputChange = (name, value) => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
-
-  const isLoading = authLoading;
 
   return (
     <SafeAreaView className="flex-1 bg-white">
@@ -97,12 +114,8 @@ const Register = () => {
                 enabled={!isLoading}
               >
                 <Picker.Item label="Select your bus route" value="" />
-                {availRoutes.map((route) => (
-                  <Picker.Item
-                    key={route._id}
-                    label={`${route.name}: ${route.startLocation} <> ${route.endLocation}`}
-                    value={route._id}
-                  />
+                {routes.map((route) => (
+                  <Picker.Item key={route._id} label={`${route.name}: ${route.endLocation} Route`} value={route._id} />
                 ))}
               </Picker>
             </View>
@@ -168,12 +181,12 @@ const Register = () => {
           {/* Register Button - Matches Login Button Style */}
           <View className="mt-6">
             <TouchableOpacity
-              onPress={handleRegister}
+              onPress={handleRegistration}
               disabled={isLoading}
               className="w-full bg-tertiary-900 p-3 rounded-xl flex-row justify-center"
             >
               {isLoading ? (
-                <ActivityIndicator color="white" />
+                <Loading color="white" />
               ) : (
                 <Text className="text-body text-center text-white">Register</Text>
               )}

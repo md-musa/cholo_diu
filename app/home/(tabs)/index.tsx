@@ -1,25 +1,26 @@
-import React, { useState, useEffect } from "react";
-import { Text, View } from "react-native";
-import { useAuth } from "@/contexts/AuthContext";
+import React, { useEffect } from "react";
+import { View } from "react-native";
 import useLocation from "@/hook/useLocation";
 import RouteSelector from "@/components/RouteSelector";
 import MapSection from "@/components/MapSection";
 import Navbar from "@/components/Navbar";
 import { useBusLocation } from "@/contexts/BusLocationContext";
-import { useRoute } from "@react-navigation/native";
+import { useAppSelector } from "@/store/storeConfig";
 
 export default function Index() {
-  const { userData, routeData } = useAuth();
+  const { user, route } = useAppSelector((state) => state.auth);
   const { location } = useLocation();
   const { activeBuses, currentlyConnectedUserCount, joinRoute } = useBusLocation();
 
   useEffect(() => {
-    if (routeData) {
-      joinRoute(routeData._id);
+    if (route) {
+      joinRoute(route._id);
     }
-  }, [routeData]);
+  }, [route]);
 
-  // console.log("👤 UserData", JSON.stringify(userData, null, 2));
+  console.log("👤 UserData", JSON.stringify(user, null, 2));
+  console.log("👤 route", JSON.stringify(route, null, 2));
+  // return <Loading />;
 
   return (
     <View className="flex-1 bg-white">
@@ -31,8 +32,8 @@ export default function Index() {
         {/* --- Show live locations buses-- */}
         <MapSection
           location={location}
-          userData={userData}
-          routeData={routeData}
+          userData={user}
+          routeData={route}
           activeBuses={activeBuses}
           currentlyConnectedUserCount={currentlyConnectedUserCount}
         />

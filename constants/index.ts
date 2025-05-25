@@ -34,7 +34,7 @@ export enum SOCKET_EVENTS {
   VIEW_LOCATIONS = "view-locations",
   REQUEST_BUS_LOCATION = "request-bus-location",
   BUS_LOCATION_UPDATE = "bus-location-update",
-  LEAVE_ROUTE_ROOM = 'leave-room'
+  LEAVE_ROUTE_ROOM = "leave-room",
 }
 
 // direction.enum.ts
@@ -58,4 +58,9 @@ export enum SCHEDULE_MODES {
 export enum SCHEDULE_OPERATING_DAYS {
   WEEKDAYS = "weekdays", // Regular working days
   FRIDAY = "friday", // Special Friday schedule
+}
+
+export enum ASYNC_STORAGE_KEYS {
+  AUTH_TOKEN = "auth_token",
+  CURRENT_ROUTE = "current_route",
 }

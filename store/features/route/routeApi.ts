@@ -6,10 +6,10 @@ export const routeApi = createApi({
   baseQuery: axiosBaseQuery(),
 
   endpoints: (builder) => ({
-    gerRoutes: builder.query({
+    getRoutes: builder.query({
       query: () => ({ url: "/routes", method: "GET" }),
     }),
   }),
 });
 
-export const { useGerRoutesQuery } = routeApi;
+export const { useGetRoutesQuery } = routeApi;
