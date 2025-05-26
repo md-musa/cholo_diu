@@ -9,11 +9,13 @@ import { useAppDispatch, useAppSelector } from "@/store/storeConfig";
 import { useGetRoutesQuery } from "@/store/features/route/routeApi";
 import { useGetScheduleByRouteQuery } from "@/store/features/schedule/scheduleApi";
 import { updateRoute } from "@/store/features/auth/authSlice";
+import { useRouter } from "expo-router";
 
 const BusSchedule = () => {
   const scheduleTypes = ["Regular", "Mid-Term", "Final", "Ramadan"];
   const scheduleDays = ["Weekdays", "Friday"];
 
+  const router = useRouter();
   const dispatch = useAppDispatch();
   const { user, route } = useAppSelector((state) => state.auth);
   const { isBroadcasting } = useAppSelector((state) => state.broadcast);
@@ -50,6 +52,13 @@ const BusSchedule = () => {
     <ScrollView className="flex-1 bg-white px-4">
       {/* <Navbar /> */}
       {/* View Stoppage Button */}
+      <TouchableOpacity
+        onPress={() => router.push("/home/(tabs)/schedules/waypoints")}
+        className="py-2 my-2 bg-indigo-500 text-white rounded-xl"
+      >
+        <Text className="text-center text-white font-semibold text-lg">View Waypoints</Text>
+      </TouchableOpacity>
+
       <View className="">
         <View className="mt-4 my-2">
           {/* ---- Schedule Type ----- */}

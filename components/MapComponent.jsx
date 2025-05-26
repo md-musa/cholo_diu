@@ -5,6 +5,8 @@ import { generateMarkers, selectRoutePolyline } from "@/utils/mappingHelper";
 import busMarker from "@/assets/images/navigatorArrow3.png";
 import UniIcon from "@/assets/images/uni-2.png";
 import pinIcon from "@/assets/images/red-pin-marker.png";
+import { useAppSelector } from "@/store/storeConfig";
+import { getWayline } from "@/assets/routes";
 
 const MapComponent = ({
   location,
@@ -17,6 +19,9 @@ const MapComponent = ({
   currentCenter,
   handleRegionDidChange,
 }) => {
+  const { route } = useAppSelector((state) => state.auth);
+  console.log("Route Data:", route.name);
+
   return (
     <MapLibreGL.MapView
       attributionEnabled={true}
@@ -37,7 +42,7 @@ const MapComponent = ({
       </MapLibreGL.RasterSource>
 
       {/* ----- Route highlighter ------ */}
-      <MapLibreGL.ShapeSource id="routeSource" shape={selectRoutePolyline(routeData?.endLocation || "")}>
+      <MapLibreGL.ShapeSource id="routeSource" shape={getWayline(route.name)}>
         <MapLibreGL.LineLayer
           id="routeLayer"
           style={{ lineColor: "#2e2e2e", lineWidth: 2, lineCap: "round", lineJoin: "round" }}
