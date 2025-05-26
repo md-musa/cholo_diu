@@ -1,3 +1,4 @@
+
 import { configureStore } from "@reduxjs/toolkit";
 import { useDispatch, useSelector, TypedUseSelectorHook } from "react-redux";
 
@@ -7,6 +8,7 @@ import { authApi } from "./features/auth/authApi";
 import routeReducer from "./features/route/routeSlice";
 import scheduleReducer from "./features/schedule/scheduleSlice";
 import broadcastReducer from "./features/broadcast/broadcastSlice";
+import busLocationReducer from "./features/busLocation/busLocationSlice";
 import { routeApi } from "./features/route/routeApi";
 import { scheduleApi } from "./features/schedule/scheduleApi";
 import { busApi } from "./features/bus/busApi";
@@ -19,6 +21,7 @@ export const store = configureStore({
     route: routeReducer,
     schedule: scheduleReducer,
     broadcast: broadcastReducer,
+    busLocation: busLocationReducer,
     [authApi.reducerPath]: authApi.reducer,
     [routeApi.reducerPath]: routeApi.reducer,
     [scheduleApi.reducerPath]: scheduleApi.reducer,

@@ -17,10 +17,7 @@
         "backgroundColor": "#ffffff"
       },
       "package": "com.md_musa.client2",
-      "permissions": [
-        "android.permission.ACCESS_COARSE_LOCATION",
-        "android.permission.ACCESS_FINE_LOCATION"
-      ]
+      "permissions": ["android.permission.ACCESS_COARSE_LOCATION", "android.permission.ACCESS_FINE_LOCATION"]
     },
     "web": {
       "bundler": "metro",
@@ -51,7 +48,8 @@
       "typedRoutes": true
     },
     "extra": {
-      "SERVER_URL": "https://tms-dcro.onrender.com",
+      "DVELOPMENT_SERVER_URL": "http://192.168.1.7:4000",
+      "PRODUCTION_SERVER_URL": "https://choloserver-production.up.railway.app",
       "router": {
         "origin": false
       },

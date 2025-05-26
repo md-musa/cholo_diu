@@ -1,8 +1,14 @@
+import Constants from "expo-constants";
 import { showToast } from "@/utils/toastUtil";
 import { io } from "socket.io-client";
 
-const SERVER_URL = "http://192.168.1.15:4000";
+// const SERVER_URL = "http://192.168.1.15:4000";
 // const SERVER_URL = "https://choloserver-production.up.railway.app";
+
+const SERVER_URL =
+  process.env.NODE_ENV === "development"
+    ? Constants.expoConfig?.extra?.DVELOPMENT_SERVER_URL
+    : Constants.expoConfig?.extra?.PRODUCTION_SERVER_URL;
 
 const socket = io(SERVER_URL, {
   autoConnect: true, // Automatically connect when the socket is created

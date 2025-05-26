@@ -1,12 +1,18 @@
+import Constants from "expo-constants";
 import axios from "axios";
 import { showToast } from "@/utils/toastUtil";
-import { logoutUser, getAccessToken, setAccessToken } from "@/utils/authUtil";
+import { removeAccessToken, getAccessToken, setAccessToken, AuthUtil } from "@/utils/authUtil";
 import { router } from "expo-router";
 import { store } from "@/store/storeConfig";
 
-const SERVER_URL = "http://192.168.1.15:4000/api/v1";
-// const SERVER_URL = `https://tms-dcro.onrender.com/api/v1`;
-// const SERVER_URL = "https://choloserver-production.up.railway.app/api/v1";
+// const SERVER_URL = "http://192.168.1.15:4000/api/v1";
+// // const SERVER_URL = `https://tms-dcro.onrender.com/api/v1`;
+// // const SERVER_URL = "https://choloserver-production.up.railway.app/api/v1";
+
+const SERVER_URL =
+  process.env.NODE_ENV === "development"
+    ? Constants.expoConfig?.extra?.DVELOPMENT_SERVER_URL
+    : Constants.expoConfig?.extra?.PRODUCTION_SERVER_URL;
 
 // 🔁 Refresh token helper
 const refreshAccessToken = async () => {
@@ -25,7 +31,7 @@ const refreshAccessToken = async () => {
 
 // ❌ Logout and redirect helper
 const forceLogout = async () => {
-  await logoutUser();
+  await removeAccessToken();
   showToast({ type: "error", text1: "Session Expired", text2: "Please log in again." });
   router.replace("/login");
 };
@@ -56,7 +62,7 @@ const handle401Retry = async (error: any) => {
 
 // 🌐 Axios Instance
 const apiClient = axios.create({
-  baseURL: SERVER_URL,
+  baseURL: `${SERVER_URL}/api/v1`,
   timeout: 10000,
   headers: {
     "Content-Type": "application/json",
@@ -66,9 +72,7 @@ const apiClient = axios.create({
 // 🧾 Attach token to request
 apiClient.interceptors.request.use(
   async (config) => {
-    const state = store.getState();
-    const token = state?.auth.accessToken;
-
+    const token = (await AuthUtil.getAccessToken()) || null;
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }

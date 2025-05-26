@@ -10,7 +10,6 @@ import {
   Alert,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { useNavigation } from "@react-navigation/native";
 import { useRouter } from "expo-router";
 import Loading from "@/components/UI/Loading";
 import { useGetBusesQuery } from "@/store/features/bus/busApi";
@@ -20,6 +19,14 @@ import { TripUtil } from "@/utils/tripUtil";
 import { startBroadcasting } from "@/store/features/broadcast/broadcastSlice";
 
 const Index = () => {
+  const { isBroadcasting } = useAppSelector((state) => state.broadcast);
+
+  useEffect(() => {
+    if (isBroadcasting) {
+      router.replace("/home/(tabs)/broadcast/liveLocationSharing");
+    }
+  }, [isBroadcasting]);
+
   const router = useRouter();
   const dispatch = useAppDispatch();
   const { user, route } = useAppSelector((state) => state.auth);
@@ -88,10 +95,10 @@ const Index = () => {
       <ScrollView contentContainerStyle={{ paddingBottom: 100 }} className="p-3">
         {/* Header */}
         <View className="mb-3 items-center">
-          <Text className="text-xl font-semibold text-gray-900 mb-1">Share Live Bus Location</Text>{" "}
+          <Text className="text-xl font-semibold text-gray-900 mb-1">Share Live Bus Location</Text>
           <Text className="text-sm text-gray-600 text-center">
             Share live bus location to help campus community track shuttles in real-time
-          </Text>{" "}
+          </Text>
         </View>
 
         {/* Bus Search */}

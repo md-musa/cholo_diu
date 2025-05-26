@@ -1,14 +1,13 @@
 import React, { useRef, useState, useEffect, useCallback } from "react";
 import { View, Text, StatusBar, StyleSheet, Alert, TouchableOpacity } from "react-native";
-import { useAuth } from "@/contexts/AuthContext";
 import useLocation from "@/hook/useLocation";
 import MapComponent from "@/components/MapComponent";
 import StatusOverlayComponent from "@/components/UI/StatusOverlayComponent";
 import BottomSheetComponent from "@/components/UI/BottomSheetComponent";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
-import { useBusLocation } from "@/contexts/BusLocationContext";
 import { useAppSelector } from "@/store/storeConfig";
+import { useBusLocation } from "@/hook/useBusLocation";
 
 const WatchBusLocation = () => {
   const router = useRouter();
@@ -22,7 +21,7 @@ const WatchBusLocation = () => {
   const mapRef = useRef(null);
   const [currentCenter, setCurrentCenter] = useState([90.320463, 23.87739]);
 
-  const { activeBuses, currentlyConnectedUserCount, joinRoute } = useBusLocation();
+  const { activeBuses, currentlyConnectedUserCount } = useBusLocation();
 
   const centerToUserLocation = () => {
     cameraRef.current?.setCamera({

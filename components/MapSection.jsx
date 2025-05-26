@@ -37,11 +37,6 @@ const MapSection = ({ location, userData, routeData, activeBuses, currentlyConne
       console.warn("Map region change error:", error);
     }
   }, []);
-  // // console.log("Zoom-> ", zoom);
-  // // console.log("Current Center-> ", currentCenter);
-
-  // // console.log("-->", cameraRef);
-  // // console.log(mapRef);
 
   return (
     <View className="flex-1 relative mt-4 rounded-xl overflow-hidden border border-gray-300">
@@ -60,7 +55,7 @@ const MapSection = ({ location, userData, routeData, activeBuses, currentlyConne
       <StatusOverlayComponent currentlyConnectedUserCount={currentlyConnectedUserCount} activeBuses={activeBuses} />
 
       <TouchableOpacity className="absolute top-3 left-3 bg-white border border-gray-300 rounded-md shadow flex-row p-1 items-center justify-center">
-        <MaterialIcons name="route" size={18} color="#4b4b4b" />{" "}
+        <MaterialIcons name="route" size={18} color="#4b4b4b" />
         <Text className="text-sm capitalize color-[#2c2c2c]"> {routeData.endLocation} Route</Text>
       </TouchableOpacity>
 

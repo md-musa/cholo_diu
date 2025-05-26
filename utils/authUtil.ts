@@ -1,5 +1,7 @@
+import { store } from "@/store/storeConfig";
 import { showToast } from "./toastUtil";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { ASYNC_STORAGE_KEYS } from "@/constants";
 
 interface RegistrationFormData {
   name: string;
@@ -70,18 +72,22 @@ const validateRegistrationForm = (formData: RegistrationFormData): boolean => {
 };
 
 export const getAccessToken = async () => {
-  return await AsyncStorage.getItem("auth-token");
+  // const state = store.getState();
+  // if (state.auth?.accessToken) return state.auth.accessToken;
+  return await AsyncStorage.getItem(ASYNC_STORAGE_KEYS.AUTH_TOKEN);
 };
 
 export const setAccessToken = async (token: string) => {
-  return await AsyncStorage.setItem("auth-token", token);
+  return await AsyncStorage.setItem(ASYNC_STORAGE_KEYS.AUTH_TOKEN, token);
 };
 
-export const logoutUser = async () => {
-  await AsyncStorage.removeItem("auth-token");
-  // Optionally remove user data or tokens
+export const removeAccessToken = async () => {
+  await AsyncStorage.removeItem(ASYNC_STORAGE_KEYS.AUTH_TOKEN);
 };
 
 export const AuthUtil = {
   validateRegistrationForm,
+  getAccessToken,
+  setAccessToken,
+  removeAccessToken,
 };

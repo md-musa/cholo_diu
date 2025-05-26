@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, TouchableOpacity, ScrollView } from "react-native";
+import { View, Text, TouchableOpacity, ScrollView, Alert } from "react-native";
 import { processSchedules } from "@/utils/scheduleHelper";
 import ScheduleCard from "@/components/ScheduleCard";
 import { Feather } from "@expo/vector-icons";
@@ -16,6 +16,7 @@ const BusSchedule = () => {
 
   const dispatch = useAppDispatch();
   const { user, route } = useAppSelector((state) => state.auth);
+  const { isBroadcasting } = useAppSelector((state) => state.broadcast);
   const [selectedType, setSelectedType] = useState("Regular");
   const [selectedFilter, setSelectedFilter] = useState(user?.role == "student" ? "Student" : "Employee");
   const [selectedDay, setSelectedDay] = useState(
@@ -26,6 +27,12 @@ const BusSchedule = () => {
   const { data: schedules, isLoading } = useGetScheduleByRouteQuery({ routeId: route._id, day: selectedDay });
 
   const handleRouteChange = (selectedRouteId) => {
+    if (isBroadcasting) {
+      Alert.alert("Broadcasting is Active", "You cannot change the route while location sharing is active.", [
+        { text: "OK" },
+      ]);
+      return;
+    }
     const selectedRouteData = routes.find((r) => r._id === selectedRouteId);
     dispatch(updateRoute(selectedRouteData));
   };

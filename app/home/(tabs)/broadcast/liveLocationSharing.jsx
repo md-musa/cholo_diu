@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import {
   View,
   Text,
@@ -6,26 +6,21 @@ import {
   Alert,
   StyleSheet,
   Image,
-  ActivityIndicator,
   StatusBar,
-  BackHandler,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import useLocation from "@/hook/useLocation";
-import { useAuth } from "@/contexts/AuthContext";
-import { useBroadcast } from "@/contexts/BroadcastContext";
-import socket from "@/config/socketIoConfig";
 import * as MapLibreGL from "@maplibre/maplibre-react-native";
 import { selectRoutePolyline } from "@/utils/mappingHelper";
 import busMarker from "@/assets/images/navigatorArrow.png";
 import UniIcon from "@/assets/images/uni-2.png";
 import pinIcon from "@/assets/images/red-pin-marker.png";
 import StatusOverlayComponent from "@/components/UI/StatusOverlayComponent";
-import { useFocusEffect, useRouter } from "expo-router";
-import { useBusLocation } from "@/contexts/BusLocationContext";
+import { useRouter } from "expo-router";
 import Loading from "@/components/UI/Loading";
 import { useAppDispatch, useAppSelector } from "@/store/storeConfig";
-import { startBroadcasting, stopBroadcasting } from "@/store/features/broadcast/broadcastSlice";
+import { stopBroadcasting } from "@/store/features/broadcast/broadcastSlice";
+import { useBusLocation } from "@/hook/useBusLocation";
 
 function cpfl(string) {
   return string.charAt(0).toUpperCase() + string.slice(1);
@@ -36,7 +31,7 @@ function LiveLocationSharing() {
   const dispatch = useAppDispatch();
   const { location } = useLocation(true);
   const { route } = useAppSelector((state) => state.auth);
-  const { activeTrip } = useAppSelector((state) => state.trip);
+  const { activeTrip } = useAppSelector((state) => state.broadcast);
   const { currentlyConnectedUserCount, activeBuses } = useBusLocation();
 
   const [zoom, setZoom] = useState(16);
@@ -75,27 +70,27 @@ function LiveLocationSharing() {
     });
   };
 
-  useFocusEffect(
-    useCallback(() => {
-      const onBackPress = () => {
-        Alert.alert(
-          "Stop Sharing Live Location?",
-          "Campus community members will no longer see this bus's live position",
-          [
-            { text: "Stay", style: "cancel" },
-            { text: "Leave", onPress: () => router.back() },
-          ]
-        );
-        return true;
-      };
+  // useFocusEffect(
+  //   useCallback(() => {
+  //     const onBackPress = () => {
+  //       Alert.alert(
+  //         "Stop Sharing Live Location?",
+  //         "Campus community members will no longer see this bus's live position",
+  //         [
+  //           { text: "Stay", style: "cancel" },
+  //           { text: "Leave", onPress: () => router.back() },
+  //         ]
+  //       );
+  //       return true;
+  //     };
 
-      BackHandler.addEventListener("hardwareBackPress", onBackPress);
+  //     BackHandler.addEventListener("hardwareBackPress", onBackPress);
 
-      return () => {
-        BackHandler.removeEventListener("hardwareBackPress", onBackPress);
-      };
-    }, [router])
-  );
+  //     return () => {
+  //       BackHandler.removeEventListener("hardwareBackPress", onBackPress);
+  //     };
+  //   }, [router])
+  // );
 
   if (!location || !route || !activeTrip) return <Loading />;
 
@@ -254,7 +249,7 @@ function LiveLocationSharing() {
           {/* Info Text */}
           <View className="flex-[0.65]">
             <Text className="text-sm text-gray-700">
-              Sharing <Text className="font-bold capitalize">{activeTrip.bus.name}</Text>'s location for the{" "}
+              Sharing <Text className="font-bold capitalize">{activeTrip.bus.name}</Text>'s location for the
               <Text className="font-bold">{route?.endLocation}</Text> route
             </Text>
           </View>

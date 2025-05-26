@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, Image } from "react-native";
+import { View, Text, Image, Alert } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import busImage from "@/assets/images/icon.png";
 import { findOngoingOrNextSchedule } from "@/utils/scheduleHelper";
@@ -12,15 +12,22 @@ import { useGetScheduleByRouteQuery } from "@/store/features/schedule/scheduleAp
 const RouteSelector = () => {
   const dispatch = useAppDispatch();
   const { route } = useAppSelector((state) => state.auth);
+  const { isBroadcasting } = useAppSelector((state) => state.broadcast);
   const [selectedDay, setSelectedDay] = useState(
     new Date().toLocaleString("en-US", { weekday: "long" }).toLowerCase() === "friday" ? "Friday" : "Weekdays"
   );
 
   const { data: routes } = useGetRoutesQuery();
   const { data: schedules } = useGetScheduleByRouteQuery({ routeId: route._id, day: selectedDay });
-  // console.log("📅 schedules", schedules);
 
   const handleRouteChange = (selectedRouteId) => {
+    if (isBroadcasting) {
+      Alert.alert("Broadcasting is Active", "You cannot change the route while location sharing is active.", [
+        { text: "OK" },
+      ]);
+      return;
+    }
+
     const selectedRouteData = routes.find((r) => r._id === selectedRouteId);
     dispatch(updateRoute(selectedRouteData));
   };
@@ -40,6 +47,7 @@ const RouteSelector = () => {
         <Picker
           selectedValue={route._id}
           onValueChange={handleRouteChange}
+          value
           style={{
             flex: 1,
             backgroundColor: "white",

@@ -1,15 +1,13 @@
 import React from "react";
 import { View, Text, TouchableOpacity, Image, Linking, ScrollView } from "react-native";
 import { Ionicons, MaterialIcons, Feather, FontAwesome } from "@expo/vector-icons";
-import { useAuth } from "@/contexts/AuthContext";
 import Constants from "expo-constants";
 
 export default function Settings() {
-  const { currentUserData, logout } = useAuth();
   // const { name, email, role, route } = userData;
 
   const handleLogout = () => {
-    logout();
+    // logout();
   };
 
   const handleContact = () => {
@@ -26,7 +24,7 @@ export default function Settings() {
               source={require('../../../../assets/images/profile_placeholder.png')}
               className="w-32 h-32 rounded-full border-4 border-indigo-100"
             /> */}
-          {/* </View>
+      {/* </View>
           <Text className="text-2xl font-bold text-white mt-4">{name}</Text>
           <Text className="text-indigo-100">{email}</Text>
           
@@ -39,72 +37,40 @@ export default function Settings() {
             </View>
           </View>
         </View>
-      </View> */} 
+      </View> */}
 
       {/* Settings Cards */}
       <View className="px-5 mt-2">
         {/* Account Settings */}
         <View className="bg-white rounded-2xl p-5 shadow-sm my-2">
           <Text className="text-lg font-semibold text-gray-800 mb-4">Account Settings</Text>
-          <SettingOption 
-            icon="person-outline" 
-            text="Edit Profile" 
-            onPress={() => {}} 
-          />
-          <SettingOption 
-            icon="notifications-outline" 
-            text="Notification Preferences" 
-            onPress={() => {}} 
-          />
-          <SettingOption 
-            icon="lock-closed-outline" 
-            text="Change Password" 
-            onPress={() => {}} 
-          />
+          <SettingOption icon="person-outline" text="Edit Profile" onPress={() => {}} />
+          <SettingOption icon="notifications-outline" text="Notification Preferences" onPress={() => {}} />
+          <SettingOption icon="lock-closed-outline" text="Change Password" onPress={() => {}} />
         </View>
 
         {/* App Settings */}
         <View className="bg-white rounded-2xl p-5 shadow-sm my-2">
           <Text className="text-lg font-semibold text-gray-800 mb-4">App Settings</Text>
-          <SettingOption 
-            icon="moon-outline" 
-            text="Dark Mode" 
-            rightComponent={<ToggleSwitch />}
-          />
-          <SettingOption 
-            icon="language" 
-            text="Language" 
+          <SettingOption icon="moon-outline" text="Dark Mode" rightComponent={<ToggleSwitch />} />
+          <SettingOption
+            icon="language"
+            text="Language"
             rightComponent={<Text className="text-gray-500">English</Text>}
           />
-          <SettingOption 
-            icon="location-outline" 
-            text="Location Services" 
-            rightComponent={<ToggleSwitch />}
-          />
+          <SettingOption icon="location-outline" text="Location Services" rightComponent={<ToggleSwitch />} />
         </View>
 
         {/* Support */}
         <View className="bg-white rounded-2xl p-5 shadow-sm my-2">
           <Text className="text-lg font-semibold text-gray-800 mb-4">Support</Text>
-          <SettingOption 
-            icon="help-circle-outline" 
-            text="Help Center" 
-            onPress={() => {}} 
-          />
-          <SettingOption 
-            icon="mail-outline" 
-            text="Contact Support" 
-            onPress={handleContact} 
-          />
-          <SettingOption 
-            icon="shield-checkmark-outline" 
-            text="Privacy Policy" 
-            onPress={() => {}} 
-          />
+          <SettingOption icon="help-circle-outline" text="Help Center" onPress={() => {}} />
+          <SettingOption icon="mail-outline" text="Contact Support" onPress={handleContact} />
+          <SettingOption icon="shield-checkmark-outline" text="Privacy Policy" onPress={() => {}} />
         </View>
 
         {/* Logout */}
-        <TouchableOpacity 
+        <TouchableOpacity
           className="flex-row items-center justify-center bg-red-50 p-4 rounded-2xl border border-red-100 mt-5"
           onPress={handleLogout}
         >
@@ -115,9 +81,7 @@ export default function Settings() {
 
       {/* App Version */}
       <View className="items-center my-8">
-        <Text className="text-gray-400 text-sm">
-          CHOLO v{Constants.expoConfig.version}
-        </Text>
+        <Text className="text-gray-400 text-sm">CHOLO v{Constants.expoConfig.version}</Text>
       </View>
     </ScrollView>
   );
@@ -125,18 +89,13 @@ export default function Settings() {
 
 // Reusable Components
 const SettingOption = ({ icon, text, onPress, rightComponent, color = "gray" }) => (
-  <TouchableOpacity 
+  <TouchableOpacity
     className="flex-row items-center justify-between py-4 border-b border-gray-100 last:border-b-0"
     onPress={onPress}
     disabled={!onPress}
   >
     <View className="flex-row items-center">
-      <Ionicons 
-        name={icon} 
-        size={22} 
-        color={color === "gray" ? "#6b7280" : color} 
-        style={{ marginRight: 12 }}
-      />
+      <Ionicons name={icon} size={22} color={color === "gray" ? "#6b7280" : color} style={{ marginRight: 12 }} />
       <Text className="text-gray-700">{text}</Text>
     </View>
     {rightComponent || <Ionicons name="chevron-forward" size={20} color="#9ca3af" />}

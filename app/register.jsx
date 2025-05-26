@@ -8,7 +8,7 @@ import { Link, useRouter } from "expo-router";
 import Toast from "react-native-toast-message";
 import { showToast } from "@/utils/toastUtil";
 import Loading from "@/components/UI/Loading";
-import { useLoginMutation, useRegisterMutation } from "@/store/features/auth/authApi";
+import { useRegisterMutation } from "@/store/features/auth/authApi";
 import { useGetRoutesQuery } from "@/store/features/route/routeApi";
 import { ASYNC_STORAGE_KEYS } from "@/constants";
 import { useAppDispatch } from "@/store/storeConfig";

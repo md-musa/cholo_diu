@@ -1,8 +1,7 @@
-import { View, Text, TextInput, TouchableOpacity, ActivityIndicator } from "react-native";
+import { View, Text, TextInput, TouchableOpacity } from "react-native";
 import React, { useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { MaterialCommunityIcons, MaterialIcons, Ionicons } from "@expo/vector-icons";
-import { useAuth } from "@/contexts/AuthContext";
 import Toast from "react-native-toast-message";
 import { Link, useRouter } from "expo-router";
 import { showToast } from "@/utils/toastUtil";

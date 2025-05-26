@@ -10,6 +10,7 @@ import { jwtDecode } from "jwt-decode";
 import { ASYNC_STORAGE_KEYS, USER_ROLES } from "@/constants";
 import { useAppDispatch } from "@/store/storeConfig";
 import { AuthUser, clearCredentials, setCredentials } from "@/store/features/auth/authSlice";
+import Constants from "expo-constants";
 
 // Prevent splash from auto-hiding
 SplashScreen.preventAutoHideAsync();
@@ -21,6 +22,10 @@ interface DecodedToken {
 }
 
 const Index = () => {
+  // access expo constants extra
+  console.log(process.env.NODE_ENV);
+  console.log("Expo Constants:", Constants.expoConfig?.extra);
+  // console.log(Constants)
   const dispatch = useAppDispatch();
   const router = useRouter();
   const [appReady, setAppReady] = useState(false);
