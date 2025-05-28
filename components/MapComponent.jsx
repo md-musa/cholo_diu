@@ -1,7 +1,7 @@
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 import * as MapLibreGL from "@maplibre/maplibre-react-native";
-import { generateMarkers, selectRoutePolyline } from "@/utils/mappingHelper";
+import { generateMarkers } from "@/utils/mappingHelper";
 import busMarker from "@/assets/images/navigatorArrow3.png";
 import UniIcon from "@/assets/images/uni-2.png";
 import pinIcon from "@/assets/images/red-pin-marker.png";

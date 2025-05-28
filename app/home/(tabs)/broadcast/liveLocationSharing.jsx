@@ -1,17 +1,8 @@
 import React, { useRef, useState } from "react";
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  Alert,
-  StyleSheet,
-  Image,
-  StatusBar,
-} from "react-native";
+import { View, Text, TouchableOpacity, Alert, StyleSheet, Image, StatusBar } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import useLocation from "@/hook/useLocation";
 import * as MapLibreGL from "@maplibre/maplibre-react-native";
-import { selectRoutePolyline } from "@/utils/mappingHelper";
 import busMarker from "@/assets/images/navigatorArrow.png";
 import UniIcon from "@/assets/images/uni-2.png";
 import pinIcon from "@/assets/images/red-pin-marker.png";
@@ -120,12 +111,12 @@ function LiveLocationSharing() {
         </MapLibreGL.RasterSource>
 
         {/* ----- Route highlighter ------ */}
-        <MapLibreGL.ShapeSource id="routeSource" shape={selectRoutePolyline(route?.endLocation || "")}>
+        {/* <MapLibreGL.ShapeSource id="routeSource" shape={selectRoutePolyline(route?.endLocation || "")}>
           <MapLibreGL.LineLayer
             id="routeLayer"
             style={{ lineColor: "#2e2e2e", lineWidth: 2, lineCap: "round", lineJoin: "round" }}
           />
-        </MapLibreGL.ShapeSource>
+        </MapLibreGL.ShapeSource> */}
 
         {/* ---- Image Load ------ */}
         <MapLibreGL.Images images={{ marker: busMarker, UniIcon: UniIcon, pinIcon: pinIcon }} />
