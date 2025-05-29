@@ -52,12 +52,6 @@ const BusSchedule = () => {
     <ScrollView className="flex-1 bg-white px-4">
       {/* <Navbar /> */}
       {/* View Stoppage Button */}
-      <TouchableOpacity
-        onPress={() => router.push("/home/(tabs)/schedules/waypoints")}
-        className="py-2 my-2 bg-indigo-500 text-white rounded-xl"
-      >
-        <Text className="text-center text-white font-semibold text-lg">View Waypoints</Text>
-      </TouchableOpacity>
 
       <View className="">
         <View className="mt-4 my-2">
@@ -92,6 +86,13 @@ const BusSchedule = () => {
           </View>
         </View>
       </View>
+
+      <TouchableOpacity
+        onPress={() => router.push("/home/(tabs)/schedules/waypoints")}
+        className="py-1 mt-2 mb-1 bg-indigo-500 text-white rounded-full"
+      >
+        <Text className="text-center text-white font-semibold text-lg">View Waypoints</Text>
+      </TouchableOpacity>
 
       <View className="bg-tertiary-900 rounded-3xl my-4 p-1">
         {/*----- Date & Route Selector --------- */}

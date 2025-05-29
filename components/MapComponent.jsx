@@ -22,6 +22,7 @@ const MapComponent = ({
   const { route } = useAppSelector((state) => state.auth);
   console.log("Route Data:", route.name);
 
+
   return (
     <MapLibreGL.MapView
       attributionEnabled={true}

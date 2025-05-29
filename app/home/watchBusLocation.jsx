@@ -5,13 +5,15 @@ import MapComponent from "@/components/MapComponent";
 import StatusOverlayComponent from "@/components/UI/StatusOverlayComponent";
 import BottomSheetComponent from "@/components/UI/BottomSheetComponent";
 import { Ionicons } from "@expo/vector-icons";
-import { useRouter } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import { useAppSelector } from "@/store/storeConfig";
 import { useBusLocation } from "@/hook/useBusLocation";
 
 const WatchBusLocation = () => {
   const router = useRouter();
+  const paramsData = useLocalSearchParams();
   const { user, route } = useAppSelector((state) => state.auth);
+  console.log("Params \n", paramsData);
 
   const bottomSheetRef = useRef(null);
   const { location } = useLocation();
@@ -40,6 +42,12 @@ const WatchBusLocation = () => {
     setZoom(15);
     setCurrentCenter([...cord]);
   };
+
+  useEffect(() => {
+    if (paramsData?.latitude) {
+      highlightBus([parseFloat(paramsData.longitude), parseFloat(paramsData.latitude)]);
+    }
+  }, []);
 
   // Handle map region changes
   const handleRegionDidChange = useCallback(async () => {
