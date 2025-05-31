@@ -10,6 +10,8 @@ import { useGetRoutesQuery } from "@/store/features/route/routeApi";
 import { useGetScheduleByRouteQuery } from "@/store/features/schedule/scheduleApi";
 import { updateRoute } from "@/store/features/auth/authSlice";
 import { useRouter } from "expo-router";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { ASYNC_STORAGE_KEYS } from "@/constants";
 
 const BusSchedule = () => {
   const scheduleTypes = ["Regular", "Mid-Term", "Final", "Ramadan"];
@@ -28,16 +30,12 @@ const BusSchedule = () => {
   const { data: routes } = useGetRoutesQuery();
   const { data: schedules, isLoading } = useGetScheduleByRouteQuery({ routeId: route._id, day: selectedDay });
 
-  const handleRouteChange = (selectedRouteId) => {
-    if (isBroadcasting) {
-      Alert.alert("Broadcasting is Active", "You cannot change the route while location sharing is active.", [
-        { text: "OK" },
-      ]);
-      return;
-    }
+  const handleRouteChange = async (selectedRouteId) => {
     const selectedRouteData = routes.find((r) => r._id === selectedRouteId);
     dispatch(updateRoute(selectedRouteData));
+    await AsyncStorage.setItem(ASYNC_STORAGE_KEYS.CURRENT_ROUTE, JSON.stringify(selectedRouteData));
   };
+  
   if (isLoading) return <Loading />;
 
   let toCampusStudent, fromCampusStudent, toCampusEmployee, fromCampusEmployee;
@@ -110,6 +108,7 @@ const BusSchedule = () => {
             <Picker
               selectedValue={route._id}
               onValueChange={handleRouteChange}
+              enabled={!isBroadcasting}
               style={{
                 flex: 1,
                 backgroundColor: "white",

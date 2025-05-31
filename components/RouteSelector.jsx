@@ -8,6 +8,8 @@ import { useAppDispatch, useAppSelector } from "@/store/storeConfig";
 import { updateRoute } from "@/store/features/auth/authSlice";
 import { useGetRoutesQuery } from "@/store/features/route/routeApi";
 import { useGetScheduleByRouteQuery } from "@/store/features/schedule/scheduleApi";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { ASYNC_STORAGE_KEYS } from "@/constants";
 
 const RouteSelector = () => {
   const dispatch = useAppDispatch();
@@ -20,16 +22,10 @@ const RouteSelector = () => {
   const { data: routes } = useGetRoutesQuery();
   const { data: schedules } = useGetScheduleByRouteQuery({ routeId: route._id, day: selectedDay });
 
-  const handleRouteChange = (selectedRouteId) => {
-    if (isBroadcasting) {
-      Alert.alert("Broadcasting is Active", "You cannot change the route while location sharing is active.", [
-        { text: "OK" },
-      ]);
-      return;
-    }
-
+  const handleRouteChange = async (selectedRouteId) => {
     const selectedRouteData = routes.find((r) => r._id === selectedRouteId);
     dispatch(updateRoute(selectedRouteData));
+    await AsyncStorage.setItem(ASYNC_STORAGE_KEYS.CURRENT_ROUTE, JSON.stringify(selectedRouteData));
   };
 
   let toCampusStudent, fromCampusStudent, toCampusEmployee, fromCampusEmployee;
@@ -47,6 +43,7 @@ const RouteSelector = () => {
         <Picker
           selectedValue={route._id}
           onValueChange={handleRouteChange}
+          enabled={!isBroadcasting}
           value
           style={{
             flex: 1,

@@ -10,24 +10,6 @@ export function useBusLocationBroadcast() {
   const route = useAppSelector((state) => state.auth.route);
   const { activeTrip, isBroadcasting } = useAppSelector((state) => state.broadcast);
 
-  // Join room and handle reconnect
-  useEffect(() => {
-    if (!route) return;
-
-    const joinRoom = () => {
-      socket.emit("join-room", route._id);
-      console.log(`✅ Joined room: ${route._id}`);
-    };
-
-    joinRoom();
-    socket.on("connect", joinRoom);
-
-    return () => {
-      socket.off("connect", joinRoom);
-      socket.emit("leave-room", route._id);
-      console.log(`🚪 Left room: ${route._id}`);
-    };
-  }, [route]);
 
   // Broadcast every time location updates (every 5s)
   useEffect(() => {
@@ -43,7 +25,7 @@ export function useBusLocationBroadcast() {
 
   const stopBusLocationBroadcasting = () => {
     if (route) {
-      socket.emit("stop-broadcast", route._id);
+      // socket.emit("stop-broadcast", route._id);
       dispatch(stopBroadcasting());
       console.log(`🛑 Stopped broadcasting for route ${route._id}`);
     }
