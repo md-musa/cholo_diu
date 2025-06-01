@@ -20,13 +20,6 @@ import { startBroadcasting } from "@/store/features/broadcast/broadcastSlice";
 
 const Index = () => {
   const { isBroadcasting } = useAppSelector((state) => state.broadcast);
-
-  useEffect(() => {
-    if (isBroadcasting) {
-      router.replace("/home/(tabs)/broadcast/liveLocationSharing");
-    }
-  }, [isBroadcasting]);
-
   const router = useRouter();
   const dispatch = useAppDispatch();
   const { user, route } = useAppSelector((state) => state.auth);
@@ -89,6 +82,23 @@ const Index = () => {
       },
     ]);
   };
+
+  if (isBroadcasting)
+    return (
+      <View className="flex-1 justify-center items-center bg-gray-100">
+        <Ionicons name="alert-circle" size={48} color="#00C89BE6" />
+        <Text className="mt-4 text-lg font-semibold text-gray-900">Already Broadcasting</Text>
+        <Text className="mt-2 text-gray-700 text-center px-8">
+          You are already sharing a bus location. Tap below to go to the live sharing screen.
+        </Text>
+        <TouchableOpacity
+          className="mt-6 bg-primary-700 px-6 py-3 rounded-lg"
+          onPress={() => router.push("/home/(tabs)/broadcast/liveLocationSharing")}
+        >
+          <Text className="text-white font-bold text-lg">Go to Live Sharing</Text>
+        </TouchableOpacity>
+      </View>
+    );
 
   return (
     <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} className="flex-1 bg-gray-100">

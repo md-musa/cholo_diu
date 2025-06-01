@@ -10,6 +10,7 @@ import { useGetRoutesQuery } from "@/store/features/route/routeApi";
 import { useGetScheduleByRouteQuery } from "@/store/features/schedule/scheduleApi";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { ASYNC_STORAGE_KEYS } from "@/constants";
+import Loading from "./UI/Loading";
 
 const RouteSelector = () => {
   const dispatch = useAppDispatch();
@@ -20,7 +21,7 @@ const RouteSelector = () => {
   );
 
   const { data: routes } = useGetRoutesQuery();
-  const { data: schedules } = useGetScheduleByRouteQuery({ routeId: route._id, day: selectedDay });
+  const { data: scheduleResult, isLoading } = useGetScheduleByRouteQuery({ routeId: route._id, day: selectedDay });
 
   const handleRouteChange = async (selectedRouteId) => {
     const selectedRouteData = routes.find((r) => r._id === selectedRouteId);
@@ -28,14 +29,10 @@ const RouteSelector = () => {
     await AsyncStorage.setItem(ASYNC_STORAGE_KEYS.CURRENT_ROUTE, JSON.stringify(selectedRouteData));
   };
 
-  let toCampusStudent, fromCampusStudent, toCampusEmployee, fromCampusEmployee;
-  if (schedules) {
-    toCampusStudent = findOngoingOrNextSchedule(schedules.to_campus.student);
-    fromCampusStudent = findOngoingOrNextSchedule(schedules.from_campus.student);
-    toCampusEmployee = findOngoingOrNextSchedule(schedules.to_campus.employee);
-    fromCampusEmployee = findOngoingOrNextSchedule(schedules.from_campus.employee);
-  }
-
+  const toCampusStudent = findOngoingOrNextSchedule(scheduleResult?.schedules?.to_campus?.student || []);
+  const fromCampusStudent = findOngoingOrNextSchedule(scheduleResult?.schedules?.from_campus?.student || []);
+  const toCampusEmployee = findOngoingOrNextSchedule(scheduleResult?.schedules?.to_campus?.employee || []);
+  const fromCampusEmployee = findOngoingOrNextSchedule(scheduleResult?.schedules?.from_campus?.employee || []);
   return (
     <View className="bg-primary-1000 p-4 rounded-xl">
       <View className="flex flex-row items-center bg-white border border-gray-300 rounded-xl px-3">

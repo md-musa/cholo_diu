@@ -1,4 +1,16 @@
-export const mirpur1Route = {
+interface RouteFeatureCollection {
+  type: "FeatureCollection";
+  features: Array<{
+    type: "Feature";
+    properties: Record<string, any>;
+    geometry: {
+      coordinates: number[][];
+      type: "LineString";
+    };
+  }>;
+}
+
+export const mirpur1Route: RouteFeatureCollection = {
   type: "FeatureCollection",
   features: [
     {
@@ -68,7 +80,7 @@ export const mirpur1Route = {
   ],
 };
 
-export const uttaraRoute = {
+export const uttaraRoute: RouteFeatureCollection = {
   type: "FeatureCollection",
   features: [
     {

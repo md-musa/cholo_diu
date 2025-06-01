@@ -1,15 +1,19 @@
-import React, { useCallback, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { View, TouchableOpacity, Text } from "react-native";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import MapComponent from "@/components/MapComponent";
 import StatusOverlayComponent from "@/components/UI/StatusOverlayComponent";
+import { getCurrentRouteCenterCords } from "@/assets/routes";
+import { useAppSelector } from "@/store/storeConfig";
 
 const MapSection = ({ location, userData, routeData, activeBuses, currentlyConnectedUserCount }) => {
   const router = useRouter();
   const cameraRef = useRef(null);
   const mapRef = useRef(null);
-  const [zoom, setZoom] = useState(14);
+  const [zoom, setZoom] = useState(12);
+  const { route } = useAppSelector((state) => state.auth);
+
   const [currentCenter, setCurrentCenter] = useState([90.320463, 23.87739]);
 
   const centerToUserLocation = () => {
@@ -20,6 +24,14 @@ const MapSection = ({ location, userData, routeData, activeBuses, currentlyConne
     setZoom(14);
     setCurrentCenter([location.longitude, location.latitude]);
   };
+
+  useEffect(() => {
+    const routeCenter = getCurrentRouteCenterCords(route.name);
+    console.log("Route Cener", routeCenter);
+    if (routeCenter) {
+      setCurrentCenter(routeCenter);
+    }
+  }, [route]);
 
   // Handle map region changes
   const handleRegionDidChange = useCallback(async () => {

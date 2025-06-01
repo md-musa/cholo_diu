@@ -12,19 +12,24 @@ const ScheduleCard = (props) => {
   return (
     <View
       key={_id}
-      className={`rounded-lg py-2 my-2 border ${
+      className={`rounded-lg my-2 border ${
         status === "Ongoing" ? "bg-indigo-50 border-indigo-400" : "border-gray-400 bg-white shadow-md"
       }`}
     >
       {/* Top section with time and status */}
-      <View className="flex-row px-3 justify-between items-center border-b border-gray-200">
+      <View className="flex-row px-3 py-1 justify-center items-center border-b border-gray-200">
         <View className="flex-1 pb-2 ">
-          <Text className={`text-lg ${status === "Ongoing" ? "font-semibold text-indigo-500" : "text-gray-700"}`}>
+          <Text className={`text-lg ${status === "Ongoing" ? "font-semibold text-indigo-600" : "text-gray-800"}`}>
             {formattedTime}
           </Text>
           {note && (
-            <Text className={`text-sm ${status === "Ongoing" ? "font-semibold text-indigo-500" : "text-gray-700"}`}>
-              Note: {note}
+            <Text>
+              <Text className={`text-sm  font-semibold ${status === "Ongoing" ? "font-semibold text-indigo-500" : "text-gray-700"}`}>
+                Note:
+              </Text>
+              <Text className={`text-sm capitalize ${status === "Ongoing" ? "font-semibold text-indigo-500" : "text-gray-700"}`}>
+               {" "} {note}
+              </Text>
             </Text>
           )}
         </View>
@@ -35,18 +40,18 @@ const ScheduleCard = (props) => {
               status === "Next"
                 ? "text-primary-900 bg-primary-50 border border-primary-400"
                 : "text-purple-900 bg-purple-100 border border-purple-400"
-            } py-1 px-2 rounded-full`}
+            } py-1 px-4 rounded-full font-semibold`}
           >
-            {status} Sche.
+            {status}
           </Text>
         )}
       </View>
 
-      <View className="mt-2">
-        <Text className="text-md text-gray-700 px-3 my-1">Assigned Buses:</Text>
+      <View className="px-3 py-1">
+        <Text className="text-md mb-1 text-gray-700">Assigned Buses:</Text>
 
         {assignedBuses.length > 0 ? (
-          <View className="flex-row flex-wrap px-3">
+          <View className="flex-row flex-wrap">
             {assignedBuses.map((bus) => {
               const isActive = activeBuses[bus.name];
 

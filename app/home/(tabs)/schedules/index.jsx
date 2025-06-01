@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text, TouchableOpacity, ScrollView, Alert } from "react-native";
 import { processSchedules } from "@/utils/scheduleHelper";
 import ScheduleCard from "@/components/ScheduleCard";
@@ -14,37 +14,36 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { ASYNC_STORAGE_KEYS } from "@/constants";
 
 const BusSchedule = () => {
-  const scheduleTypes = ["Regular", "Mid-Term", "Final", "Ramadan"];
-  const scheduleDays = ["Weekdays", "Friday"];
+  const scheduleTypes = ["regular", "mid-term", "final", "ramadan"];
+  const scheduleDays = ["weekdays", "friday"];
 
   const router = useRouter();
   const dispatch = useAppDispatch();
   const { user, route } = useAppSelector((state) => state.auth);
   const { isBroadcasting } = useAppSelector((state) => state.broadcast);
-  const [selectedType, setSelectedType] = useState("Regular");
+  const [selectedType, setSelectedType] = useState("regular");
   const [selectedFilter, setSelectedFilter] = useState(user?.role == "student" ? "Student" : "Employee");
   const [selectedDay, setSelectedDay] = useState(
-    new Date().toLocaleString("en-US", { weekday: "long" }).toLowerCase() === "friday" ? "Friday" : "Weekdays"
+    new Date().toLocaleString("en-US", { weekday: "long" }).toLowerCase() === "friday" ? "friday" : "weekdays"
   );
 
   const { data: routes } = useGetRoutesQuery();
-  const { data: schedules, isLoading } = useGetScheduleByRouteQuery({ routeId: route._id, day: selectedDay });
+  const { data: scheduleResult } = useGetScheduleByRouteQuery({ routeId: route._id, day: selectedDay });
+
+  useEffect(() => {
+    if (scheduleResult) setSelectedType(scheduleResult.scheduleMode);
+  }, [scheduleResult]);
 
   const handleRouteChange = async (selectedRouteId) => {
     const selectedRouteData = routes.find((r) => r._id === selectedRouteId);
     dispatch(updateRoute(selectedRouteData));
     await AsyncStorage.setItem(ASYNC_STORAGE_KEYS.CURRENT_ROUTE, JSON.stringify(selectedRouteData));
   };
-  
-  if (isLoading) return <Loading />;
 
-  let toCampusStudent, fromCampusStudent, toCampusEmployee, fromCampusEmployee;
-  if (schedules) {
-    toCampusStudent = processSchedules(schedules?.to_campus.student);
-    fromCampusStudent = processSchedules(schedules?.from_campus.student);
-    toCampusEmployee = processSchedules(schedules?.to_campus.employee);
-    fromCampusEmployee = processSchedules(schedules?.from_campus.employee);
-  }
+  const toCampusStudent = processSchedules(scheduleResult?.schedules?.to_campus?.student || []);
+  const fromCampusStudent = processSchedules(scheduleResult?.schedules?.from_campus?.student || []);
+  const toCampusEmployee = processSchedules(scheduleResult?.schedules?.to_campus?.employee || []);
+  const fromCampusEmployee = processSchedules(scheduleResult?.schedules?.from_campus?.employee || []);
 
   return (
     <ScrollView className="flex-1 bg-white px-4">
@@ -89,7 +88,7 @@ const BusSchedule = () => {
         onPress={() => router.push("/home/(tabs)/schedules/waypoints")}
         className="py-1 mt-2 mb-1 bg-indigo-500 text-white rounded-full"
       >
-        <Text className="text-center text-white font-semibold text-lg">View Waypoints</Text>
+        <Text className="text-center text-white font-semibold text-lg">View Stoppages</Text>
       </TouchableOpacity>
 
       <View className="bg-tertiary-900 rounded-3xl my-4 p-1">
@@ -146,7 +145,7 @@ const BusSchedule = () => {
             <TouchableOpacity
               className={`px-6 py-2 rounded-lg border w-[45%] mx-2
                         ${
-                          selectedFilter === "Student" ? "bg-indigo-500 border-indigo-600" : "bg-white border-gray-300"
+                          selectedFilter === "Student" ? "bg-indigo-500 border-indigo-600" : "bg-white border-gray-400"
                         }`}
               onPress={() => setSelectedFilter("Student")}
             >
@@ -162,7 +161,7 @@ const BusSchedule = () => {
             <TouchableOpacity
               className={`px-6 py-2 rounded-lg border w-[45%] mx-2
                         ${
-                          selectedFilter === "Employee" ? "bg-indigo-500 border-indigo-600" : "bg-white border-gray-300"
+                          selectedFilter === "Employee" ? "bg-indigo-500 border-indigo-600" : "bg-white border-gray-400"
                         }`}
               onPress={() => setSelectedFilter("Employee")}
             >

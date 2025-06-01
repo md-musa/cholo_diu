@@ -1,16 +1,24 @@
 // components/BroadcastManager.tsx
-import { useBusLocation } from "@/hook/useBusLocation";
 import { useBusLocationBroadcast } from "@/hook/useBusLocationBroadcast";
 import { useAppSelector } from "@/store/storeConfig";
-import { useRouter } from "expo-router";
+import { usePathname, useRouter } from "expo-router";
 import { Text, TouchableOpacity, View } from "react-native";
 
 export default function BroadcastManager() {
   useBusLocationBroadcast();
   const router = useRouter();
+  const pathname = usePathname();
+
   const { isBroadcasting, activeTrip } = useAppSelector((state) => state.broadcast);
 
-  if (!isBroadcasting) return null;
+  const excludedPaths = ["/home/broadcast/liveLocationSharing", "/home/broadcast", "/home/watchBusLocation"];
+
+  // if (isBroadcasting && pathname === "/home/broadcast") {
+  //   router.push("/home/broadcast/liveLocationSharing");
+  // }
+
+  const shouldShowBroadcastManager = excludedPaths.includes(pathname);
+  if (!isBroadcasting || shouldShowBroadcastManager) return null;
 
   return (
     <TouchableOpacity onPress={() => router.push("/home/(tabs)/broadcast/liveLocationSharing")} className="z-50">

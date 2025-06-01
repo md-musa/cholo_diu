@@ -8,6 +8,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useAppSelector } from "@/store/storeConfig";
 import { useBusLocation } from "@/hook/useBusLocation";
+import { getCurrentRouteCenterCords, getWayline } from "@/assets/routes";
 
 const WatchBusLocation = () => {
   const router = useRouter();
@@ -17,7 +18,7 @@ const WatchBusLocation = () => {
 
   const bottomSheetRef = useRef(null);
   const { location } = useLocation();
-  const [zoom, setZoom] = useState(12);
+  const [zoom, setZoom] = useState(11);
 
   const cameraRef = useRef(null);
   const mapRef = useRef(null);
@@ -47,7 +48,12 @@ const WatchBusLocation = () => {
     if (paramsData?.latitude) {
       highlightBus([parseFloat(paramsData.longitude), parseFloat(paramsData.latitude)]);
     }
-  }, []);
+    const routeCenter = getCurrentRouteCenterCords(route.name);
+    console.log("Route Cener", routeCenter);
+    if (routeCenter) {
+      setCurrentCenter(routeCenter);
+    }
+  }, [route]);
 
   // Handle map region changes
   const handleRegionDidChange = useCallback(async () => {

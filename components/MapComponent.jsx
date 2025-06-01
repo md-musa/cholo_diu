@@ -20,7 +20,7 @@ const MapComponent = ({
   handleRegionDidChange,
 }) => {
   const { route } = useAppSelector((state) => state.auth);
-  console.log("Route Data:", route.name);
+  // console.log("Route Data:", route.name);
 
 
   return (
