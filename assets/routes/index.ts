@@ -31,6 +31,6 @@ export const getCurrentRouteCenterCords = (routeNo: RouteKey) => {
     coordinates = wayline.features[0].geometry.coordinates;
   }
 
-  const index = Math.floor(coordinates.length * 0.7);
+  const index = Math.floor(coordinates.length / 2);
   return coordinates[index];
 };

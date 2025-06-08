@@ -4,7 +4,6 @@ import { processSchedules } from "@/utils/scheduleHelper";
 import ScheduleCard from "@/components/ScheduleCard";
 import { Feather } from "@expo/vector-icons";
 import { Picker } from "@react-native-picker/picker";
-import Loading from "@/components/UI/Loading";
 import { useAppDispatch, useAppSelector } from "@/store/storeConfig";
 import { useGetRoutesQuery } from "@/store/features/route/routeApi";
 import { useGetScheduleByRouteQuery } from "@/store/features/schedule/scheduleApi";
@@ -12,6 +11,7 @@ import { updateRoute } from "@/store/features/auth/authSlice";
 import { useRouter } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { ASYNC_STORAGE_KEYS } from "@/constants";
+import Loading from "@/components/UI/Loading";
 
 const BusSchedule = () => {
   const scheduleTypes = ["regular", "mid-term", "final", "ramadan"];
@@ -21,15 +21,20 @@ const BusSchedule = () => {
   const dispatch = useAppDispatch();
   const { user, route } = useAppSelector((state) => state.auth);
   const { isBroadcasting } = useAppSelector((state) => state.broadcast);
+
   const [selectedType, setSelectedType] = useState("regular");
-  const [selectedFilter, setSelectedFilter] = useState(user?.role == "student" ? "Student" : "Employee");
+  const [selectedFilter, setSelectedFilter] = useState(user?.role);
   const [selectedDay, setSelectedDay] = useState(
     new Date().toLocaleString("en-US", { weekday: "long" }).toLowerCase() === "friday" ? "friday" : "weekdays"
   );
 
   const { data: routes } = useGetRoutesQuery();
-  const { data: scheduleResult } = useGetScheduleByRouteQuery({ routeId: route._id, day: selectedDay });
+  const { data: scheduleResult, isLoading: isScheduleLoading } = useGetScheduleByRouteQuery({
+    routeId: route._id,
+    day: selectedDay,
+  });
 
+  // console.log(JSON.stringify(scheduleResult, null, 2));
   useEffect(() => {
     if (scheduleResult) setSelectedType(scheduleResult.scheduleMode);
   }, [scheduleResult]);
@@ -39,6 +44,7 @@ const BusSchedule = () => {
     dispatch(updateRoute(selectedRouteData));
     await AsyncStorage.setItem(ASYNC_STORAGE_KEYS.CURRENT_ROUTE, JSON.stringify(selectedRouteData));
   };
+  if (isScheduleLoading) return <Loading />;
 
   const toCampusStudent = processSchedules(scheduleResult?.schedules?.to_campus?.student || []);
   const fromCampusStudent = processSchedules(scheduleResult?.schedules?.from_campus?.student || []);
@@ -145,13 +151,13 @@ const BusSchedule = () => {
             <TouchableOpacity
               className={`px-6 py-2 rounded-lg border w-[45%] mx-2
                         ${
-                          selectedFilter === "Student" ? "bg-indigo-500 border-indigo-600" : "bg-white border-gray-400"
+                          selectedFilter === "student" ? "bg-indigo-500 border-indigo-600" : "bg-white border-gray-400"
                         }`}
-              onPress={() => setSelectedFilter("Student")}
+              onPress={() => setSelectedFilter("student")}
             >
               <Text
                 className={`text-center font-semibold 
-                          ${selectedFilter === "Student" ? "text-white" : "text-gray-700"}`}
+                          ${selectedFilter === "student" ? "text-white" : "text-gray-700"}`}
               >
                 Student
               </Text>
@@ -161,13 +167,13 @@ const BusSchedule = () => {
             <TouchableOpacity
               className={`px-6 py-2 rounded-lg border w-[45%] mx-2
                         ${
-                          selectedFilter === "Employee" ? "bg-indigo-500 border-indigo-600" : "bg-white border-gray-400"
+                          selectedFilter === "employee" ? "bg-indigo-500 border-indigo-600" : "bg-white border-gray-400"
                         }`}
-              onPress={() => setSelectedFilter("Employee")}
+              onPress={() => setSelectedFilter("employee")}
             >
               <Text
                 className={`text-center font-semibold 
-                          ${selectedFilter === "Employee" ? "text-white" : "text-gray-700"}`}
+                          ${selectedFilter === "employee" ? "text-white" : "text-gray-700"}`}
               >
                 Employee
               </Text>
@@ -177,7 +183,7 @@ const BusSchedule = () => {
           {/* -----Bus Schedule--------- */}
 
           <View className="mt-4">
-            {selectedFilter == "Student" ? (
+            {selectedFilter == "student" ? (
               <>
                 <View className="">
                   <View className="flex-row items-center justify-center bg-white px-4 py-1 rounded-2xl my-2  border-gray-300">

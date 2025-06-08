@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import * as Location from "expo-location";
-
-interface LocationData {
+export interface ILocationData {
   latitude: number;
   longitude: number;
   speed: number | null;
@@ -9,8 +8,8 @@ interface LocationData {
   timestamp: number;
 }
 
-const useLocation = (isDriver = true) => {
-  const [location, setLocation] = useState<LocationData | null>(null);
+const useLocation = () => {
+  const [location, setLocation] = useState<ILocationData | null>(null);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
   useEffect(() => {
@@ -19,38 +18,17 @@ const useLocation = (isDriver = true) => {
     const startLocationTracking = async () => {
       try {
         const { status: foregroundStatus } = await Location.requestForegroundPermissionsAsync();
-        // console.log("Foreground permission status:", foregroundStatus);
 
         if (foregroundStatus !== "granted") {
           setErrorMsg("Location permission denied");
           return;
         }
 
-        let options = {
+        let options: Location.LocationOptions = {
           accuracy: Location.Accuracy.BestForNavigation,
-          timeInterval: 2000,
-          distanceInterval: 1,
+          timeInterval: 5000,
+          distanceInterval: 5,
         };
-
-        // if (isDriver) {
-        //   const { status: backgroundStatus } = await Location.requestBackgroundPermissionsAsync();
-        //   // console.log("Background permission status:", backgroundStatus);
-
-        //   if (backgroundStatus !== "granted") {
-        //     Alert.alert(
-        //       "Background Location Required",
-        //       "To track shuttles when the app is closed, please enable background location in settings",
-        //       [{ text: "OK", onPress: () => Location.openSettings() }]
-        //     );
-        //     // Still proceed with foreground-only tracking
-        //   } else {
-        //     options.showsBackgroundLocationIndicator = true;
-        //     options.foregroundService = {
-        //       notificationTitle: "Campus Shuttle Tracking",
-        //       notificationBody: "Sharing live location with campus community",
-        //     };
-        //   }
-        // }
 
         locationSubscription = await Location.watchPositionAsync(options, (newLocation) => {
           setLocation({
@@ -75,7 +53,7 @@ const useLocation = (isDriver = true) => {
     return () => {
       if (locationSubscription) locationSubscription.remove();
     };
-  }, [isDriver]);
+  }, []);
 
   return { location, errorMsg };
 };

@@ -17,6 +17,7 @@ import { useAppDispatch, useAppSelector } from "@/store/storeConfig";
 import { useCreateTripMutation } from "@/store/features/trip/tripApi";
 import { TripUtil } from "@/utils/tripUtil";
 import { startBroadcasting } from "@/store/features/broadcast/broadcastSlice";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Index = () => {
   const { isBroadcasting } = useAppSelector((state) => state.broadcast);
@@ -33,7 +34,7 @@ const Index = () => {
   const { data: buses, isLoading: isBusesLoading } = useGetBusesQuery();
   if (isBusesLoading) return <Loading />;
 
-  const filteredBuses = TripUtil.searchBus(buses, searchQuery);
+  const filteredBuses = TripUtil.searchBus(buses || [], searchQuery);
   const isValid = selectedBus && busType;
 
   const handleStartSharing = async () => {
@@ -57,6 +58,7 @@ const Index = () => {
             });
 
             console.log("🌊 Trip created:", data);
+
             dispatch(
               startBroadcasting({
                 bus: selectedBus,
@@ -65,6 +67,7 @@ const Index = () => {
                 note,
               })
             );
+            await AsyncStorage.setItem("tripId", data._id);
 
             console.log("Broadcast data set:", {
               bus: selectedBus,

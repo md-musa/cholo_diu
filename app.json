@@ -2,14 +2,21 @@
   "expo": {
     "name": "Cholo",
     "slug": "cholo",
+    "scheme": "cholo",
+    "owner": "mdmusa12",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/play_store_512.png",
-    "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "infoPlist": {
+        "UIBackgroundModes": ["location", "fetch"],
+        "NSLocationAlwaysUsageDescription": "We need your location even in the background.",
+        "NSLocationWhenInUseUsageDescription": "We need your location while using the app.",
+        "NSLocationAlwaysAndWhenInUseUsageDescription": "To share your live location even in background."
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -17,7 +24,29 @@
         "backgroundColor": "#ffffff"
       },
       "package": "com.md_musa.client2",
-      "permissions": ["android.permission.ACCESS_COARSE_LOCATION", "android.permission.ACCESS_FINE_LOCATION"]
+      "permissions": [
+        "ACCESS_FINE_LOCATION",
+        "ACCESS_COARSE_LOCATION",
+        "ACCESS_BACKGROUND_LOCATION",
+        "FOREGROUND_SERVICE",
+        "WAKE_LOCK",
+        "FOREGROUND_SERVICE_LOCATION"
+      ],
+      "foregroundService": {
+        "notificationTitle": "Live Bus Tracking",
+        "notificationBody": "Sharing your location in real-time."
+      },
+      "intentFilters": [
+        {
+          "action": "VIEW",
+          "data": [
+            {
+              "scheme": "cholo"
+            }
+          ],
+          "category": ["BROWSABLE", "DEFAULT"]
+        }
+      ]
     },
     "web": {
       "bundler": "metro",
@@ -48,7 +77,7 @@
       "typedRoutes": true
     },
     "extra": {
-      "DVELOPMENT_SERVER_URL": "http://192.168.1.4:4000",
+      "DVELOPMENT_SERVER_URL": "http://192.168.1.105:4000",
       "PRODUCTION_SERVER_URL": "https://choloserver-production.up.railway.app",
       "router": {
         "origin": false
@@ -59,7 +88,6 @@
       "androidMetadata": {
         "com.mapbox.token": "your_dummy_mapbox_token"
       }
-    },
-    "owner": "mdmusa12"
+    }
   }
 }

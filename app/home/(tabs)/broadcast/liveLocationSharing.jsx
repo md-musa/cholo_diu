@@ -1,7 +1,6 @@
 import React, { useRef, useState } from "react";
 import { View, Text, TouchableOpacity, Alert, StyleSheet, Image, StatusBar } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import useLocation from "@/hook/useLocation";
 import * as MapLibreGL from "@maplibre/maplibre-react-native";
 import busMarker from "@/assets/images/navigatorArrow.png";
 import UniIcon from "@/assets/images/uni-2.png";
@@ -12,6 +11,7 @@ import Loading from "@/components/UI/Loading";
 import { useAppDispatch, useAppSelector } from "@/store/storeConfig";
 import { stopBroadcasting } from "@/store/features/broadcast/broadcastSlice";
 import { useBusLocation } from "@/hook/useBusLocation";
+import useLocation from "@/hook/useLocation";
 
 function cpfl(string) {
   return string.charAt(0).toUpperCase() + string.slice(1);
@@ -20,16 +20,13 @@ function cpfl(string) {
 function LiveLocationSharing() {
   const router = useRouter();
   const dispatch = useAppDispatch();
-  const { location } = useLocation(true);
+  const { location } = useLocation();
   const { route } = useAppSelector((state) => state.auth);
   const { activeTrip } = useAppSelector((state) => state.broadcast);
   const { currentlyConnectedUserCount, activeBuses } = useBusLocation();
 
   const [zoom, setZoom] = useState(16);
   const cameraRef = useRef(null);
-
-  console.log("👤", JSON.stringify(activeTrip, null, 2));
-  console.log("📍", location);
 
   const handleStopSharing = () => {
     Alert.alert(
@@ -41,7 +38,7 @@ function LiveLocationSharing() {
           style: "cancel",
         },
         {
-          text: "Leave",
+          text: "Stop",
           onPress: () => {
             dispatch(stopBroadcasting());
             router.back();
@@ -60,28 +57,6 @@ function LiveLocationSharing() {
       zoom: 16,
     });
   };
-
-  // useFocusEffect(
-  //   useCallback(() => {
-  //     const onBackPress = () => {
-  //       Alert.alert(
-  //         "Stop Sharing Live Location?",
-  //         "Campus community members will no longer see this bus's live position",
-  //         [
-  //           { text: "Stay", style: "cancel" },
-  //           { text: "Leave", onPress: () => router.back() },
-  //         ]
-  //       );
-  //       return true;
-  //     };
-
-  //     BackHandler.addEventListener("hardwareBackPress", onBackPress);
-
-  //     return () => {
-  //       BackHandler.removeEventListener("hardwareBackPress", onBackPress);
-  //     };
-  //   }, [router])
-  // );
 
   if (!location || !route || !activeTrip) return <Loading />;
 

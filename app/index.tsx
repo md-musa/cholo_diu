@@ -22,9 +22,9 @@ interface DecodedToken {
 }
 
 const Index = () => {
-  // access expo constants extra
-  console.log(process.env.NODE_ENV);
-  console.log("Expo Constants:", Constants.expoConfig?.extra);
+  // // access expo constants extra
+  // console.log(process.env.NODE_ENV);
+  // console.log("Expo Constants:", Constants.expoConfig?.extra);
   // console.log(Constants)
   const dispatch = useAppDispatch();
   const router = useRouter();

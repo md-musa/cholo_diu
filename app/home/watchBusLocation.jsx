@@ -14,7 +14,7 @@ const WatchBusLocation = () => {
   const router = useRouter();
   const paramsData = useLocalSearchParams();
   const { user, route } = useAppSelector((state) => state.auth);
-  console.log("Params \n", paramsData);
+  // console.log("Params \n", paramsData);
 
   const bottomSheetRef = useRef(null);
   const { location } = useLocation();
@@ -49,7 +49,7 @@ const WatchBusLocation = () => {
       highlightBus([parseFloat(paramsData.longitude), parseFloat(paramsData.latitude)]);
     }
     const routeCenter = getCurrentRouteCenterCords(route.name);
-    console.log("Route Cener", routeCenter);
+    // console.log("Route Cener", routeCenter);
     if (routeCenter) {
       setCurrentCenter(routeCenter);
     }
