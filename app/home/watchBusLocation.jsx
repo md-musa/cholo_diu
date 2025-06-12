@@ -14,7 +14,6 @@ const WatchBusLocation = () => {
   const router = useRouter();
   const paramsData = useLocalSearchParams();
   const { user, route } = useAppSelector((state) => state.auth);
-  // console.log("Params \n", paramsData);
 
   const bottomSheetRef = useRef(null);
   const { location } = useLocation();
@@ -119,7 +118,7 @@ const WatchBusLocation = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "grey",
+    backgroundColor: "gray",
   },
 });
 

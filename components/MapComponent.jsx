@@ -1,30 +1,30 @@
-import React from "react";
-import { StyleSheet, Text, View } from "react-native";
+import React, { useState } from "react";
+import { Image, StyleSheet, Text, View } from "react-native";
 import * as MapLibreGL from "@maplibre/maplibre-react-native";
 import { generateMarkers } from "@/utils/mappingHelper";
 import busMarker from "@/assets/images/navigatorArrow3.png";
 import UniIcon from "@/assets/images/uni-2.png";
 import pinIcon from "@/assets/images/red-pin-marker.png";
 import { useAppSelector } from "@/store/storeConfig";
-import { getWayline } from "@/assets/routes";
+import { getWayline, getWaypoints, ROUTES } from "@/assets/routes";
+import useLocation from "@/hook/useLocation";
+import { useBusLocation } from "@/hook/useBusLocation";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
-const MapComponent = ({
-  location,
-  mapRef,
-  zoom,
-  userData,
-  routeData,
-  activeBuses,
-  cameraRef,
-  currentCenter,
-  handleRegionDidChange,
-}) => {
+const MapComponent = ({ mapRef, zoom, cameraRef, currentCenter, handleRegionDidChange }) => {
+  const { location } = useLocation();
   const { route } = useAppSelector((state) => state.auth);
-  // console.log("Route Data:", route.name);
-
+  const { activeBuses } = useBusLocation();
+  const [busInfo, setBusInfo] = useState(null);
+  const waypoints = getWaypoints(route.name);
 
   return (
     <MapLibreGL.MapView
+      localizeLabels={true}
+      logoEnabled={true}
+      compassEnabled={true}
+      styleURL={MapLibreGL.StyleURL.Street}
+      textureMode={false}
       attributionEnabled={true}
       style={styles.map}
       ref={mapRef}
@@ -53,16 +53,6 @@ const MapComponent = ({
       {/* ---- Image Load ------ */}
       <MapLibreGL.Images images={{ marker: busMarker, UniIcon: UniIcon, pinIcon: pinIcon }} />
 
-      {/* -----Show buses location-------*/}
-      <MapLibreGL.Animated.ShapeSource
-        id="busMarkers"
-        shape={{ type: "FeatureCollection", features: generateMarkers(activeBuses) }}
-      >
-        <MapLibreGL.CircleLayer id="userShadow3" style={styles.busShadow1} />
-        <MapLibreGL.CircleLayer id="userShadow2" style={styles.busShadow2} />
-        <MapLibreGL.Animated.SymbolLayer id="busMarkerLayer" style={styles.busMarker} />
-      </MapLibreGL.Animated.ShapeSource>
-
       {/* --------- Show user location ----------*/}
       {location && (
         <MapLibreGL.ShapeSource
@@ -85,6 +75,29 @@ const MapComponent = ({
         </MapLibreGL.ShapeSource>
       )}
 
+      {/* ------- Stopages --------- */}
+      {waypoints && (
+        <MapLibreGL.ShapeSource
+          id="userLocation-4"
+          shape={{
+            type: "FeatureCollection",
+            features: waypoints.map((point) => ({
+              type: "Feature",
+              geometry: {
+                type: "Point",
+                coordinates: point.coords,
+              },
+              properties: {
+                title: point.location,
+              },
+            })),
+          }}
+        >
+          <MapLibreGL.CircleLayer id="userDot-4" style={styles.stopageDot} />
+          <MapLibreGL.SymbolLayer id="stopageLabels" style={styles.stopageInfo} />
+        </MapLibreGL.ShapeSource>
+      )}
+
       {/* ------ University and Trasnport Location Symbol */}
       <MapLibreGL.ShapeSource
         id="userLocation-2"
@@ -95,7 +108,7 @@ const MapComponent = ({
               type: "Feature",
               geometry: {
                 type: "Point",
-                coordinates: [90.320463, 23.87739],
+                coordinates: [90.320463, 23.879],
               },
               properties: {
                 icon: "UniIcon", // matches the key in MapLibreGL.Images
@@ -110,7 +123,7 @@ const MapComponent = ({
               },
               properties: {
                 icon: "pinIcon", // matches the key in MapLibreGL.Images
-                title: "DIU Transport",
+                title: "Transport",
               },
             },
           ],
@@ -131,6 +144,34 @@ const MapComponent = ({
           }}
         />
       </MapLibreGL.ShapeSource>
+
+      {/* -----Show buses location-------*/}
+      <MapLibreGL.ShapeSource
+        id="busMarkers"
+        shape={{ type: "FeatureCollection", features: generateMarkers(activeBuses) }}
+        onPress={(e) => {
+          setBusInfo(e.features[0]);
+          setTimeout(() => setBusInfo(null), 3000);
+        }}
+      >
+        <MapLibreGL.CircleLayer id="userShadow3" style={styles.busShadow1} />
+        <MapLibreGL.CircleLayer id="userShadow2" style={styles.busShadow2} />
+        <MapLibreGL.SymbolLayer id="busMarkerLayer" style={styles.busMarker} />
+      </MapLibreGL.ShapeSource>
+
+      {/* Show bus details (callout) */}
+      {busInfo && busInfo.geometry && (
+        <MapLibreGL.MarkerView coordinate={busInfo.geometry.coordinates}>
+          <MapLibreGL.Callout>
+            <View style={styles.calloutContainer}>
+              <MaterialCommunityIcons name="bus" size={20} color="#e58134" style={{ marginBottom: 2 }} />
+              <Text style={styles.calloutDescription} className="capitalize">
+                {busInfo.properties.title}
+              </Text>
+            </View>
+          </MapLibreGL.Callout>
+        </MapLibreGL.MarkerView>
+      )}
     </MapLibreGL.MapView>
   );
 };
@@ -139,6 +180,16 @@ const styles = StyleSheet.create({
   map: {
     flex: 1,
   },
+
+  markerContainer: {
+    alignItems: "center",
+    backgroundColor: "white",
+    padding: 4,
+    borderRadius: 8,
+  },
+  markerImage: { width: 32, height: 32 },
+  markerLabel: { fontSize: 12, marginTop: 2 },
+
   busShadow1: {
     circleRadius: 17,
     circleColor: "rgba(229, 129, 52, 0.4)",
@@ -173,18 +224,48 @@ const styles = StyleSheet.create({
     circleStrokeColor: "white",
     circleStrokeWidth: 2,
   },
-  calloutContainer: {
-    backgroundColor: "red",
-    padding: 6,
-    borderRadius: 6,
-    borderColor: "#333",
-    borderWidth: 1,
-    zIndex: 999, // Add this
+
+  stopageDot: {
+    circleRadius: 3,
+    circleColor: "black",
+    circleStrokeColor: "white",
+    circleStrokeWidth: 1,
   },
+  stopageInfo: {
+    textField: ["get", "title"],
+    textSize: 8,
+    textColor: "black",
+    textAnchor: "right",
+    // textOffset: [0, 6],
+    textHaloColor: "black",
+    textHaloWidth: 0.1,
+  },
+  // calloutContainer: {
+  //   backgroundColor: "red",
+  //   padding: 6,
+  //   borderRadius: 6,
+  //   borderColor: "#333",
+  //   borderWidth: 1,
+  //   zIndex: 999, // Add this
+  // },
   pointMarker: {
     iconImage: "customMarker",
     iconSize: 0.5,
     iconAllowOverlap: true,
+  },
+  calloutTitle: {
+    fontWeight: "bold",
+    fontSize: 14,
+  },
+  calloutDescription: {
+    fontSize: 12,
+  },
+  calloutContainer: {
+    backgroundColor: "white",
+    padding: 3,
+    borderRadius: 6,
+    borderColor: "gray",
+    borderWidth: 1,
   },
 });
 

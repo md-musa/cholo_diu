@@ -2,14 +2,16 @@ import React from "react";
 import { View, Text, FlatList } from "react-native";
 import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
 import AvailableBusListCard from "./AvailableBusListCard";
+import { MaterialIcons } from "@expo/vector-icons"; // or use any icon library you prefer
 
 const BottomSheetComponent = ({ bottomSheetRef, activeBuses, closeBottomSheet, highlightBus }) => {
+  
   return (
     <BottomSheet ref={bottomSheetRef} snapPoints={["30%", "50%", "60%", "75%", "90%"]} index={1}>
       <BottomSheetView className="px-5">
         <Text className="text-xl font-bold text-center my-2">Available buses</Text>
 
-        {activeBuses ? (
+        {activeBuses && Object.keys(activeBuses).length > 0 ? (
           <FlatList
             data={Object.values(activeBuses)}
             renderItem={({ item }) => <AvailableBusListCard item={item} highlightBus={highlightBus} />}
@@ -17,7 +19,10 @@ const BottomSheetComponent = ({ bottomSheetRef, activeBuses, closeBottomSheet, h
             className="w-full"
           />
         ) : (
-          <Text className="text-center">No buses available</Text>
+          <View className="flex items-center justify-center my-8">
+            <MaterialIcons name="directions-bus" size={48} color="#888" />
+            <Text className="text-center mt-2 text-gray-500">No buses available</Text>
+          </View>
         )}
       </BottomSheetView>
     </BottomSheet>

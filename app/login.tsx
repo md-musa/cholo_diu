@@ -4,7 +4,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { MaterialCommunityIcons, MaterialIcons, Ionicons } from "@expo/vector-icons";
 import Toast from "react-native-toast-message";
 import { Link, useRouter } from "expo-router";
-import { showToast } from "@/utils/toastUtil";
+import { ToastUtil } from "@/utils/toastUtil";
 import Loading from "@/components/UI/Loading";
 import { useLoginMutation } from "@/store/features/auth/authApi";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -31,21 +31,11 @@ const Login = () => {
       await AsyncStorage.setItem(ASYNC_STORAGE_KEYS.CURRENT_ROUTE, JSON.stringify(user.routeId));
 
       dispatch(setCredentials({ user, route: user.routeId, accessToken }));
-
-      showToast({
-        type: "success",
-        text1: "Login Successful",
-        text2: `Welcome, ${user.name}!`,
-      });
-
+      ToastUtil.success(`Welcome, ${user.name}!`);
       router.replace("/home");
     } catch (err) {
       console.log("🟥 Login Error", JSON.stringify(err, null, 2));
-      showToast({
-        type: "error",
-        text1: "Login Failed",
-        text2: err.response.data.errorMessages[0].message,
-      });
+      ToastUtil.error(err?.response?.data.errorMessages[0].message || "Login error");
     }
   };
 

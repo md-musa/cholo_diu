@@ -6,7 +6,6 @@ import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 import { Picker } from "@react-native-picker/picker";
 import { Link, useRouter } from "expo-router";
 import Toast from "react-native-toast-message";
-import { showToast } from "@/utils/toastUtil";
 import Loading from "@/components/UI/Loading";
 import { useRegisterMutation } from "@/store/features/auth/authApi";
 import { useGetRoutesQuery } from "@/store/features/route/routeApi";
@@ -15,6 +14,7 @@ import { useAppDispatch } from "@/store/storeConfig";
 import { AuthUtil } from "@/utils/authUtil";
 import { setCredentials } from "@/store/features/auth/authSlice";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { ToastUtil } from "@/utils/toastUtil";
 
 const Register = () => {
   const router = useRouter();
@@ -37,11 +37,7 @@ const Register = () => {
       const result = await register(formData);
 
       if ("error" in result) {
-        showToast({
-          type: "error",
-          text1: result.error?.data.messsage,
-          text2: result.error?.data?.errorMessage?.[0]?.message,
-        });
+        ToastUtil.error(result.error?.data?.errorMessage?.[0]?.message);
         return;
       }
 
@@ -52,21 +48,11 @@ const Register = () => {
       await AsyncStorage.setItem(ASYNC_STORAGE_KEYS.CURRENT_ROUTE, JSON.stringify(user.routeId));
 
       dispatch(setCredentials({ user, route: user.routeId, accessToken }));
-
-      showToast({
-        type: "success",
-        text1: "Registration Successful",
-        text2: `Welcome, ${user.name}!`,
-      });
-
+      ToastUtil.success(`Welcome, ${user.name}!`);
       router.replace("/home");
     } catch (err) {
       console.log("🟥 Catch Error", err);
-      showToast({
-        type: "error",
-        text1: "Registration Failed",
-        text2: err?.message || "Unexpected error occurred",
-      });
+      ToastUtil.error(err?.message || "Unexpected error occurred");
     }
   };
 

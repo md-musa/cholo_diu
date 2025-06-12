@@ -2,6 +2,7 @@
 import { useBusLocationBroadcast } from "@/hook/useBusLocationBroadcast";
 import { useAppSelector } from "@/store/storeConfig";
 import { usePathname, useRouter } from "expo-router";
+import { Image } from "react-native";
 import { Text, TouchableOpacity, View } from "react-native";
 
 export default function BroadcastManager() {
@@ -21,10 +22,21 @@ export default function BroadcastManager() {
   if (!isBroadcasting || shouldShowBroadcastManager) return null;
 
   return (
-    <TouchableOpacity onPress={() => router.push("/home/(tabs)/broadcast/liveLocationSharing")} className="z-50">
-      <Text className="text-center w-full text-md font-bold p-1 bg-red-600 text-white">
-        You are sharing live location for <Text className="capitalize">{activeTrip?.bus.name}</Text>
-      </Text>
+    <TouchableOpacity onPress={() => router.push("/home/broadcast/liveLocationSharing")} className="z-50">
+      <View className="flex-row items-center justify-center p-1 bg-red-600">
+        <Image
+          source={{ uri: "https://media.lordicon.com/icons/wired/outline/1657-alert.gif" }}
+          style={{ width: 22, height: 22 }}
+          resizeMode="contain"
+          className="rounded-2xl"
+        />
+
+        <Text className="text-white font-bold mx-2">
+          Sharing location for <Text className="capitalize">{activeTrip?.bus.name}</Text>
+        </Text>
+
+        <Text className="border border-gray-200 bg-red-600/70 text-white font-semibold px-3 rounded-lg">Stop</Text>
+      </View>
     </TouchableOpacity>
   );
 }

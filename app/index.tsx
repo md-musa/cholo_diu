@@ -13,7 +13,7 @@ import { AuthUser, clearCredentials, setCredentials } from "@/store/features/aut
 import Constants from "expo-constants";
 
 // Prevent splash from auto-hiding
-SplashScreen.preventAutoHideAsync();
+// SplashScreen.preventAutoHideAsync();
 
 interface DecodedToken {
   _id: string;
@@ -22,10 +22,6 @@ interface DecodedToken {
 }
 
 const Index = () => {
-  // // access expo constants extra
-  // console.log(process.env.NODE_ENV);
-  // console.log("Expo Constants:", Constants.expoConfig?.extra);
-  // console.log(Constants)
   const dispatch = useAppDispatch();
   const router = useRouter();
   const [appReady, setAppReady] = useState(false);
@@ -51,7 +47,7 @@ const Index = () => {
         };
 
         dispatch(setCredentials({ user, route, accessToken: token }));
-        router.push("/home");
+        router.replace("/home");
       } catch (err) {
         console.error("Initialization error:", err);
         dispatch(clearCredentials());
@@ -66,8 +62,9 @@ const Index = () => {
 
   const onLayoutRootView = useCallback(async () => {
     if (appReady) {
-      await SplashScreen.hideAsync();
+      // await SplashScreen.hideAsync();
     }
+    console.log(appReady);
   }, [appReady]);
 
   if (!appReady) return null;

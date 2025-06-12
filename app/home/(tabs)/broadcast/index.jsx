@@ -76,7 +76,7 @@ const Index = () => {
               note,
             });
 
-            router.push("/home/(tabs)/broadcast/liveLocationSharing");
+            router.push("/home/broadcast/liveLocationSharing");
           } catch (error) {
             console.error("[broadcast] Error creating trip:\n", JSON.stringify(error.response.data.message, null, 2));
             Alert.alert("Error", "Failed to start sharing. Please try again.");
@@ -96,7 +96,7 @@ const Index = () => {
         </Text>
         <TouchableOpacity
           className="mt-6 bg-primary-700 px-6 py-3 rounded-lg"
-          onPress={() => router.push("/home/(tabs)/broadcast/liveLocationSharing")}
+          onPress={() => router.push("/home/broadcast/liveLocationSharing")}
         >
           <Text className="text-white font-bold text-lg">Go to Live Sharing</Text>
         </TouchableOpacity>

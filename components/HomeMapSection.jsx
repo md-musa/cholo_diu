@@ -6,14 +6,18 @@ import MapComponent from "@/components/MapComponent";
 import StatusOverlayComponent from "@/components/UI/StatusOverlayComponent";
 import { getCurrentRouteCenterCords } from "@/assets/routes";
 import { useAppSelector } from "@/store/storeConfig";
+import useLocation from "@/hook/useLocation";
+import { useBusLocation } from "@/hook/useBusLocation";
 
-const MapSection = ({ location, userData, routeData, activeBuses, currentlyConnectedUserCount }) => {
+const HomeMapSection = () => {
   const router = useRouter();
   const cameraRef = useRef(null);
+  const { location } = useLocation();
+  const { route } = useAppSelector((state) => state.auth);
+  const { activeBuses, currentlyConnectedUserCount } = useBusLocation();
+
   const mapRef = useRef(null);
   const [zoom, setZoom] = useState(12);
-  const { route } = useAppSelector((state) => state.auth);
-
   const [currentCenter, setCurrentCenter] = useState([90.320463, 23.87739]);
 
   const centerToUserLocation = () => {
@@ -53,10 +57,7 @@ const MapSection = ({ location, userData, routeData, activeBuses, currentlyConne
   return (
     <View className="flex-1 relative mt-4 rounded-xl overflow-hidden border border-gray-300">
       <MapComponent
-        location={location}
         zoom={zoom}
-        userData={userData}
-        activeBuses={activeBuses}
         setZoom={setZoom}
         cameraRef={cameraRef}
         mapRef={mapRef}
@@ -66,9 +67,9 @@ const MapSection = ({ location, userData, routeData, activeBuses, currentlyConne
       />
       <StatusOverlayComponent currentlyConnectedUserCount={currentlyConnectedUserCount} activeBuses={activeBuses} />
 
-      <TouchableOpacity className="absolute top-3 left-3 bg-white border border-gray-300 rounded-md shadow flex-row p-1 items-center justify-center">
+      <TouchableOpacity className="absolute top-3 left-3 bg-white border border-gray-300 rounded-md shadow flex-row py-1 px-2 items-center justify-center">
         <MaterialIcons name="route" size={18} color="#4b4b4b" />
-        <Text className="text-sm capitalize color-[#2c2c2c]"> {routeData.endLocation} Route</Text>
+        <Text className="text-sm capitalize color-[#2c2c2c]"> {route.endLocation}</Text>
       </TouchableOpacity>
 
       <TouchableOpacity
@@ -90,4 +91,4 @@ const MapSection = ({ location, userData, routeData, activeBuses, currentlyConne
   );
 };
 
-export default MapSection;
+export default HomeMapSection;

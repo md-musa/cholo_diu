@@ -1,9 +1,9 @@
 import Constants from "expo-constants";
 import axios from "axios";
-import { showToast } from "@/utils/toastUtil";
 import { removeAccessToken, getAccessToken, setAccessToken, AuthUtil } from "@/utils/authUtil";
 import { router } from "expo-router";
 import { store } from "@/store/storeConfig";
+import { ToastUtil } from "@/utils/toastUtil";
 
 // const SERVER_URL = "http://192.168.1.15:4000/api/v1";
 // // const SERVER_URL = `https://tms-dcro.onrender.com/api/v1`;
@@ -32,7 +32,7 @@ const refreshAccessToken = async () => {
 // ❌ Logout and redirect helper
 const forceLogout = async () => {
   await removeAccessToken();
-  showToast({ type: "error", text1: "Session Expired", text2: "Please log in again." });
+  ToastUtil.error("Session Expired, Please login again");
   router.replace("/login");
 };
 
@@ -94,11 +94,7 @@ apiClient.interceptors.response.use(
       return handle401Retry(error);
     }
 
-    showToast({
-      type: "error",
-      text1: "API Error",
-      text2: message || "Something went wrong!",
-    });
+    ToastUtil.error(message || "Something went wrong!");
 
     return Promise.reject(error);
   }

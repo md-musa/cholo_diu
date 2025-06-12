@@ -10,7 +10,9 @@ import { useGetRoutesQuery } from "@/store/features/route/routeApi";
 import { useGetScheduleByRouteQuery } from "@/store/features/schedule/scheduleApi";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { ASYNC_STORAGE_KEYS } from "@/constants";
-import Loading from "./UI/Loading";
+
+// Import icons
+import { MaterialIcons, FontAwesome5, MaterialCommunityIcons } from "@expo/vector-icons";
 
 const RouteSelector = () => {
   const dispatch = useAppDispatch();
@@ -20,8 +22,8 @@ const RouteSelector = () => {
     new Date().toLocaleString("en-US", { weekday: "long" }).toLowerCase() === "friday" ? "Friday" : "Weekdays"
   );
 
-  const { data: routes } = useGetRoutesQuery();
-  const { data: scheduleResult, isLoading } = useGetScheduleByRouteQuery({ routeId: route._id, day: selectedDay });
+  const { data: routes, isLoading: isRoutesLoading } = useGetRoutesQuery();
+  const { data: scheduleResult } = useGetScheduleByRouteQuery({ routeId: route._id, day: selectedDay });
 
   const handleRouteChange = async (selectedRouteId) => {
     const selectedRouteData = routes.find((r) => r._id === selectedRouteId);
@@ -36,7 +38,10 @@ const RouteSelector = () => {
   return (
     <View className="bg-primary-1000 p-4 rounded-xl">
       <View className="flex flex-row items-center bg-white border border-gray-300 rounded-xl px-3">
-        <Image source={busImage} className="rounded-md" resizeMode="contain" style={{ width: 30, height: 30 }} />
+        {/* <Image source={busImage} className="rounded-md" resizeMode="contain" style={{ width: 30, height: 30 }} /> */}
+
+        {/* <MaterialIcons name="route" size={24} color="#24204DE6" className="bg-gray-200 p-1 rounded-lg"/> */}
+        <MaterialCommunityIcons name="routes" size={24} color="#24204DE6" className="bg-gray-200 p-1 rounded-md" />
         <Picker
           selectedValue={route._id}
           onValueChange={handleRouteChange}
@@ -60,7 +65,7 @@ const RouteSelector = () => {
               fontSize: 16,
             }}
           />
-          {routes?.map((route) => (
+          {isRoutesLoading && route ? (
             <Picker.Item
               key={route?._id}
               label={`${route.endLocation} Route`}
@@ -71,44 +76,99 @@ const RouteSelector = () => {
                 color: "black",
               }}
             />
-          ))}
+          ) : (
+            routes?.map((route) => (
+              <Picker.Item
+                key={route?._id}
+                label={`${route.endLocation} Route`}
+                value={route._id}
+                style={{
+                  fontWeight: "bold",
+                  fontSize: 16,
+                  color: "black",
+                }}
+              />
+            ))
+          )}
         </Picker>
       </View>
 
-      <View className="mt-2">
-        <Text className="py-1 my-2 px-2 w-44 rounded-md text-white font-semibold bg-gray-50/20 text-md">
-          Next Bus Schedule
-        </Text>
-
-        <View className="flex-row border-b border-white/70 pb-2">
-          <Text className="text-white text-md font-semibold flex-1">Route</Text>
-          <Text className="text-white text-md font-semibold flex-1 text-center">Student </Text>
-          <Text className="text-white text-md font-semibold flex-1 text-right">Employee </Text>
-        </View>
-
-        <View className="flex-row py-2">
-          <Text className="text-white text-md flex-1">{`To ${route?.startLocation}`}</Text>
-          <Text className="text-white text-lg flex-1 text-center">
-            {toCampusStudent ? `${toCampusStudent.formattedTime}` : "No schedule"}
-          </Text>
-          <Text className="text-white text-lg flex-1 text-right">
-            {toCampusEmployee ? `${toCampusEmployee.formattedTime}` : "No schedule"}
-          </Text>
-        </View>
-
-        <View className="flex-row border-y border-white/50 py-2">
-          <Text className="text-white text-md flex-1">{`From ${route?.startLocation}`}</Text>
-          <Text className="text-white text-lg flex-1 text-center">
-            {fromCampusStudent ? `${fromCampusStudent.formattedTime}` : "No schedule"}
-          </Text>
-          <Text className="text-white text-lg flex-1 text-right">
-            {fromCampusEmployee ? `${fromCampusEmployee.formattedTime}` : "No schedule"}
-          </Text>
+      <View className="flex-row my-2">
+        <View className="flex-row items-center bg-gray-50/25 py-1 px-2 rounded-xl">
+          <MaterialIcons name="schedule" size={16} color="#ffff" />
+          <Text className="text-md text-white mx-2 font-semibold">Next Bus Schedule</Text>
         </View>
       </View>
 
-      <Link className="text-right text-white mt-4 text-md font-semibold" href="/home/schedules">
-        <Text>View all {">"} </Text>
+      {/* 3x3 Grid */}
+      <View className="border-b border-white rounded-t-xl overflow-hidden">
+        {/* Grid Container */}
+        <View className="flex-col">
+          {/* Header Row */}
+          <View className="flex-row bg-gray-50/15 border-b border-white">
+            <View className="flex-1 p-2 items-center justify-center">
+              <View className="flex-row items-center">
+                <MaterialCommunityIcons name="swap-vertical-variant" size={20} color="#fff" />
+                <Text className="text-white text-md font-semibold ml-2">Route</Text>
+              </View>
+            </View>
+
+            <View className="flex-1 p-2 items-center justify-center border-l border-r border-white">
+              <View className="flex-row items-center">
+                <FontAwesome5 name="user-graduate" size={15} color="#fff" />
+                <Text className="text-white text-md font-semibold ml-2">Student</Text>
+              </View>
+            </View>
+
+            <View className="flex-1 p-2 items-center justify-center">
+              <View className="flex-row items-center justify-end">
+                <FontAwesome5 name="user-tie" size={15} color="#fff" />
+                <Text className="text-white text-md font-semibold ml-2">Employee</Text>
+              </View>
+            </View>
+          </View>
+
+          {/* To Campus Row */}
+          <View className="flex-row border-b border-white">
+            <View className="flex-1 p-2 justify-center">
+              <Text className="text-white text-md">{`To ${route?.startLocation}`}</Text>
+            </View>
+            <View className="flex-1 p-2 items-center justify-center border-l border-r border-white">
+              <Text className="text-white text-md text-center">
+                {toCampusStudent ? toCampusStudent.formattedTime : "No schedule"}
+              </Text>
+            </View>
+            <View className="flex-1 p-2 items-center justify-center">
+              <Text className="text-white text-md text-right">
+                {toCampusEmployee ? toCampusEmployee.formattedTime : "No schedule"}
+              </Text>
+            </View>
+          </View>
+
+          {/* From Campus Row */}
+          <View className="flex-row">
+            <View className="flex-1 p-2 justify-center">
+              <Text className="text-white text-md">{`From ${route?.startLocation}`}</Text>
+            </View>
+            <View className="flex-1 p-2 items-center justify-center border-l border-r border-white">
+              <Text className="text-white text-md text-center">
+                {fromCampusStudent ? fromCampusStudent.formattedTime : "No schedule"}
+              </Text>
+            </View>
+            <View className="flex-1 p-2 items-center justify-center">
+              <Text className="text-white text-md text-right">
+                {fromCampusEmployee ? fromCampusEmployee.formattedTime : "No schedule"}
+              </Text>
+            </View>
+          </View>
+        </View>
+      </View>
+
+      <Link className="text-right text-white mt-2 text-md font-semibold" href="/home/schedules">
+        <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "flex-end" }}>
+          <Text className="text-white">View all </Text>
+          <MaterialIcons name="arrow-forward-ios" size={14} color="#fff" />
+        </View>
       </Link>
     </View>
   );

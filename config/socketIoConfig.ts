@@ -1,5 +1,5 @@
+import { ToastUtil } from "@/utils/toastUtil";
 import Constants from "expo-constants";
-import { showToast } from "@/utils/toastUtil";
 import { io } from "socket.io-client";
 
 // const SERVER_URL = "http://192.168.1.15:4000";
@@ -27,22 +27,14 @@ socket.on("connect", () => {
 socket.on("disconnect", () => {
   console.warn("⚠️ Disconnected from socket server");
 
-  showToast({
-    type: "error",
-    text1: "Disconnected from Server",
-    text2: "You have been disconnected. Please try logging in again.",
-  });
+  ToastUtil.error("Disconnected from Server");
 });
 
 // Handle connection error
 socket.on("connect_error", (error: any) => {
   // console.error("❌ Socket connection error:", error);
 
-  showToast({
-    type: "error",
-    text1: "Connection Error",
-    text2: "Unable to connect to the server. Please check your internet connection.",
-  });
+  ToastUtil.error("Unable to connect to the server");
 });
 
 export default socket;

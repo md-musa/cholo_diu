@@ -2,15 +2,12 @@ import React, { useEffect } from "react";
 import { View } from "react-native";
 import useLocation from "@/hook/useLocation";
 import RouteSelector from "@/components/RouteSelector";
-import MapSection from "@/components/MapSection";
+import HomeMapSection from "@/components/HomeMapSection";
 import Navbar from "@/components/Navbar";
 import { useAppSelector } from "@/store/storeConfig";
 import { useBusLocation } from "@/hook/useBusLocation";
 
 export default function Index() {
-  const { user, route } = useAppSelector((state) => state.auth);
-  const { location } = useLocation();
-  const { activeBuses, currentlyConnectedUserCount } = useBusLocation();
 
   return (
     <View className="flex-1 bg-white">
@@ -20,13 +17,7 @@ export default function Index() {
         <RouteSelector />
 
         {/* --- Show live locations buses-- */}
-        <MapSection
-          location={location}
-          userData={user}
-          routeData={route}
-          activeBuses={activeBuses}
-          currentlyConnectedUserCount={currentlyConnectedUserCount}
-        />
+        <HomeMapSection  />
       </View>
     </View>
   );
