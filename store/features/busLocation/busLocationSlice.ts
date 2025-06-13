@@ -1,3 +1,4 @@
+import { store } from "@/store/storeConfig";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export interface TripData {
@@ -38,6 +39,9 @@ const busLocationSlice = createSlice({
     updateBusLocation: (state, action: PayloadAction<BusLocationData>) => {
       const data = action.payload;
       if (!data.trip?.busName) return;
+
+      const { isBroadcasting, activeTrip } = store.getState().broadcast;
+      if (isBroadcasting && data.trip.busName === activeTrip?.bus.name) return;
 
       state.activeBuses[data.trip.busName] = data;
       state.currentlyConnectedUserCount = data.currUserCnt;

@@ -14,7 +14,6 @@ const HomeMapSection = () => {
   const cameraRef = useRef(null);
   const { location } = useLocation();
   const { route } = useAppSelector((state) => state.auth);
-  const { activeBuses, currentlyConnectedUserCount } = useBusLocation();
 
   const mapRef = useRef(null);
   const [zoom, setZoom] = useState(12);
@@ -65,7 +64,7 @@ const HomeMapSection = () => {
         setCurrentCenter={setCurrentCenter}
         handleRegionDidChange={handleRegionDidChange}
       />
-      <StatusOverlayComponent currentlyConnectedUserCount={currentlyConnectedUserCount} activeBuses={activeBuses} />
+      <StatusOverlayComponent  />
 
       <TouchableOpacity className="absolute top-3 left-3 bg-white border border-gray-300 rounded-md shadow flex-row py-1 px-2 items-center justify-center">
         <MaterialIcons name="route" size={18} color="#4b4b4b" />

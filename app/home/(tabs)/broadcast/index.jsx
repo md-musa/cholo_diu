@@ -9,7 +9,7 @@ import {
   Platform,
   Alert,
 } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+import { Ionicons, MaterialIcons, FontAwesome, FontAwesome5, MaterialCommunityIcons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import Loading from "@/components/UI/Loading";
 import { useGetBusesQuery } from "@/store/features/bus/busApi";
@@ -18,32 +18,38 @@ import { useCreateTripMutation } from "@/store/features/trip/tripApi";
 import { TripUtil } from "@/utils/tripUtil";
 import { startBroadcasting } from "@/store/features/broadcast/broadcastSlice";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { USER_ROLES } from "@/constants";
 
 const Index = () => {
-  const { isBroadcasting } = useAppSelector((state) => state.broadcast);
   const router = useRouter();
   const dispatch = useAppDispatch();
   const { user, route } = useAppSelector((state) => state.auth);
-  const [createTrip] = useCreateTripMutation();
+  const { isBroadcasting } = useAppSelector((state) => state.broadcast);
+  const [createTrip, { isLoading: isCreatingTrip }] = useCreateTripMutation();
+  const { data: buses, isLoading: isBusesLoading, error: busesError } = useGetBusesQuery();
 
   const [busType, setBusType] = useState("");
+  const [direction, setDirection] = useState("");
   const [selectedBus, setSelectedBus] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [note, setNote] = useState("");
 
-  const { data: buses, isLoading: isBusesLoading } = useGetBusesQuery();
-  if (isBusesLoading) return <Loading />;
+  useEffect(() => {
+    if (busesError) {
+      Alert.alert("Error", "Failed to load buses. Please try again later.");
+    }
+  }, [busesError]);
 
   const filteredBuses = TripUtil.searchBus(buses || [], searchQuery);
-  const isValid = selectedBus && busType;
+  const isValid = selectedBus && busType && direction;
 
   const handleStartSharing = async () => {
     if (!isValid) {
-      Alert.alert("Incomplete Information", "Please select a bus and bus type.");
+      Alert.alert("Incomplete Information", "Please select a bus, bus type, and direction.");
       return;
     }
 
-    Alert.alert("Confirm Sharing", `Start sharing location of ${selectedBus.name}`, [
+    Alert.alert("Confirm Sharing", `Start sharing location of ${selectedBus.name} (${busType}, ${direction})?`, [
       { text: "Cancel", style: "cancel" },
       {
         text: "Confirm",
@@ -86,128 +92,211 @@ const Index = () => {
     ]);
   };
 
-  if (isBroadcasting)
+  if (isBusesLoading) return <Loading />;
+
+  if (isBroadcasting) {
     return (
-      <View className="flex-1 justify-center items-center bg-gray-100">
+      <View className="flex-1 justify-center items-center bg-gray-100 px-6">
         <Ionicons name="alert-circle" size={48} color="#00C89BE6" />
         <Text className="mt-4 text-lg font-semibold text-gray-900">Already Broadcasting</Text>
-        <Text className="mt-2 text-gray-700 text-center px-8">
+        <Text className="mt-2 text-gray-700 text-center">
           You are already sharing a bus location. Tap below to go to the live sharing screen.
         </Text>
         <TouchableOpacity
-          className="mt-6 bg-primary-700 px-6 py-3 rounded-lg"
+          className="mt-6 bg-primary-700 px-6 py-3 rounded-lg flex-row items-center"
           onPress={() => router.push("/home/broadcast/liveLocationSharing")}
         >
+          <Ionicons name="location" size={20} color="white" className="mr-2" />
           <Text className="text-white font-bold text-lg">Go to Live Sharing</Text>
         </TouchableOpacity>
       </View>
     );
+  }
 
   return (
-    <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} className="flex-1 bg-gray-100">
-      <ScrollView contentContainerStyle={{ paddingBottom: 100 }} className="p-3">
+    <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} className="flex-1 bg-gray-50">
+      <ScrollView contentContainerStyle={{ paddingBottom: 100 }} className="p-4" keyboardShouldPersistTaps="handled">
         {/* Header */}
         <View className="mb-3 items-center">
-          <Text className="text-xl font-semibold text-gray-900 mb-1">Share Live Bus Location</Text>
-          <Text className="text-sm text-gray-600 text-center">
-            Share live bus location to help campus community track shuttles in real-time
+          {/* <View className="flex-row items-center">
+            <Ionicons name="location" size={24} color="#00C89BE6" className="mr-2" />
+            <Text className="text-xl font-bold text-gray-900">Share Live Location</Text>
+          </View> */}
+          <Text className="text-md text-gray-800 text-center mt-2">
+            Help the campus community track bus in real-time
+          </Text>
+          <Text className="text-sm text-center mt-2 bg-primary-200 text-black rounded-md px-2">
+            Current Route: <Text className="text-gray-700">{route.endLocation}</Text>
           </Text>
         </View>
 
         {/* Bus Search */}
-        <View className="bg-white rounded-lg p-4 mb-2 shadow-md border border-gray-200">
-          <Text className="text-base font-semibold text-gray-900 mb-3">Search bus by name</Text>
-          <View className="flex-row items-center bg-gray-100 rounded-lg border border-gray-300 px-3 mb-3">
-            <Ionicons name="search" size={20} color="#828282" className="mr-2" />
+        <View className="bg-white rounded-xl p-4 mb-4 shadow-sm border border-gray-300">
+          <View className="flex-row items-center justify-between mb-3">
+            <Text className="text-lg font-semibold text-gray-900">Select Bus</Text>
+            {/* <MaterialIcons name="directions-bus" size={20} color="#4B5563" /> */}
+          </View>
+
+          <View className="flex-row items-center bg-gray-50 rounded-lg border border-gray-200 px-3 mb-4">
+            <Ionicons name="search" size={18} color="#6B7280" className="mr-2" />
             <TextInput
-              className="flex-1 h-10 text-gray-900"
+              className="flex-1 h-12 text-gray-900"
               placeholder="Search buses..."
-              placeholderTextColor="#828282"
+              placeholderTextColor="#9CA3AF"
               value={searchQuery}
               onChangeText={setSearchQuery}
+              clearButtonMode="while-editing"
             />
           </View>
 
           {/* Bus List */}
-          {isBusesLoading ? (
-            <Loading />
-          ) : (
-            <ScrollView className="max-h-72" nestedScrollEnabled>
-              {filteredBuses.length > 0 ? (
-                filteredBuses.map((bus) => {
-                  const isSelected = selectedBus?._id === bus._id;
-                  return (
-                    <TouchableOpacity
-                      key={bus._id}
-                      className={`py-2 px-2 mt-1 border-b border-gray-300 ${
-                        isSelected ? "bg-primary-100 border border-primary-600 rounded-md" : ""
-                      }`}
-                      onPress={() => setSelectedBus(bus)}
-                    >
-                      <View className="flex-row items-center mb-1">
-                        <Ionicons name="bus" size={20} color={isSelected ? "#00C89BE6" : "#111827"} />
-                        <Text className="flex-1 text-base text-gray-900 ml-3 capitalize">{bus.name}</Text>
-
-                        {isSelected && <Ionicons name="checkmark-circle" size={20} color="#00C89BE6" />}
-                      </View>
-                    </TouchableOpacity>
-                  );
-                })
-              ) : (
-                <Text className="text-center p-4 text-gray-600">No buses found</Text>
-              )}
-            </ScrollView>
-          )}
+          <ScrollView className="max-h-64" nestedScrollEnabled>
+            {filteredBuses.length > 0 ? (
+              filteredBuses.map((bus) => {
+                const isSelected = selectedBus?._id === bus._id;
+                return (
+                  <TouchableOpacity
+                    key={bus._id}
+                    className={`border-b border-gray-300 py-2 px-3 my-1 rounded-lg ${
+                      isSelected ? "bg-primary-50 border border-primary-500" : "bg-white"
+                    }`}
+                    onPress={() => setSelectedBus(bus)}
+                  >
+                    <View className="flex-row items-center">
+                      <Ionicons name="bus" size={18} color={isSelected ? "#00C89BE6" : "#4B5563"} />
+                      <Text className="flex-1 text-md text-gray-900 ml-3 capitalize">{bus.name}</Text>
+                      {isSelected && <Ionicons name="checkmark-circle" size={20} color="#00C89BE6" />}
+                    </View>
+                  </TouchableOpacity>
+                );
+              })
+            ) : (
+              <View className="py-4 items-center">
+                <MaterialIcons name="search-off" size={32} color="#9CA3AF" />
+                <Text className="text-gray-500 mt-2">No buses found</Text>
+              </View>
+            )}
+          </ScrollView>
         </View>
 
         {/* Bus Type Select */}
-        <View className="bg-white rounded-lg p-4 mb-2 shadow-md border border-gray-200">
-          <Text className="text-base font-semibold text-gray-900 mb-3">Bus Type</Text>
-          <View className="flex-row justify-between">
-            {["student", "employee"].map((type) => (
-              <TouchableOpacity
-                key={type}
-                className={`flex-1 p-3 mx-1 rounded-lg items-center border border-gray-200 ${
-                  busType === type ? "bg-primary-100 border-primary-700 border" : "bg-gray-100"
-                }`}
-                onPress={() => setBusType(type)}
-              >
-                <Text className={`text-md font-medium ${busType === type ? "#00C89BE6" : "text-gray-900"}`}>
-                  {type.charAt(0).toUpperCase() + type.slice(1)}
+        <View className="bg-white rounded-xl p-4 mb-4 shadow-sm border border-gray-300">
+          <View className="flex-row items-center justify-between mb-3">
+            <Text className="text-lg font-semibold text-gray-900">Bus Type</Text>
+            {/* <FontAwesome name="users" size={18} color="#4B5563" /> */}
+          </View>
+          <View className="flex-row justify-between space-x-3">
+            <TouchableOpacity
+              key={USER_ROLES.STUDENT}
+              className={`flex-1 mx-1 p-2 rounded-xl items-center border ${
+                busType === USER_ROLES.STUDENT ? "bg-primary-50 border-primary-500" : "bg-gray-50 border-gray-200"
+              }`}
+              onPress={() => setBusType(USER_ROLES.STUDENT)}
+            >
+              <View className="flex-row items-center justify-center">
+                <FontAwesome5
+                  name="user-graduate"
+                  size={15}
+                  color={busType === USER_ROLES.STUDENT ? "#00C89BE6" : "#4B5563"}
+                />
+                <Text
+                  className={`mx-1 capitalize text-sm font-medium ${
+                    busType === USER_ROLES.STUDENT ? "text-primary-700" : "text-gray-700"
+                  }`}
+                >
+                  {USER_ROLES.STUDENT}
                 </Text>
+              </View>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              key={USER_ROLES.EMPLOYEE}
+              className={`flex-1 mx-1 p-2 rounded-xl items-center border ${
+                busType === USER_ROLES.EMPLOYEE ? "bg-primary-50 border-primary-500" : "bg-gray-50 border-gray-200"
+              }`}
+              onPress={() => setBusType(USER_ROLES.EMPLOYEE)}
+            >
+              <View className="flex-row items-center justify-start">
+                <MaterialCommunityIcons
+                  name="account-tie"
+                  size={20}
+                  color={busType === USER_ROLES.EMPLOYEE ? "#00C89BE6" : "#4B5563"}
+                />
+                <Text
+                  className={`mx-1 capitalize text-sm font-medium ${
+                    busType === USER_ROLES.EMPLOYEE ? "text-primary-700" : "text-gray-700"
+                  }`}
+                >
+                  {USER_ROLES.EMPLOYEE}
+                </Text>
+              </View>
+            </TouchableOpacity>
+          </View>
+        </View>
+
+        {/* Direction Select */}
+        <View className="bg-white rounded-xl p-4 mb-4 shadow-sm border border-gray-300">
+          <View className="flex-row items-center justify-between mb-3">
+            <Text className="text-lg font-semibold text-gray-900">Bus Direction</Text>
+          </View>
+          <View className="flex-row justify-between space-x-3">
+            {[
+              { direction: "To Campus", icon: "arrow-up" },
+              { direction: "From Campus", icon: "arrow-down" },
+            ].map(({ direction: dir, icon }) => (
+              <TouchableOpacity
+                key={dir}
+                className={`flex-1 p-2 mx-1 rounded-xl items-center border ${
+                  direction === dir ? "bg-primary-50 border-primary-500" : "bg-gray-50 border-gray-200"
+                }`}
+                onPress={() => setDirection(dir)}
+              >
+                <View className="flex-row items-center justify-center">
+                  <Ionicons name={icon} size={20} color={direction === dir ? "#00C89BE6" : "#4B5563"} />
+                  <Text
+                    className={`mx-1 text-sm font-medium ${direction === dir ? "text-primary-700" : "text-gray-700"}`}
+                  >
+                    {dir}
+                  </Text>
+                </View>
               </TouchableOpacity>
             ))}
           </View>
         </View>
 
-        {/* Additional Note */}
-        <View className="bg-white rounded-lg p-4 mb-4 shadow-md border border-gray-200">
-          <Text className="text-base font-semibold text-gray-900 mb-3">Additional Note (Optional)</Text>
+        {/* Notes
+        <View className="bg-white rounded-xl p-4 shadow-sm border border-gray-200">
+          <View className="flex-row items-center justify-between mb-3">
+            <Text className="text-lg font-semibold text-gray-900">Additional Notes</Text>
+            <Ionicons name="document-text" size={18} color="#4B5563" />
+          </View>
           <TextInput
-            className="min-h-14 border border-gray-300 rounded-lg p-3 text-gray-900"
-            placeholder="Any special instructions?"
-            placeholderTextColor="#828282"
+            className="h-20 p-3 bg-gray-50 rounded-lg border border-gray-200 text-gray-900"
+            placeholder="Any special instructions or notes..."
+            placeholderTextColor="#9CA3AF"
             multiline
-            numberOfLines={2}
             value={note}
             onChangeText={setNote}
           />
-        </View>
-      </ScrollView>
-
-      {/* Start Button Fixed at Bottom */}
-      <View className="absolute bottom-8 left-5 right-5">
+        </View> */}
+        {/* Start Button Fixed at Bottom */}
         <TouchableOpacity
-          className={`flex-row rounded-lg p-3 items-center justify-center ${
-            isValid ? "bg-tertiary-900" : "bg-gray-500"
+          className={`flex-row rounded-xl p-2 items-center justify-center shadow-sm ${
+            isValid ? "bg-primary-700" : "bg-gray-400"
           }`}
           onPress={handleStartSharing}
-          disabled={!isValid}
+          disabled={!isValid || isCreatingTrip}
         >
-          <Ionicons name="location" size={18} color="white" />
-          <Text className="text-white mx-2 text-lg font-bold">Start Sharing</Text>
+          {isCreatingTrip ? (
+            <Loading size="small" color="white" />
+          ) : (
+            <>
+              <Ionicons name="location" size={22} color="white" />
+              <Text className="text-white mx-2 text-lg font-bold">Start Sharing</Text>
+            </>
+          )}
         </TouchableOpacity>
-      </View>
+      </ScrollView>
     </KeyboardAvoidingView>
   );
 };

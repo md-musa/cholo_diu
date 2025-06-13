@@ -88,7 +88,7 @@ const WatchBusLocation = () => {
           setCurrentCenter={setCurrentCenter}
           handleRegionDidChange={handleRegionDidChange}
         />
-        <StatusOverlayComponent currentlyConnectedUserCount={currentlyConnectedUserCount} activeBuses={activeBuses} />
+        <StatusOverlayComponent />
 
         <TouchableOpacity
           className="absolute bottom-80 right-5 bg-white border border-gray-300 rounded-full shadow flex-row p-3 items-center justify-center"

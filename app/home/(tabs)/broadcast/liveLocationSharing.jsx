@@ -1,32 +1,26 @@
-import React, { useRef, useState } from "react";
+import React, { useCallback, useRef, useState } from "react";
 import { View, Text, TouchableOpacity, Alert, StyleSheet, Image, StatusBar } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import * as MapLibreGL from "@maplibre/maplibre-react-native";
-import busMarker from "@/assets/images/navigatorArrow.png";
-import UniIcon from "@/assets/images/uni-2.png";
-import pinIcon from "@/assets/images/red-pin-marker.png";
+
 import StatusOverlayComponent from "@/components/UI/StatusOverlayComponent";
 import { useRouter } from "expo-router";
 import Loading from "@/components/UI/Loading";
 import { useAppDispatch, useAppSelector } from "@/store/storeConfig";
 import { stopBroadcasting } from "@/store/features/broadcast/broadcastSlice";
-import { useBusLocation } from "@/hook/useBusLocation";
 import useLocation from "@/hook/useLocation";
-
-function cpfl(string) {
-  return string.charAt(0).toUpperCase() + string.slice(1);
-}
+import MapComponent from "@/components/MapComponent";
 
 function LiveLocationSharing() {
   const router = useRouter();
   const dispatch = useAppDispatch();
   const { location } = useLocation();
-  const { route } = useAppSelector((state) => state.auth);
   const { activeTrip } = useAppSelector((state) => state.broadcast);
-  const { currentlyConnectedUserCount, activeBuses } = useBusLocation();
+  const { route } = useAppSelector((state) => state.auth);
 
+  const [currentCenter, setCurrentCenter] = useState([90.320463, 23.87739]);
   const [zoom, setZoom] = useState(16);
   const cameraRef = useRef(null);
+  const mapRef = useRef(null);
 
   const handleStopSharing = () => {
     Alert.alert(
@@ -51,139 +45,44 @@ function LiveLocationSharing() {
   };
 
   const centerToUserLocation = () => {
-    setZoom(16);
     cameraRef.current?.setCamera({
-      center: [location.longitude, location.latitude],
-      zoom: 16,
+      centerCoordinate: [location.longitude, location.latitude],
+      zoomLevel: 16,
     });
+    setZoom(16);
+    setCurrentCenter([location.longitude, location.latitude]);
   };
 
+  const handleRegionDidChange = useCallback(async () => {
+    if (!mapRef.current) return;
+
+    try {
+      const center = await mapRef.current.getCenter();
+      const currentZoom = await mapRef.current.getZoom();
+      // // console.log("Center:", center);
+      // // console.log("Zoom:", currentZoom);
+
+      setCurrentCenter(center);
+      setZoom(currentZoom);
+    } catch (error) {
+      console.warn("Map region change error:", error);
+    }
+  }, []);
   if (!location || !route || !activeTrip) return <Loading />;
 
   return (
     <View className="flex-1 bg-gray-100">
       <StatusBar barStyle="light-content" hidden={true} />
 
-      <MapLibreGL.MapView
-        attributionEnabled={true}
-        style={styles.map}
-        onRegionDidChange={(event) => setZoom(event.properties.zoom)}
-      >
-        {/*------ Recentering map -------- */}
-        <MapLibreGL.Camera
-          ref={cameraRef}
-          zoomLevel={zoom}
-          centerCoordinate={[location.longitude, location.latitude]}
-        />
+      <MapComponent
+        mapRef={mapRef}
+        zoom={zoom}
+        cameraRef={cameraRef}
+        currentCenter={currentCenter}
+        handleRegionDidChange={handleRegionDidChange}
+      />
 
-        {/* --------- Load tile --------- */}
-        <MapLibreGL.RasterSource
-          id="osm"
-          tileUrlTemplates={["https://tile.openstreetmap.org/{z}/{x}/{y}.png"]}
-          tileSize={256}
-        >
-          <MapLibreGL.RasterLayer id="osmLayer" sourceID="osm" />
-        </MapLibreGL.RasterSource>
-
-        {/* ----- Route highlighter ------ */}
-        {/* <MapLibreGL.ShapeSource id="routeSource" shape={selectRoutePolyline(route?.endLocation || "")}>
-          <MapLibreGL.LineLayer
-            id="routeLayer"
-            style={{ lineColor: "#2e2e2e", lineWidth: 2, lineCap: "round", lineJoin: "round" }}
-          />
-        </MapLibreGL.ShapeSource> */}
-
-        {/* ---- Image Load ------ */}
-        <MapLibreGL.Images images={{ marker: busMarker, UniIcon: UniIcon, pinIcon: pinIcon }} />
-
-        {/* --------- Show Bus Location ----------*/}
-        {location && (
-          <MapLibreGL.ShapeSource
-            id="userLocation-1"
-            shape={{
-              type: "FeatureCollection",
-              features: [
-                {
-                  type: "Feature",
-                  geometry: {
-                    type: "Point",
-                    coordinates: [location.longitude, location.latitude],
-                  },
-                  properties: {
-                    icon: "marker",
-                    title: `${cpfl(activeTrip.bus.name)}\n${cpfl(activeTrip.busType)} bus\n${(
-                      location.speed * 3.6
-                    ).toFixed(2)} km/h`,
-                    heading: location.heading,
-                  },
-                },
-              ],
-            }}
-          >
-            <MapLibreGL.CircleLayer id="userShadow3" style={styles.busShadow1} />
-            <MapLibreGL.CircleLayer id="userShadow2" style={styles.busShadow2} />
-            <MapLibreGL.Animated.SymbolLayer id="busMarkerLayer" style={styles.busMarker} />
-          </MapLibreGL.ShapeSource>
-        )}
-
-        {/* ------ University and Trasnport Location Symbol */}
-        {/* <MapLibreGL.MarkerView coordinate={[90.320463, 23.87739 + 0.002]}>
-          <MapLibreGL.Callout>
-            <View style={styles.calloutContainer}>
-              <Text style={styles.calloutDescription} className="capitalize">
-                DIU Campus
-              </Text>
-            </View>
-          </MapLibreGL.Callout>
-        </MapLibreGL.MarkerView> */}
-        <MapLibreGL.ShapeSource
-          id="userLocation-2"
-          shape={{
-            type: "FeatureCollection",
-            features: [
-              {
-                type: "Feature",
-                geometry: {
-                  type: "Point",
-                  coordinates: [90.320463, 23.87739],
-                },
-                properties: {
-                  icon: "UniIcon", // matches the key in MapLibreGL.Images
-                  title: "DIU Campus",
-                },
-              },
-              {
-                type: "Feature",
-                geometry: {
-                  type: "Point",
-                  coordinates: [90.322004, 23.876107],
-                },
-                properties: {
-                  icon: "pinIcon", // matches the key in MapLibreGL.Images
-                  title: "DIU Transport",
-                },
-              },
-            ],
-          }}
-        >
-          <MapLibreGL.SymbolLayer
-            id="customMarkerLayer"
-            style={{
-              iconImage: ["get", "icon"],
-              iconSize: 0.06,
-              iconAllowOverlap: true,
-              textField: ["get", "title"], // shows "DIU"
-              textSize: 15,
-              textOffset: [0, -2.5], // adjust label position below the icon
-              textAnchor: "top",
-              textAllowOverlap: false,
-              textColor: "#000", // label text color
-            }}
-          />
-        </MapLibreGL.ShapeSource>
-      </MapLibreGL.MapView>
-
-      <StatusOverlayComponent currentlyConnectedUserCount={currentlyConnectedUserCount} activeBuses={activeBuses} />
+      <StatusOverlayComponent />
 
       <TouchableOpacity
         className="absolute bottom-60 right-5 bg-white border border-gray-300 rounded-full shadow flex-row p-3 items-center justify-center"
@@ -239,80 +138,5 @@ function LiveLocationSharing() {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  map: {
-    flex: 1,
-  },
-  busShadow1: {
-    circleRadius: 17,
-    circleColor: "rgba(16, 187, 103, 0.4)",
-    circleBlur: 0,
-  },
-  busShadow2: {
-    circleRadius: 10,
-    circleColor: "black",
-    circleBlur: 0,
-  },
-
-  userShadow: {
-    circleRadius: 20,
-    circleColor: "rgba(0, 50, 255, 0.3)",
-    circleBlur: 0,
-  },
-  userDot: {
-    circleRadius: 5,
-    circleColor: "blue",
-    circleStrokeColor: "white",
-    circleStrokeWidth: 2,
-  },
-  calloutTitle: {
-    fontWeight: "bold",
-    fontSize: 14,
-  },
-  calloutDescription: {
-    fontSize: 12,
-  },
-  marker: {
-    width: 40, // Ensure the marker has a valid size
-    height: 40,
-    backgroundColor: "white",
-    borderRadius: 20,
-    borderWidth: 1,
-    borderColor: "gray",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  markerText: {
-    fontSize: 20,
-  },
-
-  busMarker: {
-    iconImage: "marker",
-    iconSize: 0.025,
-    iconAnchor: "center",
-    iconRotate: ["get", "heading"],
-    textField: ["get", "title"],
-    textSize: 11,
-    textColor: "black",
-    textAnchor: "bottom",
-    textOffset: [0, 6],
-    textHaloColor: "black",
-    textHaloWidth: 0.1,
-  },
-
-  calloutContainer: {
-    backgroundColor: "white",
-    padding: 3,
-    borderRadius: 6,
-    borderColor: "gray",
-    borderWidth: 1,
-  },
-  pointMarker: {
-    iconImage: "customMarker",
-    iconSize: 0.5,
-    iconAllowOverlap: true,
-  },
-});
 
 export default LiveLocationSharing;

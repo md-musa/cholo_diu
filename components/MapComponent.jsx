@@ -5,15 +5,20 @@ import { generateMarkers } from "@/utils/mappingHelper";
 import busMarker from "@/assets/images/navigatorArrow3.png";
 import UniIcon from "@/assets/images/uni-2.png";
 import pinIcon from "@/assets/images/red-pin-marker.png";
+import busMarkerGreen from "@/assets/images/navigatorArrow.png";
 import { useAppSelector } from "@/store/storeConfig";
 import { getWayline, getWaypoints, ROUTES } from "@/assets/routes";
 import useLocation from "@/hook/useLocation";
 import { useBusLocation } from "@/hook/useBusLocation";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+function cpfl(string) {
+  return string.charAt(0).toUpperCase() + string.slice(1);
+}
 
 const MapComponent = ({ mapRef, zoom, cameraRef, currentCenter, handleRegionDidChange }) => {
   const { location } = useLocation();
   const { route } = useAppSelector((state) => state.auth);
+  const { isBroadcasting, activeTrip } = useAppSelector((state) => state.broadcast);
   const { activeBuses } = useBusLocation();
   const [busInfo, setBusInfo] = useState(null);
   const waypoints = getWaypoints(route.name);
@@ -51,12 +56,12 @@ const MapComponent = ({ mapRef, zoom, cameraRef, currentCenter, handleRegionDidC
       </MapLibreGL.ShapeSource>
 
       {/* ---- Image Load ------ */}
-      <MapLibreGL.Images images={{ marker: busMarker, UniIcon: UniIcon, pinIcon: pinIcon }} />
+      <MapLibreGL.Images images={{ marker: busMarker, UniIcon: UniIcon, pinIcon: pinIcon, busMarkerGreen }} />
 
       {/* --------- Show user location ----------*/}
-      {location && (
+      {isBroadcasting && location ? (
         <MapLibreGL.ShapeSource
-          id="userLocation-1"
+          id="currentBusLocation"
           shape={{
             type: "FeatureCollection",
             features: [
@@ -66,13 +71,42 @@ const MapComponent = ({ mapRef, zoom, cameraRef, currentCenter, handleRegionDidC
                   type: "Point",
                   coordinates: [location.longitude, location.latitude],
                 },
+                properties: {
+                  icon: "marker",
+                  title: `${cpfl(activeTrip.bus.name)}\n${cpfl(activeTrip.busType)} bus\n${(
+                    location.speed * 3.6
+                  ).toFixed(2)} km/h`,
+                  heading: location.heading,
+                },
               },
             ],
           }}
         >
-          <MapLibreGL.CircleLayer id="userShadow-1" style={styles.userShadow} />
-          <MapLibreGL.CircleLayer id="userDot-1" style={styles.userDot} />
+          <MapLibreGL.CircleLayer id="currentBusLocation-2" style={styles.currentBusShadow} />
+          <MapLibreGL.CircleLayer id="currentBusLocation-3" style={styles.currentBusShadow2} />
+          <MapLibreGL.SymbolLayer id="currentBusMarker" style={styles.currentBusMarker} />
         </MapLibreGL.ShapeSource>
+      ) : (
+        location && (
+          <MapLibreGL.ShapeSource
+            id="userLocation-1"
+            shape={{
+              type: "FeatureCollection",
+              features: [
+                {
+                  type: "Feature",
+                  geometry: {
+                    type: "Point",
+                    coordinates: [location.longitude, location.latitude],
+                  },
+                },
+              ],
+            }}
+          >
+            <MapLibreGL.CircleLayer id="userShadow-1" style={styles.userShadow} />
+            <MapLibreGL.CircleLayer id="userDot-1" style={styles.userDot} />
+          </MapLibreGL.ShapeSource>
+        )
       )}
 
       {/* ------- Stopages --------- */}
@@ -202,6 +236,29 @@ const styles = StyleSheet.create({
   },
   busMarker: {
     iconImage: "marker",
+    iconSize: 0.025,
+    iconAnchor: "center",
+    iconRotate: ["get", "heading"],
+    textField: ["get", "title"],
+    textSize: 11,
+    textColor: "black",
+    textAnchor: "bottom",
+    textOffset: [0, 6],
+    textHaloColor: "black",
+    textHaloWidth: 0.1,
+  },
+  currentBusShadow: {
+    circleRadius: 17,
+    circleColor: "rgba(16, 187, 103, 0.4)",
+    circleBlur: 0,
+  },
+  currentBusShadow2: {
+    circleRadius: 10,
+    circleColor: "black",
+    circleBlur: 0,
+  },
+  currentBusMarker: {
+    iconImage: "busMarkerGreen",
     iconSize: 0.025,
     iconAnchor: "center",
     iconRotate: ["get", "heading"],
