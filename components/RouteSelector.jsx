@@ -23,8 +23,9 @@ const RouteSelector = () => {
   );
 
   const { data: routes, isLoading: isRoutesLoading } = useGetRoutesQuery();
-  const { data: scheduleResult } = useGetScheduleByRouteQuery({ routeId: route._id, day: selectedDay });
+  const { data: scheduleResult } = useGetScheduleByRouteQuery({ routeId: route?._id, day: selectedDay });
 
+  if (!route) return null;
   const handleRouteChange = async (selectedRouteId) => {
     const selectedRouteData = routes.find((r) => r._id === selectedRouteId);
     dispatch(updateRoute(selectedRouteData));
