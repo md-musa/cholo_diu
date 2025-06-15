@@ -9,9 +9,9 @@ import {
   Platform,
   Alert,
 } from "react-native";
-import { Ionicons, MaterialIcons, FontAwesome, FontAwesome5, MaterialCommunityIcons } from "@expo/vector-icons";
+import { Ionicons, MaterialIcons, FontAwesome5, MaterialCommunityIcons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
-import Loading from "@/components/UI/Loading";
+import LoadingScreen from "@/components/UI/LoadingScreen";
 import { useGetBusesQuery } from "@/store/features/bus/busApi";
 import { useAppDispatch, useAppSelector } from "@/store/storeConfig";
 import { useCreateTripMutation } from "@/store/features/trip/tripApi";
@@ -19,6 +19,8 @@ import { TripUtil } from "@/utils/tripUtil";
 import { startBroadcasting } from "@/store/features/broadcast/broadcastSlice";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { USER_ROLES } from "@/constants";
+import { colors } from "@/config/colors";
+import LoadingIndicator from "@/components/UI/LoadingIndicator";
 
 const Index = () => {
   const router = useRouter();
@@ -63,7 +65,7 @@ const Index = () => {
               note: note,
             });
 
-            console.log("🌊 Trip created:", data);
+            //console.log("🌊 Trip created:", data);
 
             dispatch(
               startBroadcasting({
@@ -75,16 +77,16 @@ const Index = () => {
             );
             await AsyncStorage.setItem("tripId", data._id);
 
-            console.log("Broadcast data set:", {
-              bus: selectedBus,
-              busType,
-              tripId: data._id,
-              note,
-            });
+            // console.log("Broadcast data set:", {
+            //   bus: selectedBus,
+            //   busType,
+            //   tripId: data._id,
+            //   note,
+            // });
 
             router.push("/home/broadcast/liveLocationSharing");
           } catch (error) {
-            console.error("[broadcast] Error creating trip:\n", JSON.stringify(error.response.data.message, null, 2));
+           // console.error("[broadcast] Error creating trip:\n", JSON.stringify(error.response.data.message, null, 2));
             Alert.alert("Error", "Failed to start sharing. Please try again.");
           }
         },
@@ -92,18 +94,18 @@ const Index = () => {
     ]);
   };
 
-  if (isBusesLoading) return <Loading />;
+  if (isBusesLoading) return <LoadingScreen />;
 
   if (isBroadcasting) {
     return (
-      <View className="flex-1 justify-center items-center bg-gray-100 px-6">
-        <Ionicons name="alert-circle" size={48} color="#00C89BE6" />
-        <Text className="mt-4 text-lg font-semibold text-gray-900">Already Broadcasting</Text>
-        <Text className="mt-2 text-gray-700 text-center">
+      <View className="flex-1 justify-center items-center bg-muted-100 px-6">
+        <Ionicons name="alert-circle" size={48} color={colors.secondary[500]} />
+        <Text className="mt-4 text-lg font-semibold text-muted-900">Already Broadcasting</Text>
+        <Text className="mt-2 text-muted-700 text-center">
           You are already sharing a bus location. Tap below to go to the live sharing screen.
         </Text>
         <TouchableOpacity
-          className="mt-6 bg-primary-700 px-6 py-3 rounded-lg flex-row items-center"
+          className="mt-6 bg-secondary-700 px-6 py-3 rounded-lg flex-row items-center"
           onPress={() => router.push("/home/broadcast/liveLocationSharing")}
         >
           <Ionicons name="location" size={20} color="white" className="mr-2" />
@@ -114,35 +116,31 @@ const Index = () => {
   }
 
   return (
-    <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} className="flex-1 bg-gray-50">
+    <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} className="flex-1 bg-muted-100">
       <ScrollView contentContainerStyle={{ paddingBottom: 100 }} className="p-4" keyboardShouldPersistTaps="handled">
         {/* Header */}
         <View className="mb-3 items-center">
-          {/* <View className="flex-row items-center">
-            <Ionicons name="location" size={24} color="#00C89BE6" className="mr-2" />
-            <Text className="text-xl font-bold text-gray-900">Share Live Location</Text>
-          </View> */}
-          <Text className="text-md text-gray-800 text-center mt-2">
+          <Text className="text-md text-muted-800 text-center mt-2">
             Help the campus community track bus in real-time
           </Text>
-          <Text className="text-sm text-center mt-2 bg-primary-200 text-black rounded-md px-2">
-            Current Route: <Text className="text-gray-700">{route.endLocation}</Text>
+          <Text className="text-sm text-center mt-2 bg-secondary-200 text-black rounded-md px-2">
+            Current Route: <Text className="text-muted-700">{route.endLocation}</Text>
           </Text>
         </View>
 
         {/* Bus Search */}
-        <View className="bg-white rounded-xl p-4 mb-4 shadow-sm border border-gray-300">
+        <View className="bg-white rounded-xl p-4 mb-4 shadow-sm border border-muted-300">
           <View className="flex-row items-center justify-between mb-3">
-            <Text className="text-lg font-semibold text-gray-900">Select Bus</Text>
+            <Text className="text-lg font-semibold text-muted-900">Select Bus</Text>
             {/* <MaterialIcons name="directions-bus" size={20} color="#4B5563" /> */}
           </View>
 
-          <View className="flex-row items-center bg-gray-50 rounded-lg border border-gray-200 px-3 mb-4">
-            <Ionicons name="search" size={18} color="#6B7280" className="mr-2" />
+          <View className="flex-row items-center bg-muted-50 rounded-lg border border-muted-300 px-3 mb-4">
+            <Ionicons name="search" size={18} color={colors.muted[500]} className="mr-2" />
             <TextInput
-              className="flex-1 h-12 text-gray-900"
+              className="flex-1 h-12 text-muted-900"
               placeholder="Search buses..."
-              placeholderTextColor="#9CA3AF"
+              placeholderTextColor={colors.muted[400]}
               value={searchQuery}
               onChangeText={setSearchQuery}
               clearButtonMode="while-editing"
@@ -157,39 +155,38 @@ const Index = () => {
                 return (
                   <TouchableOpacity
                     key={bus._id}
-                    className={`border-b border-gray-300 py-2 px-3 my-1 rounded-lg ${
-                      isSelected ? "bg-primary-50 border border-primary-500" : "bg-white"
+                    className={`border-b border-muted-300 py-2 px-3 my-1 rounded-lg ${
+                      isSelected ? "bg-secondary-50 border border-secondary-500" : "bg-white"
                     }`}
                     onPress={() => setSelectedBus(bus)}
                   >
                     <View className="flex-row items-center">
-                      <Ionicons name="bus" size={18} color={isSelected ? "#00C89BE6" : "#4B5563"} />
-                      <Text className="flex-1 text-md text-gray-900 ml-3 capitalize">{bus.name}</Text>
-                      {isSelected && <Ionicons name="checkmark-circle" size={20} color="#00C89BE6" />}
+                      <Ionicons name="bus" size={18} color={isSelected ? colors.secondary[500] : colors.muted[500]} />
+                      <Text className="flex-1 text-md text-muted-900 ml-3 capitalize">{bus.name}</Text>
+                      {isSelected && <Ionicons name="checkmark-circle" size={20} color={colors.secondary[500]} />}
                     </View>
                   </TouchableOpacity>
                 );
               })
             ) : (
               <View className="py-4 items-center">
-                <MaterialIcons name="search-off" size={32} color="#9CA3AF" />
-                <Text className="text-gray-500 mt-2">No buses found</Text>
+                <MaterialIcons name="search-off" size={32} color={colors.muted[500]} />
+                <Text className="text-muted-500 mt-2">No buses found</Text>
               </View>
             )}
           </ScrollView>
         </View>
 
         {/* Bus Type Select */}
-        <View className="bg-white rounded-xl p-4 mb-4 shadow-sm border border-gray-300">
+        <View className="bg-white rounded-xl p-4 mb-4 shadow-sm border border-muted-300">
           <View className="flex-row items-center justify-between mb-3">
-            <Text className="text-lg font-semibold text-gray-900">Bus Type</Text>
-            {/* <FontAwesome name="users" size={18} color="#4B5563" /> */}
+            <Text className="text-lg font-semibold text-muted-900">Bus Type</Text>
           </View>
           <View className="flex-row justify-between space-x-3">
             <TouchableOpacity
               key={USER_ROLES.STUDENT}
               className={`flex-1 mx-1 p-2 rounded-xl items-center border ${
-                busType === USER_ROLES.STUDENT ? "bg-primary-50 border-primary-500" : "bg-gray-50 border-gray-200"
+                busType === USER_ROLES.STUDENT ? "bg-secondary-50 border-secondary-500" : "bg-muted-50 border-muted-300"
               }`}
               onPress={() => setBusType(USER_ROLES.STUDENT)}
             >
@@ -197,11 +194,11 @@ const Index = () => {
                 <FontAwesome5
                   name="user-graduate"
                   size={15}
-                  color={busType === USER_ROLES.STUDENT ? "#00C89BE6" : "#4B5563"}
+                  color={busType === USER_ROLES.STUDENT ? colors.secondary[500] : colors.muted[500]}
                 />
                 <Text
                   className={`mx-1 capitalize text-sm font-medium ${
-                    busType === USER_ROLES.STUDENT ? "text-primary-700" : "text-gray-700"
+                    busType === USER_ROLES.STUDENT ? "text-secondary-700" : "text-muted-700"
                   }`}
                 >
                   {USER_ROLES.STUDENT}
@@ -212,7 +209,9 @@ const Index = () => {
             <TouchableOpacity
               key={USER_ROLES.EMPLOYEE}
               className={`flex-1 mx-1 p-2 rounded-xl items-center border ${
-                busType === USER_ROLES.EMPLOYEE ? "bg-primary-50 border-primary-500" : "bg-gray-50 border-gray-200"
+                busType === USER_ROLES.EMPLOYEE
+                  ? "bg-secondary-50 border-secondary-500"
+                  : "bg-muted-50 border-muted-300"
               }`}
               onPress={() => setBusType(USER_ROLES.EMPLOYEE)}
             >
@@ -220,11 +219,11 @@ const Index = () => {
                 <MaterialCommunityIcons
                   name="account-tie"
                   size={20}
-                  color={busType === USER_ROLES.EMPLOYEE ? "#00C89BE6" : "#4B5563"}
+                  color={busType === USER_ROLES.EMPLOYEE ? colors.secondary[500] : colors.muted[500]}
                 />
                 <Text
                   className={`mx-1 capitalize text-sm font-medium ${
-                    busType === USER_ROLES.EMPLOYEE ? "text-primary-700" : "text-gray-700"
+                    busType === USER_ROLES.EMPLOYEE ? "text-secondary-700" : "text-muted-700"
                   }`}
                 >
                   {USER_ROLES.EMPLOYEE}
@@ -235,9 +234,9 @@ const Index = () => {
         </View>
 
         {/* Direction Select */}
-        <View className="bg-white rounded-xl p-4 mb-4 shadow-sm border border-gray-300">
+        <View className="bg-white rounded-xl p-4 mb-4 shadow-sm border border-muted-300">
           <View className="flex-row items-center justify-between mb-3">
-            <Text className="text-lg font-semibold text-gray-900">Bus Direction</Text>
+            <Text className="text-lg font-semibold text-muted-900">Bus Direction</Text>
           </View>
           <View className="flex-row justify-between space-x-3">
             {[
@@ -247,14 +246,20 @@ const Index = () => {
               <TouchableOpacity
                 key={dir}
                 className={`flex-1 p-2 mx-1 rounded-xl items-center border ${
-                  direction === dir ? "bg-primary-50 border-primary-500" : "bg-gray-50 border-gray-200"
+                  direction === dir ? "bg-secondary-50 border-secondary-500" : "bg-muted-50 border-muted-300"
                 }`}
                 onPress={() => setDirection(dir)}
               >
                 <View className="flex-row items-center justify-center">
-                  <Ionicons name={icon} size={20} color={direction === dir ? "#00C89BE6" : "#4B5563"} />
+                  <Ionicons
+                    name={icon}
+                    size={20}
+                    color={direction === dir ? colors.secondary[500] : colors.muted[500]}
+                  />
                   <Text
-                    className={`mx-1 text-sm font-medium ${direction === dir ? "text-primary-700" : "text-gray-700"}`}
+                    className={`mx-1 text-sm font-medium ${
+                      direction === dir ? "text-secondary-700" : "text-muted-700"
+                    }`}
                   >
                     {dir}
                   </Text>
@@ -265,13 +270,13 @@ const Index = () => {
         </View>
 
         {/* Notes
-        <View className="bg-white rounded-xl p-4 shadow-sm border border-gray-200">
+        <View className="bg-white rounded-xl p-4 shadow-sm border border-muted-300">
           <View className="flex-row items-center justify-between mb-3">
-            <Text className="text-lg font-semibold text-gray-900">Additional Notes</Text>
+            <Text className="text-lg font-semibold text-muted-900">Additional Notes</Text>
             <Ionicons name="document-text" size={18} color="#4B5563" />
           </View>
           <TextInput
-            className="h-20 p-3 bg-gray-50 rounded-lg border border-gray-200 text-gray-900"
+            className="h-20 p-3 bg-muted-50 rounded-lg border border-muted-300 text-muted-900"
             placeholder="Any special instructions or notes..."
             placeholderTextColor="#9CA3AF"
             multiline
@@ -281,14 +286,14 @@ const Index = () => {
         </View> */}
         {/* Start Button Fixed at Bottom */}
         <TouchableOpacity
-          className={`flex-row rounded-xl p-2 items-center justify-center shadow-sm ${
-            isValid ? "bg-primary-700" : "bg-gray-400"
+          className={`flex-row rounded-xl mt-4 p-2 items-center justify-center shadow-sm ${
+            isValid ? "bg-secondary-600" : "bg-muted-400"
           }`}
           onPress={handleStartSharing}
           disabled={!isValid || isCreatingTrip}
         >
           {isCreatingTrip ? (
-            <Loading size="small" color="white" />
+            <LoadingIndicator color="white" />
           ) : (
             <>
               <Ionicons name="location" size={22} color="white" />

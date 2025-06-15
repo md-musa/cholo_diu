@@ -1,7 +1,6 @@
-import { Stack, useRouter } from "expo-router";
+import { Stack } from "expo-router";
 import "../global.css";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-// import Toast from "react-native-toast-message";
 import { View } from "react-native";
 import { Provider } from "react-redux";
 import { store } from "@/store/storeConfig";
@@ -12,10 +11,9 @@ import { useEffect } from "react";
 import { Linking } from "react-native";
 
 export default function RootLayout() {
-
   useEffect(() => {
     const subscription = Linking.addEventListener("url", (event) => {
-      console.log("URL received: ", event);
+      //console.log("URL received: ", event);
     });
 
     return () => subscription.remove();
@@ -34,6 +32,7 @@ export default function RootLayout() {
             }}
           />
           <Toasts />
+
           <BusLocationManager />
         </View>
       </GestureHandlerRootView>

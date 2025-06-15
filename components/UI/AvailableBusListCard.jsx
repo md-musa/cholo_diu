@@ -21,16 +21,16 @@ export default function AvailableBusListCard({ item, highlightBus }) {
   const { trip, latitude, longitude, speed, heading, timestamp } = item;
 
   return (
-    <View className="flex-row items-center px-3 py-2 rounded-xl mb-3 border border-gray-200 bg-white shadow-sm">
+    <View className="flex-row items-center px-3 py-2 rounded-xl mb-3 border border-muted-200 bg-white shadow-sm">
       {/* Bus Icon */}
       <View className="mr-3 bg-primary-100 p-2 rounded-full">
         <MaterialCommunityIcons name="bus" size={32} color="#00C89B" />
       </View>
       <View className="flex-1">
         <View className="flex-row items-center mb-1">
-          <Text className="text-base font-bold capitalize text-gray-800 mr-2">{trip.busName}</Text>
+          <Text className="text-base font-bold capitalize text-muted-800 mr-2">{trip.busName}</Text>
           <MaterialIcons name="speed" size={16} color="#6b7280" />
-          <Text className="text-xs text-gray-500 ml-1">{(speed * 3.6).toFixed(2)} km/h</Text>
+          <Text className="text-xs text-muted-500 ml-1">{(speed * 3.6).toFixed(2)} km/h</Text>
         </View>
 
         <View className="flex-row">
@@ -51,7 +51,7 @@ export default function AvailableBusListCard({ item, highlightBus }) {
       <View className="ml-2">
         <TouchableOpacity
           onPress={() => highlightBus([longitude, latitude])}
-          className="bg-green-600 px-3 py-1.5 rounded-full flex-row items-center"
+          className="bg-secondary-600 px-3 py-1.5 rounded-full flex-row items-center"
         >
           <MaterialIcons name="location-on" size={18} color="white" />
           <Text className="text-white text-sm font-medium ml-1">Track</Text>

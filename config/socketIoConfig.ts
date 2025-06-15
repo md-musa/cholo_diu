@@ -11,30 +11,28 @@ const SERVER_URL =
     : Constants.expoConfig?.extra?.PRODUCTION_SERVER_URL;
 
 const socket = io(SERVER_URL, {
-  autoConnect: true, // Automatically connect when the socket is created
+  autoConnect: false, // Automatically connect when the socket is created
   reconnection: true, // Enable reconnection
   reconnectionAttempts: 5, // Number of reconnection attempts
-  reconnectionDelay: 1000, // Delay between reconnection attempts in milliseconds
+  reconnectionDelay: 2000, // Delay between reconnection attempts in milliseconds
   // transports: ["websocket"], // Use WebSocket transport only
 });
 
-// Listen for successful connection
-socket.on("connect", () => {
-  // console.log("✅ Connected to socket server");
-});
+// // Listen for successful connection
+// socket.on("connect", () => {
+//   // console.log("✅ Connected to socket server");
+// });
 
-// Handle disconnection
-socket.on("disconnect", () => {
-  console.warn("⚠️ Disconnected from socket server");
+// // Handle disconnection
+// socket.on("disconnect", () => {
+//   // console.warn("⚠️ Disconnected from socket server");
+//   // ToastUtil.error("Disconnected from Server");
+// });
 
-  ToastUtil.error("Disconnected from Server");
-});
-
-// Handle connection error
-socket.on("connect_error", (error: any) => {
-  // console.error("❌ Socket connection error:", error);
-
-  ToastUtil.error("Unable to connect to the server");
-});
+// // Handle connection error
+// socket.on("connect_error", (error: any) => {
+//   // console.error("❌ Socket connection error:", error);
+//   // ToastUtil.error("Unable to connect to the server");
+// });
 
 export default socket;

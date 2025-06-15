@@ -9,15 +9,11 @@ export default function BroadcastManager() {
   useBusLocationBroadcast();
   const router = useRouter();
   const pathname = usePathname();
-
   const { isBroadcasting, activeTrip } = useAppSelector((state) => state.broadcast);
 
   const excludedPaths = ["/home/broadcast/liveLocationSharing", "/home/broadcast", "/home/watchBusLocation"];
 
-  // if (isBroadcasting && pathname === "/home/broadcast") {
-  //   router.push("/home/broadcast/liveLocationSharing");
-  // }
-
+  //console.log("[BroadcastManager]");
   const shouldShowBroadcastManager = excludedPaths.includes(pathname);
   if (!isBroadcasting || shouldShowBroadcastManager) return null;
 
@@ -35,7 +31,7 @@ export default function BroadcastManager() {
           Sharing location for <Text className="capitalize">{activeTrip?.bus.name}</Text>
         </Text>
 
-        <Text className="border border-gray-200 bg-red-600/70 text-white font-semibold px-3 rounded-lg">Stop</Text>
+        <Text className="border border-muted-200 bg-red-600/70 text-white font-semibold px-3 rounded-lg">Stop</Text>
       </View>
     </TouchableOpacity>
   );

@@ -24,7 +24,7 @@ const refreshAccessToken = async () => {
       return newToken;
     }
   } catch (err) {
-    console.error("🔁 Refresh token failed:", JSON.stringify(err, null, 2));
+    //console.error("🔁 Refresh token failed:", JSON.stringify(err, null, 2));
     throw err;
   }
 };
@@ -88,7 +88,7 @@ apiClient.interceptors.response.use(
     const status = error.response?.status;
     const message = error.response?.data?.errorMessages?.[0]?.message;
 
-    console.error(`🟥 ${error.config?.url}\n`, JSON.stringify(error.response?.data, null, 2));
+    //console.error(`🟥 ${error.config?.url}\n`, JSON.stringify(error.response?.data, null, 2));
 
     if (status === 401 && message === "INVALID_ACCESS_TOKEN") {
       return handle401Retry(error);

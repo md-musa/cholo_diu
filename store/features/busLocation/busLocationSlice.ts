@@ -40,8 +40,8 @@ const busLocationSlice = createSlice({
       const data = action.payload;
       if (!data.trip?.busName) return;
 
-      const { isBroadcasting, activeTrip } = store.getState().broadcast;
-      if (isBroadcasting && data.trip.busName === activeTrip?.bus.name) return;
+      // const { isBroadcasting, activeTrip } = store.getState().broadcast;
+      // if (isBroadcasting && data.trip.busName === activeTrip?.bus.name) return;
 
       state.activeBuses[data.trip.busName] = data;
       state.currentlyConnectedUserCount = data.currUserCnt;

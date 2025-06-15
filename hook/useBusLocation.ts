@@ -9,33 +9,27 @@ import { clearBuses, removeInactiveBuses, updateBusLocation } from "@/store/feat
 export const useBusLocation = () => {
   const dispatch = useAppDispatch();
   const { route } = useAppSelector((state) => state.auth);
-  const { activeBuses, currentlyConnectedUserCount } = useAppSelector((state) => state.busLocation);
-
+  const { isBroadcasting, activeTrip } = useAppSelector((state) => state.broadcast);
   const [isDisconnected, setIsDisconnected] = useState(false);
+  const [message, setMessage] = useState<string | null>(null);
 
   // 1. Listen for network changes
   useEffect(() => {
     const unsubscribe = NetInfo.addEventListener((state: any) => {
       const isOffline = !state.isConnected || !state.isInternetReachable;
-
+      //console.log("📶");
       setIsDisconnected(isOffline);
 
-      if (!isOffline) {
-        console.log("🔌 Back Online - Reconnecting socket...");
-        if (!socket.connected) {
-          socket.connect();
-        }
-
-        if (route) {
-          socket.emit(SOCKET_EVENTS.JOIN_ROUTE, route._id);
-        }
+      if (isOffline) {
+        setMessage("You are offline");
+        //console.warn("📴 Internet disconnected");
       } else {
-        console.warn("📴 Internet disconnected");
+        if (!socket.connected) socket.connect();
       }
     });
 
     return () => unsubscribe();
-  }, [route]);
+  }, []);
 
   // 2. Clean up inactive buses every 10 seconds
   useEffect(() => {
@@ -51,28 +45,30 @@ export const useBusLocation = () => {
     dispatch(clearBuses());
 
     const handleLocationUpdate = (data: any) => {
+      if (isBroadcasting && activeTrip?.bus.name === data?.trip.busName) return;
       dispatch(updateBusLocation(data));
-      setIsDisconnected(false); 
+      setIsDisconnected(false);
     };
 
     const handleDisconnect = () => {
-      console.warn("🚫 Socket disconnected");
+     // console.warn("🚫 Socket disconnected");
       setIsDisconnected(true);
+      setMessage("Disconnected from server");
     };
 
     const handleConnect = () => {
-      console.log("✅ Socket connected");
       setIsDisconnected(false);
 
       if (route) {
         socket.emit(SOCKET_EVENTS.JOIN_ROUTE, route._id);
-        console.log(`✅ Joined room: ${route._id}`);
+        //console.log(`✅ Joined room: ${route._id}`);
       }
     };
 
     const handleConnectError = (error: any) => {
-      console.error("⚠️ Socket connect error:", error?.message);
+     // console.error("⚠️ Socket connect error:", error?.message);
       setIsDisconnected(true);
+      setMessage("Disconnected from server");
     };
 
     // Attach socket listeners
@@ -96,12 +92,11 @@ export const useBusLocation = () => {
         socket.emit(SOCKET_EVENTS.LEAVE_ROUTE_ROOM, route._id);
       }
     };
-  }, [route]);
+  }, [route?._id]);
 
   return {
     isUserDisConnected: isDisconnected,
-    activeBuses,
-    currentlyConnectedUserCount,
+    internetStatus: message,
     clearBuses: () => dispatch(clearBuses()),
   };
 };

@@ -1,5 +1,5 @@
 import { mirpur1Route, uttaraRoute } from "./waylines";
-import { uttaraWaypoint } from "./waypoints";
+import { mirpur1Waypint, uttaraWaypoint } from "./waypoints";
 
 export const ROUTES = {
   R2: {
@@ -8,7 +8,7 @@ export const ROUTES = {
   },
   R12: {
     wayline: mirpur1Route,
-    waypoints: [],
+    waypoints: mirpur1Waypint,
   },
 };
 

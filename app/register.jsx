@@ -6,7 +6,6 @@ import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 import { Picker } from "@react-native-picker/picker";
 import { Link, useRouter } from "expo-router";
 import Toast from "react-native-toast-message";
-import Loading from "@/components/UI/Loading";
 import { useRegisterMutation } from "@/store/features/auth/authApi";
 import { useGetRoutesQuery } from "@/store/features/route/routeApi";
 import { ASYNC_STORAGE_KEYS } from "@/constants";
@@ -15,6 +14,8 @@ import { AuthUtil } from "@/utils/authUtil";
 import { setCredentials } from "@/store/features/auth/authSlice";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { ToastUtil } from "@/utils/toastUtil";
+import { colors } from "@/config/colors";
+import LoadingIndicator from "@/components/UI/LoadingIndicator";
 
 const Register = () => {
   const router = useRouter();
@@ -40,8 +41,6 @@ const Register = () => {
         ToastUtil.error(result.error?.data?.errorMessage?.[0]?.message);
         return;
       }
-
-      // Registration successful
       const { accessToken, user } = result.data;
 
       await AsyncStorage.setItem(ASYNC_STORAGE_KEYS.AUTH_TOKEN, accessToken);
@@ -51,7 +50,6 @@ const Register = () => {
       ToastUtil.success(`Welcome, ${user.name}!`);
       router.replace("/home");
     } catch (err) {
-      console.log("🟥 Catch Error", err);
       ToastUtil.error(err?.message || "Unexpected error occurred");
     }
   };
@@ -67,7 +65,7 @@ const Register = () => {
           {/* Header - Matches Login Page Style */}
           <View className="">
             <Text className="text-title-2 font-semibold text-center mb-4">Track Your Campus Buses</Text>
-            <Text className="text-body text-center text-gray-500 mb-10">
+            <Text className="text-body text-center text-muted-500 mb-10">
               Register to view real-time bus locations and schedules
             </Text>
           </View>
@@ -75,14 +73,14 @@ const Register = () => {
           {/* Name Input */}
           <View className="my-3">
             <View className="flex-row items-center gap-2 mb-2">
-              <Ionicons name="person-outline" size={20} color="black" />
-              <Text className="text-lg ">Full Name</Text>
+              <Ionicons name="person-outline" size={20} color={colors.muted[700]} />
+              <Text className="text-lg text-muted-700">Full Name</Text>
             </View>
             <TextInput
               value={formData.name}
               onChangeText={(text) => handleInputChange("name", text)}
               placeholder="Enter your full name"
-              className="border border-gray-400 rounded-xl px-4 py-4"
+              className="border border-muted-300 rounded-xl px-4 py-4"
               editable={!isLoading}
             />
           </View>
@@ -90,17 +88,17 @@ const Register = () => {
           {/* Route Picker */}
           <View className="my-3">
             <View className="flex-row items-center gap-2 mb-2">
-              <FontAwesome5 name="route" size={20} color="black" />
-              <Text className="text-lg ">Bus Route</Text>
+              <FontAwesome5 name="route" size={20} color={colors.muted[700]} />
+              <Text className="text-lg text-muted-700">Bus Route</Text>
             </View>
-            <View className="border border-gray-400 rounded-xl">
+            <View className="border border-muted-300 rounded-xl">
               <Picker
                 selectedValue={formData.routeId}
                 onValueChange={(value) => handleInputChange("routeId", value)}
                 enabled={!isLoading}
               >
                 <Picker.Item label="Select your bus route" value="" />
-                {routes.map((route) => (
+                {routes?.map((route) => (
                   <Picker.Item key={route._id} label={`${route.name}: ${route.endLocation} Route`} value={route._id} />
                 ))}
               </Picker>
@@ -110,10 +108,10 @@ const Register = () => {
           {/* Role Picker */}
           <View className="my-3">
             <View className="flex-row items-center gap-2 mb-2">
-              <Ionicons name="person-add-outline" size={20} color="black" />
-              <Text className="text-lg ">Role</Text>
+              <Ionicons name="person-add-outline" size={20} color={colors.muted[700]} />
+              <Text className="text-lg text-muted-700">Role</Text>
             </View>
-            <View className="border border-gray-400 rounded-xl">
+            <View className="border border-muted-300 rounded-xl">
               <Picker
                 selectedValue={formData.role}
                 onValueChange={(value) => handleInputChange("role", value)}
@@ -129,8 +127,8 @@ const Register = () => {
           {/* Email Input */}
           <View className="my-3">
             <View className="flex-row items-center gap-2 mb-2">
-              <MaterialCommunityIcons name="email-outline" size={20} color="black" />
-              <Text className="text-lg ">University Email</Text>
+              <MaterialCommunityIcons name="email-outline" size={20} color={colors.muted[700]} />
+              <Text className="text-lg text-muted-700">University Email</Text>
             </View>
             <TextInput
               value={formData.email}
@@ -138,7 +136,7 @@ const Register = () => {
               placeholder="abc@diu.edu.bd"
               keyboardType="email-address"
               autoCapitalize="none"
-              className="border border-gray-400 rounded-xl px-4 py-4"
+              className="border border-muted-300 rounded-xl px-4 py-4"
               editable={!isLoading}
             />
           </View>
@@ -146,10 +144,10 @@ const Register = () => {
           {/* Password Input */}
           <View className="my-3">
             <View className="flex-row items-center gap-2 mb-2">
-              <MaterialIcons name="lock-outline" size={20} color="black" />
-              <Text className="text-lg ">Password</Text>
+              <MaterialIcons name="lock-outline" size={20} color={colors.muted[700]} />
+              <Text className="text-lg text-muted-700">Password</Text>
             </View>
-            <View className="flex-row items-center border border-gray-400 rounded-xl px-4 py-4">
+            <View className="flex-row items-center border border-muted-300 rounded-xl px-4 py-4">
               <TextInput
                 value={formData.password}
                 onChangeText={(text) => handleInputChange("password", text)}
@@ -169,10 +167,10 @@ const Register = () => {
             <TouchableOpacity
               onPress={handleRegistration}
               disabled={isLoading}
-              className="w-full bg-tertiary-900 p-3 rounded-xl flex-row justify-center"
+              className="w-full bg-secondary-900 p-3 rounded-xl flex-row justify-center"
             >
               {isLoading ? (
-                <Loading color="white" />
+                <LoadingIndicator color="white" />
               ) : (
                 <Text className="text-body text-center text-white">Register</Text>
               )}
@@ -182,8 +180,8 @@ const Register = () => {
           {/* Already have an account - Matches Login Page Link Style */}
           <View className="mt-4 items-center">
             <View className="flex-row">
-              <Text className="text-gray-600">Already have an account? </Text>
-              <Link href="/login" className="text-blue-600">
+              <Text className="text-muted-600">Already have an account? </Text>
+              <Link href="/login" className="text-secondary-700">
                 Sign In
               </Link>
             </View>

@@ -5,12 +5,13 @@ import { MaterialCommunityIcons, MaterialIcons, Ionicons } from "@expo/vector-ic
 import Toast from "react-native-toast-message";
 import { Link, useRouter } from "expo-router";
 import { ToastUtil } from "@/utils/toastUtil";
-import Loading from "@/components/UI/Loading";
+import LoadingIndicator from "@/components/UI/LoadingIndicator";
 import { useLoginMutation } from "@/store/features/auth/authApi";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { ASYNC_STORAGE_KEYS } from "@/constants";
 import { useAppDispatch } from "@/store/storeConfig";
 import { setCredentials } from "@/store/features/auth/authSlice";
+import { colors } from "@/config/colors";
 
 const Login = () => {
   const dispatch = useAppDispatch();
@@ -34,7 +35,7 @@ const Login = () => {
       ToastUtil.success(`Welcome, ${user.name}!`);
       router.replace("/home");
     } catch (err) {
-      console.log("🟥 Login Error", JSON.stringify(err, null, 2));
+      // console.log("🟥 Login Error", JSON.stringify(err, null, 2));
       ToastUtil.error(err?.response?.data.errorMessages[0].message || "Login error");
     }
   };
@@ -45,7 +46,7 @@ const Login = () => {
         {/* Title and Caption (original version) */}
         <View className="">
           <Text className="text-title-2 font-semibold text-center mb-4">Track Your Campus Buses</Text>
-          <Text className="text-body text-center text-gray-500 mb-10">
+          <Text className="text-body text-center text-muted-500 mb-10">
             Login to view real-time bus locations and schedules
           </Text>
         </View>
@@ -54,9 +55,9 @@ const Login = () => {
         <View className="">
           {/* Email Input */}
           <View className="my-5">
-            <View className="flex-row items-center gap-2">
-              <MaterialCommunityIcons name="email-outline" size={20} color="black" />
-              <Text className="text-lg  mb-2">University Mail</Text>
+            <View className="flex-row items-center gap-2 my-1">
+              <MaterialCommunityIcons name="email-outline" size={20} color={colors.muted[700]} />
+              <Text className="text-lg text-muted-700">University Mail</Text>
             </View>
             <TextInput
               value={email}
@@ -64,17 +65,17 @@ const Login = () => {
               placeholder="Enter your university mail"
               keyboardType="email-address"
               autoCapitalize="none"
-              className="border border-gray-300 rounded-xl px-4 py-4"
+              className="border border-muted-300 rounded-xl px-4 py-4"
             />
           </View>
 
           {/* Password Input with toggle */}
           <View className="my-3">
-            <View className="flex-row items-center gap-2">
-              <MaterialIcons name="password" size={20} color="black" />
-              <Text className="text-lg  mb-2">Password</Text>
+            <View className="flex-row items-center gap-2 my-1">
+              <MaterialIcons name="password" size={20} color={colors.muted[700]} />
+              <Text className="text-lg text-muted-700">Password</Text>
             </View>
-            <View className="flex-row items-center border border-gray-300 rounded-xl px-4 py-4">
+            <View className="flex-row items-center border border-muted-300 rounded-xl px-4 py-4">
               <TextInput
                 value={password}
                 onChangeText={setPassword}
@@ -93,20 +94,24 @@ const Login = () => {
             <TouchableOpacity
               onPress={handleLogin}
               disabled={isLoading}
-              className="w-full bg-tertiary-900 p-3 rounded-xl flex-row justify-center"
+              className="w-full bg-secondary-900 p-3 rounded-xl flex-row justify-center"
             >
-              {isLoading ? <Loading color="white" /> : <Text className="text-body text-center text-white">Login</Text>}
+              {isLoading ? (
+                <LoadingIndicator color="white" />
+              ) : (
+                <Text className="text-body text-center text-white">Login</Text>
+              )}
             </TouchableOpacity>
           </View>
 
           {/* Forgot Password and Sign Up Links */}
           <View className="mt-4 items-center">
             <TouchableOpacity className="mb-4">
-              <Text className="text-blue-600">Forgot Password?</Text>
+              <Text className="text-secondary-700">Forgot Password?</Text>
             </TouchableOpacity>
             <View className="flex-row">
-              <Text className="text-gray-600">Don't have an account? </Text>
-              <Link href="/register" className="text-blue-600">
+              <Text className="text-muted-600">Don't have an account? </Text>
+              <Link href="/register" className="text-secondary-700">
                 Sign Up
               </Link>
             </View>

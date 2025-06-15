@@ -5,11 +5,10 @@ import { generateMarkers } from "@/utils/mappingHelper";
 import busMarker from "@/assets/images/navigatorArrow3.png";
 import UniIcon from "@/assets/images/uni-2.png";
 import pinIcon from "@/assets/images/red-pin-marker.png";
-import busMarkerGreen from "@/assets/images/navigatorArrow.png";
+import busMarkerGreen from "@/assets/images/navigatorArrow2.png";
 import { useAppSelector } from "@/store/storeConfig";
 import { getWayline, getWaypoints, ROUTES } from "@/assets/routes";
 import useLocation from "@/hook/useLocation";
-import { useBusLocation } from "@/hook/useBusLocation";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 function cpfl(string) {
   return string.charAt(0).toUpperCase() + string.slice(1);
@@ -19,7 +18,7 @@ const MapComponent = ({ mapRef, zoom, cameraRef, currentCenter, handleRegionDidC
   const { location } = useLocation();
   const { route } = useAppSelector((state) => state.auth);
   const { isBroadcasting, activeTrip } = useAppSelector((state) => state.broadcast);
-  const { activeBuses } = useBusLocation();
+  const { activeBuses } = useAppSelector((state) => state.busLocation);
   const [busInfo, setBusInfo] = useState(null);
   const waypoints = getWaypoints(route.name);
 
@@ -28,6 +27,7 @@ const MapComponent = ({ mapRef, zoom, cameraRef, currentCenter, handleRegionDidC
       localizeLabels={true}
       logoEnabled={true}
       compassEnabled={true}
+      compassViewMargins={{ x: 5, y: 100 }}
       styleURL={MapLibreGL.StyleURL.Street}
       textureMode={false}
       attributionEnabled={true}
@@ -61,7 +61,7 @@ const MapComponent = ({ mapRef, zoom, cameraRef, currentCenter, handleRegionDidC
       {/* --------- Show user location ----------*/}
       {isBroadcasting && location ? (
         <MapLibreGL.ShapeSource
-          id="currentBusLocation"
+          id="currentBusLocation-1"
           shape={{
             type: "FeatureCollection",
             features: [
@@ -72,18 +72,16 @@ const MapComponent = ({ mapRef, zoom, cameraRef, currentCenter, handleRegionDidC
                   coordinates: [location.longitude, location.latitude],
                 },
                 properties: {
-                  icon: "marker",
-                  title: `${cpfl(activeTrip.bus.name)}\n${cpfl(activeTrip.busType)} bus\n${(
-                    location.speed * 3.6
-                  ).toFixed(2)} km/h`,
+                  title: `You\n${cpfl(activeTrip.bus.name)}\n${cpfl(activeTrip.busType)} bus`,
                   heading: location.heading,
                 },
               },
             ],
           }}
         >
-          <MapLibreGL.CircleLayer id="currentBusLocation-2" style={styles.currentBusShadow} />
+          <MapLibreGL.CircleLayer id="currentBusLocation-2" style={styles.currentBusShadow1} />
           <MapLibreGL.CircleLayer id="currentBusLocation-3" style={styles.currentBusShadow2} />
+          <MapLibreGL.CircleLayer id="currentBusLocation-4" style={styles.currentBusShadow3} />
           <MapLibreGL.SymbolLayer id="currentBusMarker" style={styles.currentBusMarker} />
         </MapLibreGL.ShapeSource>
       ) : (
@@ -188,8 +186,9 @@ const MapComponent = ({ mapRef, zoom, cameraRef, currentCenter, handleRegionDidC
           setTimeout(() => setBusInfo(null), 3000);
         }}
       >
-        <MapLibreGL.CircleLayer id="userShadow3" style={styles.busShadow1} />
-        <MapLibreGL.CircleLayer id="userShadow2" style={styles.busShadow2} />
+        <MapLibreGL.CircleLayer id="userShadow2" style={styles.busShadow1} />
+        <MapLibreGL.CircleLayer id="userShadow3" style={styles.busShadow2} />
+        <MapLibreGL.CircleLayer id="userShadow4" style={styles.busShadow3} />
         <MapLibreGL.SymbolLayer id="busMarkerLayer" style={styles.busMarker} />
       </MapLibreGL.ShapeSource>
 
@@ -230,6 +229,11 @@ const styles = StyleSheet.create({
     circleBlur: 0,
   },
   busShadow2: {
+    circleRadius: 12,
+    circleColor: "#fff",
+    circleBlur: 0,
+  },
+  busShadow3: {
     circleRadius: 10,
     circleColor: "black",
     circleBlur: 0,
@@ -247,26 +251,31 @@ const styles = StyleSheet.create({
     textHaloColor: "black",
     textHaloWidth: 0.1,
   },
-  currentBusShadow: {
+  currentBusShadow1: {
     circleRadius: 17,
-    circleColor: "rgba(16, 187, 103, 0.4)",
+    circleColor: "rgba(0, 50, 255, 0.2)",
     circleBlur: 0,
   },
   currentBusShadow2: {
+    circleRadius: 12,
+    circleColor: "#fff",
+    circleBlur: 0,
+  },
+  currentBusShadow3: {
     circleRadius: 10,
-    circleColor: "black",
+    circleColor: "#000f50c9",
     circleBlur: 0,
   },
   currentBusMarker: {
     iconImage: "busMarkerGreen",
-    iconSize: 0.025,
+    iconSize: 0.028,
     iconAnchor: "center",
     iconRotate: ["get", "heading"],
     textField: ["get", "title"],
     textSize: 11,
     textColor: "black",
     textAnchor: "bottom",
-    textOffset: [0, 6],
+    textOffset: [0, 5.25],
     textHaloColor: "black",
     textHaloWidth: 0.1,
   },
@@ -293,18 +302,10 @@ const styles = StyleSheet.create({
     textSize: 8,
     textColor: "black",
     textAnchor: "right",
-    // textOffset: [0, 6],
     textHaloColor: "black",
     textHaloWidth: 0.1,
+    textOffset: [-0.8, 0.2],
   },
-  // calloutContainer: {
-  //   backgroundColor: "red",
-  //   padding: 6,
-  //   borderRadius: 6,
-  //   borderColor: "#333",
-  //   borderWidth: 1,
-  //   zIndex: 999, // Add this
-  // },
   pointMarker: {
     iconImage: "customMarker",
     iconSize: 0.5,

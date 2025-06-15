@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity } from "react-native";
+import { TouchableOpacity } from "react-native";
 import React from "react";
 import { Stack } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
@@ -20,7 +20,7 @@ const Layout = () => {
             fontWeight: "bold",
           },
           headerLeft: () => (
-            <TouchableOpacity onPress={() => navigation.goBack()} className="bg-gray-100 rounded-full p-1 mx-2">
+            <TouchableOpacity onPress={() => navigation.goBack()} className="bg-muted-100 rounded-full p-1 mx-2">
               <Ionicons name="arrow-back" size={24} color="black" />
             </TouchableOpacity>
           ),
@@ -46,7 +46,7 @@ const Layout = () => {
             fontWeight: "bold",
           },
           headerLeft: () => (
-            <TouchableOpacity onPress={() => navigation.goBack()} className="bg-gray-100 rounded-full p-1 mx-2">
+            <TouchableOpacity onPress={() => navigation.goBack()} className="bg-muted-100 rounded-full p-1 mx-2">
               <Ionicons name="arrow-back" size={24} color="black" />
             </TouchableOpacity>
           ),

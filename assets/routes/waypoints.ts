@@ -56,3 +56,48 @@ export const uttaraWaypoint = [
     estimatedTime: 40,
   },
 ];
+export const mirpur1Waypint = [
+  {
+    location: "Sony Cinema Hall",
+    coords: [90.35514032382963, 23.80014214511111],
+    studentDensity: STUDENT_DENSITY.HIGH,
+    estimatedTime: 0, // minutes from start
+  },
+  {
+    location: "Gudaraghat",
+    coords: [90.34770343994217, 23.80459596452144],
+    studentDensity: STUDENT_DENSITY.MEDIUM,
+    estimatedTime: 5,
+  },
+  {
+    location: "Beribadh",
+    coords: [90.34245845764639, 23.806200953436658],
+    studentDensity: STUDENT_DENSITY.HIGH,
+    estimatedTime: 10,
+  },
+  {
+    location: "Estern Housing",
+    coords: [90.3449885611277, 23.828159133589168],
+    studentDensity: null,
+    estimatedTime: 15,
+  },
+
+  {
+    location: "Birulia",
+    coords: [90.34104572456073, 23.850874561771846],
+    studentDensity: null,
+    estimatedTime: 30,
+  },
+  {
+    location: "Khagan",
+    coords: [90.31131320808998, 23.857468920283054],
+    studentDensity: null,
+    estimatedTime: 35,
+  },
+  {
+    location: "DSC",
+    coords: [90.32219657163165, 23.876480261615384],
+    studentDensity: null,
+    estimatedTime: 40,
+  },
+];

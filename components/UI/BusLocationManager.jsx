@@ -1,21 +1,22 @@
 import { useBusLocation } from "@/hook/useBusLocation";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Text, View } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 
 function BusLocationManager() {
-  const { isUserDisConnected } = useBusLocation();
-  const [showConnected, setShowConnected] = useState(false);
+  const { isUserDisConnected, internetStatus } = useBusLocation();
+  const [showConnectedMsg, setShowConnectedMsg] = useState(false);
 
   useEffect(() => {
     if (!isUserDisConnected) {
-      setShowConnected(true);
-      const timer = setTimeout(() => setShowConnected(false), 2000);
+      setShowConnectedMsg(true);
+      const timer = setTimeout(() => setShowConnectedMsg(false), 2000);
       return () => clearTimeout(timer);
     }
   }, [isUserDisConnected]);
+  //console.log("[BusLocationManager]");
 
-  if (showConnected) {
+  if (showConnectedMsg) {
     return (
       <Text className="z-100 text-center w-full text-sm font-semibold bg-green-600 text-white">
         Connected to server
@@ -23,11 +24,9 @@ function BusLocationManager() {
     );
   } else if (isUserDisConnected) {
     return (
-      <Text className="z-100 text-center w-full text-sm font-semibold bg-gray-600 text-white">
-        Disconnected from server
-      </Text>
+      <Text className="z-100 text-center w-full text-sm font-semibold bg-muted-600 text-white">{internetStatus}</Text>
     );
   } else return null;
 }
 
-export default BusLocationManager;
+export default React.memo(BusLocationManager);

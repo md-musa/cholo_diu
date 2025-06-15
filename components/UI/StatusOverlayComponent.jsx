@@ -1,12 +1,12 @@
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { useBusLocation } from "@/hook/useBusLocation";
+import { useAppSelector } from "@/store/storeConfig";
 
 export default StatusOverlayComponent = () => {
-  const { activeBuses, currentlyConnectedUserCount} = useBusLocation();
+  const { activeBuses, currentlyConnectedUserCount } = useAppSelector((state) => state.busLocation);
   return (
-    <View className="absolute top-3 right-2 bg-white px-2 py-1 rounded-lg shadow-lg border border-gray-300">
+    <View className="absolute top-4 right-2 bg-white px-2 py-1 rounded-lg shadow-lg border border-muted-300">
       <View className="flex flex-row items-center">
         <Ionicons name="eye" size={15} color="#00C89B" style={{ marginRight: 6 }} />
         <Text className="text-[#00C89B] text-md font-bold">{currentlyConnectedUserCount}</Text>
@@ -20,6 +20,4 @@ export default StatusOverlayComponent = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  
-});
+const styles = StyleSheet.create({});

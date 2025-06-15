@@ -37,12 +37,12 @@ const RouteSelector = () => {
   const toCampusEmployee = findOngoingOrNextSchedule(scheduleResult?.schedules?.to_campus?.employee || []);
   const fromCampusEmployee = findOngoingOrNextSchedule(scheduleResult?.schedules?.from_campus?.employee || []);
   return (
-    <View className="bg-primary-1000 p-4 rounded-xl">
-      <View className="flex flex-row items-center bg-white border border-gray-300 rounded-xl px-3">
+    <View className="bg-primary-500 p-4 rounded-xl">
+      <View className="flex flex-row items-center bg-white border border-muted-300 rounded-xl px-3">
         {/* <Image source={busImage} className="rounded-md" resizeMode="contain" style={{ width: 30, height: 30 }} /> */}
 
-        {/* <MaterialIcons name="route" size={24} color="#24204DE6" className="bg-gray-200 p-1 rounded-lg"/> */}
-        <MaterialCommunityIcons name="routes" size={24} color="#24204DE6" className="bg-gray-200 p-1 rounded-md" />
+        {/* <MaterialIcons name="route" size={24} color="#24204DE6" className="bg-muted-200 p-1 rounded-lg"/> */}
+        <MaterialCommunityIcons name="routes" size={24} color="#24204DE6" className="bg-muted-200 p-1 rounded-md" />
         <Picker
           selectedValue={route._id}
           onValueChange={handleRouteChange}
@@ -58,18 +58,18 @@ const RouteSelector = () => {
           dropdownIconColor="black"
           mode="dropdown"
         >
-          <Picker.Item
+          {/* <Picker.Item
             label="Select a route"
             value=""
             style={{
               fontWeight: "bold",
               fontSize: 16,
             }}
-          />
+          /> */}
           {isRoutesLoading && route ? (
             <Picker.Item
               key={route?._id}
-              label={`${route.endLocation} Route`}
+              label={`${route.endLocation}`}
               value={route._id}
               style={{
                 fontWeight: "bold",
@@ -81,7 +81,7 @@ const RouteSelector = () => {
             routes?.map((route) => (
               <Picker.Item
                 key={route?._id}
-                label={`${route.endLocation} Route`}
+                label={`${route.endLocation}`}
                 value={route._id}
                 style={{
                   fontWeight: "bold",
@@ -95,7 +95,7 @@ const RouteSelector = () => {
       </View>
 
       <View className="flex-row my-2">
-        <View className="flex-row items-center bg-gray-50/25 py-1 px-2 rounded-xl">
+        <View className="flex-row items-center bg-muted-50/25 py-1 px-2 rounded-xl">
           <MaterialIcons name="schedule" size={16} color="#ffff" />
           <Text className="text-md text-white mx-2 font-semibold">Next Bus Schedule</Text>
         </View>
@@ -106,7 +106,7 @@ const RouteSelector = () => {
         {/* Grid Container */}
         <View className="flex-col">
           {/* Header Row */}
-          <View className="flex-row bg-gray-50/15 border-b border-white">
+          <View className="flex-row bg-muted-50/15 border-b border-white">
             <View className="flex-1 p-2 items-center justify-center">
               <View className="flex-row items-center">
                 <MaterialCommunityIcons name="swap-vertical-variant" size={20} color="#fff" />

@@ -40,14 +40,14 @@ const startBackgroundLocationTask = async (taskData: LocationTaskData) => {
       const watcher = await Location.watchPositionAsync(
         {
           accuracy: Location.Accuracy.BestForNavigation,
-          timeInterval: 2000,
-          distanceInterval: 1,
+          timeInterval: 4000,
+          distanceInterval: 3,
         },
         (location) => {
           if (!socket.connected) {
             socket.connect();
           }
-          console.log("[BACKGROUND BROADCAST]: ", location);
+         // console.log("[BACKGROUND BROADCAST]: ", location);
           socket.emit(SOCKET_EVENTS.BROADCAST_BUS_LOCATION, {
             tripId,
             latitude: location.coords.latitude,
@@ -62,7 +62,7 @@ const startBackgroundLocationTask = async (taskData: LocationTaskData) => {
 
       // Keep the task running
       while (BackgroundService.isRunning()) {
-        console.log("[Inside background loop]");
+       // console.log("[Inside background loop]");
         await sleep(5000);
       }
 
@@ -73,6 +73,7 @@ const startBackgroundLocationTask = async (taskData: LocationTaskData) => {
     throw error;
   }
 };
+
 
 const stopBackgroundLocationTask = async () => {
   if (await BackgroundService.isRunning()) {
@@ -91,7 +92,7 @@ const updateBackgroundNotification = async (location: Location.LocationObject) =
       taskDesc: `Current Speed: ${(location.coords.speed * 3.6).toFixed(2)} km/h\n To stop, click here`,
     });
   } catch (err) {
-    console.log("Background Notification: ", err);
+    //console.log("Background Notification: ", err);
   }
 };
 

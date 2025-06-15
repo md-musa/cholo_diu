@@ -1,7 +1,6 @@
 import { View, Text, Image, SafeAreaView, TouchableOpacity } from "react-native";
 import React, { useEffect, useCallback, useState } from "react";
-import { Link, useRouter } from "expo-router";
-// @ts-ignore
+import { useRouter } from "expo-router";
 import coverImage from "@/assets/images/login_bg.png";
 import * as SplashScreen from "expo-splash-screen";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -10,15 +9,16 @@ import { jwtDecode } from "jwt-decode";
 import { ASYNC_STORAGE_KEYS, USER_ROLES } from "@/constants";
 import { useAppDispatch } from "@/store/storeConfig";
 import { AuthUser, clearCredentials, setCredentials } from "@/store/features/auth/authSlice";
-import Constants from "expo-constants";
+import LoadingScreen from "../components/UI/LoadingScreen";
 
 // Prevent splash from auto-hiding
-// SplashScreen.preventAutoHideAsync();
+SplashScreen.preventAutoHideAsync();
 
 interface DecodedToken {
   _id: string;
   role: USER_ROLES;
   email: string;
+  exp?: number;
 }
 
 const Index = () => {
@@ -30,11 +30,11 @@ const Index = () => {
     const initialize = async () => {
       try {
         const token = await AsyncStorage.getItem(ASYNC_STORAGE_KEYS.AUTH_TOKEN);
-        const route = JSON.parse((await AsyncStorage.getItem(ASYNC_STORAGE_KEYS.CURRENT_ROUTE)) || "null");
-
+        const routeStr = await AsyncStorage.getItem(ASYNC_STORAGE_KEYS.CURRENT_ROUTE);
+        const route = routeStr ? JSON.parse(routeStr) : null;
+       // console.log("token:", token);
         if (!token) {
           dispatch(clearCredentials());
-          router.push("/login");
           return;
         }
 
@@ -49,48 +49,60 @@ const Index = () => {
         dispatch(setCredentials({ user, route, accessToken: token }));
         router.replace("/home");
       } catch (err) {
-        console.error("Initialization error:", err);
+       // console.log("error");
+       // console.error("Initialization error:", err);
         dispatch(clearCredentials());
-        router.push("/login");
       } finally {
         setAppReady(true);
       }
     };
 
     initialize();
-  }, [dispatch]);
+  }, []);
 
   const onLayoutRootView = useCallback(async () => {
     if (appReady) {
-      // await SplashScreen.hideAsync();
+      await SplashScreen.hideAsync();
+     // console.log("appready");
     }
-    console.log(appReady);
   }, [appReady]);
 
-  if (!appReady) return null;
+  if (!appReady) {
+    return <LoadingScreen />;
+  }
 
   return (
     <SafeAreaView className="flex justify-end h-full bg-white" onLayout={onLayoutRootView}>
-      <Image source={coverImage} className="w-4/5 h-[30%] mx-auto rounded-lg mt-5" resizeMode="contain" />
-      <Text className="text-3xl font-bold text-center mt-10 mb-2 px-5 text-slate-800">DIU Bus Tracker</Text>
-      <Text className="text-lg text-gray-500 text-center px-8 mb-4">Track your university buses in real-time</Text>
-      <Text className="text-footnote text-gray-400 text-center px-8 mb-8">
+      <Image
+        source={coverImage}
+        className="w-4/5 h-[30%] mx-auto rounded-lg mt-5"
+        resizeMode="contain"
+        accessibilityIgnoresInvertColors
+      />
+
+      <Text className="text-3xl font-bold text-center mt-10 mb-2 px-5 text-secondary-900">DIU Bus Tracker</Text>
+
+      <Text className="text-lg text-muted-500 text-center px-8 mb-4">Track your university buses in real-time</Text>
+
+      <Text className="text-footnote text-muted-400 text-center px-8 mb-8">
         Never miss your bus again! Get live updates on bus locations and schedules.
       </Text>
+
       <View className="mt-10 mb-10">
         <TouchableOpacity
           onPress={() => router.push("/login")}
-          className="my-2 flex-row text-center items-center justify-center shadow-sm bg-tertiary-900 py-2 rounded-full mx-6"
+          className="my-2 flex-row items-center justify-center bg-secondary-900 py-3 rounded-full mx-6"
+          activeOpacity={0.8}
         >
-          <Text className="text-white text-lg font-semibold ml-2">Login</Text>
+          <Text className="text-white text-lg font-semibold">Login</Text>
         </TouchableOpacity>
 
-        {/* @ts-ignore */}
         <TouchableOpacity
           onPress={() => router.push("/register")}
-          className="my-2 flex-row text-center items-center justify-center shadow-sm bg-tertiary-900 py-2 rounded-full mx-6"
+          className="my-2 flex-row items-center justify-center bg-secondary-900 py-3 rounded-full mx-6"
+          activeOpacity={0.8}
         >
-          <Text className="text-white text-lg font-semibold ml-2">Registration</Text>
+          <Text className="text-white text-lg font-semibold">Registration</Text>
         </TouchableOpacity>
       </View>
     </SafeAreaView>

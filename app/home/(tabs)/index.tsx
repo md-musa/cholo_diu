@@ -1,14 +1,10 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { View } from "react-native";
-import useLocation from "@/hook/useLocation";
 import RouteSelector from "@/components/RouteSelector";
 import HomeMapSection from "@/components/HomeMapSection";
 import Navbar from "@/components/Navbar";
-import { useAppSelector } from "@/store/storeConfig";
-import { useBusLocation } from "@/hook/useBusLocation";
 
 export default function Index() {
-
   return (
     <View className="flex-1 bg-white">
       <View className="flex-1 mx-4">
@@ -17,7 +13,7 @@ export default function Index() {
         <RouteSelector />
 
         {/* --- Show live locations buses-- */}
-        <HomeMapSection  />
+        <HomeMapSection />
       </View>
     </View>
   );

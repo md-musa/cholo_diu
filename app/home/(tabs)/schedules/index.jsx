@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, TouchableOpacity, ScrollView, Alert } from "react-native";
+import { View, Text, TouchableOpacity, ScrollView } from "react-native";
 import { processSchedules } from "@/utils/scheduleHelper";
 import ScheduleCard from "@/components/ScheduleCard";
 import { Feather, FontAwesome5, MaterialCommunityIcons } from "@expo/vector-icons";
@@ -11,7 +11,8 @@ import { updateRoute } from "@/store/features/auth/authSlice";
 import { useRouter } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { ASYNC_STORAGE_KEYS } from "@/constants";
-import Loading from "@/components/UI/Loading";
+import LoadingScreen from "@/components/UI/LoadingScreen";
+import { colors } from "@/config/colors";
 
 const BusSchedule = () => {
   const scheduleTypes = ["regular", "mid-term", "final", "ramadan"];
@@ -44,7 +45,7 @@ const BusSchedule = () => {
     dispatch(updateRoute(selectedRouteData));
     await AsyncStorage.setItem(ASYNC_STORAGE_KEYS.CURRENT_ROUTE, JSON.stringify(selectedRouteData));
   };
-  if (isScheduleLoading) return <Loading />;
+  if (isScheduleLoading) return <LoadingScreen />;
 
   const toCampusStudent = processSchedules(scheduleResult?.schedules?.to_campus?.student || []);
   const fromCampusStudent = processSchedules(scheduleResult?.schedules?.from_campus?.student || []);
@@ -52,7 +53,7 @@ const BusSchedule = () => {
   const fromCampusEmployee = processSchedules(scheduleResult?.schedules?.from_campus?.employee || []);
 
   return (
-    <ScrollView className="flex-1 bg-white px-4">
+    <ScrollView className="flex-1 bg-muted-50 px-4">
       <View className="">
         <View className="mt-4 my-2">
           <View className="flex-row flex-wrap mb-3">
@@ -60,22 +61,22 @@ const BusSchedule = () => {
               <TouchableOpacity
                 key={type}
                 className={`mx-1 px-4 py-1 border rounded-full ${
-                  selectedType === type ? "bg-indigo-500" : "bg-gray-100"
-                } border-gray-300`}
+                  selectedType === type ? "bg-secondary-500" : "bg-muted-100"
+                } border-muted-300`}
                 disabled={true} // Disabled as requested
               >
-                <Text className={`capitalize ${selectedType === type ? "text-white" : "text-gray-500"}`}>{type}</Text>
+                <Text className={`capitalize ${selectedType === type ? "text-white" : "text-muted-500"}`}>{type}</Text>
               </TouchableOpacity>
             ))}
           </View>
-          /* ---- Schedule days ----- */
+          {/* ---- Schedule days -----  */}
           <View className="flex-row flex-wrap">
             {scheduleDays.map((day) => (
               <TouchableOpacity
                 key={day}
                 className={`mx-1 px-4 py-1 border rounded-full ${
-                  selectedDay === day ? "bg-indigo-500" : "bg-white"
-                } border-gray-300`}
+                  selectedDay === day ? "bg-secondary-500" : "bg-white"
+                } border-muted-300`}
                 onPress={() => setSelectedDay(day)}
               >
                 <Text className={`capitalize ${selectedDay === day ? "text-white" : "text-black"}`}>{day}</Text>
@@ -87,16 +88,16 @@ const BusSchedule = () => {
 
       <TouchableOpacity
         onPress={() => router.push("/home/schedules/waypoints")}
-        className="py-2 mt-2 mb-1 bg-gray-50 border border-gray-300 rounded-full flex-row items-center justify-center"
+        className="py-2 mt-2 mb-1 bg-white border border-muted-300 rounded-full flex-row items-center justify-center"
       >
         <MaterialCommunityIcons name="map-marker-path" size={18} color="black" style={{ marginRight: 8 }} />
         <Text className="text-center text-black text-mg">View Stoppages</Text>
       </TouchableOpacity>
 
-      <View className="bg-tertiary-900 rounded-3xl my-4 p-1">
+      <View className="bg-tertiary-900 rounded-t-3xl rounded-b-xl my-4 p-1">
         <View className="mt-4 flex-row justify-between items-center px-4">
           <View className="flex-row items-center flex-[0.6]">
-            <Feather name="calendar" size={20} color="#fff" style={{ marginRight: 8 }} />
+            <Feather name="calendar" size={20} color="white" style={{ marginRight: 8 }} />
             <Text className="text-lg font-semibold text-white">
               {new Date().toLocaleDateString("en-GB", {
                 weekday: "short",
@@ -144,43 +145,42 @@ const BusSchedule = () => {
 
         <View className="bg-white p-4 my-4 rounded-xl">
           <View className="flex-row justify-around rounded-md">
-            /* Student Button */
+            {/* Student Button  */}
             <TouchableOpacity
               className={`px-6 py-2 rounded-lg border w-[45%] mx-2
-              ${selectedFilter === "student" ? "bg-indigo-500 border-indigo-600" : "bg-white border-gray-400"}`}
+              ${selectedFilter === "student" ? "bg-secondary-500 border-secondary-600" : "bg-white border-muted-400"}`}
               onPress={() => setSelectedFilter("student")}
             >
               <View className="flex-row items-center justify-center">
                 <FontAwesome5
                   name="user-graduate"
-                  size={18}
-                  color={selectedFilter === "student" ? "#fff" : "#6366F1"}
-                  style={{ marginRight: 6 }}
+                  size={14}
+                  color={selectedFilter === "student" ? "white" : colors.secondary[500]}
                 />
 
                 <Text
-                  className={`text-center font-semibold 
-                ${selectedFilter === "student" ? "text-white" : "text-gray-700"}`}
+                  className={`text-center font-semibold mx-1 
+                ${selectedFilter === "student" ? "text-white" : "text-muted-700"}`}
                 >
                   Student
                 </Text>
               </View>
             </TouchableOpacity>
+
             <TouchableOpacity
               className={`px-6 py-2 rounded-lg border w-[45%] mx-2
-              ${selectedFilter === "employee" ? "bg-indigo-500 border-indigo-600" : "bg-white border-gray-400"}`}
+              ${selectedFilter === "employee" ? "bg-secondary-500 border-secondary-600" : "bg-white border-muted-400"}`}
               onPress={() => setSelectedFilter("employee")}
             >
               <View className="flex-row items-center justify-center">
                 <MaterialCommunityIcons
                   name="account-tie"
                   size={18}
-                  color={selectedFilter === "employee" ? "#fff" : "#6366F1"}
-                  style={{ marginRight: 6 }}
+                  color={selectedFilter === "employee" ? "white" : colors.secondary[500]}
                 />
                 <Text
-                  className={`text-center font-semibold 
-                ${selectedFilter === "employee" ? "text-white" : "text-gray-700"}`}
+                  className={`text-center font-semibold mx-1
+                ${selectedFilter === "employee" ? "text-white" : "text-muted-700"}`}
                 >
                   Employee
                 </Text>
@@ -192,31 +192,31 @@ const BusSchedule = () => {
             {selectedFilter == "student" ? (
               <>
                 <View className="">
-                  <View className="flex-row items-center justify-center bg-white px-4 py-1 rounded-2xl my-2  border-gray-300">
-                    <Text className="text-gray-600 font-semibold text-md">{route?.endLocation}</Text>
-                    <Feather name="arrow-right-circle" size={20} color="#2563EB" className="mx-2" />
-                    <Text className="text-gray-600 font-semibold text-md">{route?.startLocation}</Text>
+                  <View className="flex-row items-center justify-center bg-white px-4 py-1 rounded-2xl my-2  border-muted-300">
+                    <Text className="text-muted-600 font-semibold text-lg">{route?.endLocation}</Text>
+                    <Feather name="arrow-right-circle" size={20} color={colors.secondary[500]} className="mx-2" />
+                    <Text className="text-muted-600 font-semibold text-lg">Campus</Text>
                   </View>
 
                   {toCampusStudent?.length > 0 &&
                     toCampusStudent?.map((schedule) => <ScheduleCard key={schedule._id} schedule={schedule} />)}
                   {toCampusStudent?.length == 0 && (
-                    <Text className="text-gray-600 bg-white shadow-sm font-semibold text-sm text-center my-3 border py-3 rounded-lg border-gray-300">
+                    <Text className="text-muted-600 bg-white shadow-sm font-semibold text-sm text-center my-3 border py-3 rounded-lg border-muted-300">
                       No schedule found
                     </Text>
                   )}
                 </View>
                 <View className="">
-                  <View className="flex-row items-center justify-center bg-white px-4 py-1 rounded-2xl my-2 mt-5  border-gray-300">
-                    <Text className="text-gray-600 font-semibold text-md">{route?.startLocation}</Text>
-                    <Feather name="arrow-right-circle" size={20} color="#2563EB" className="mx-2" />
-                    <Text className="text-gray-600 font-semibold text-md">{route?.endLocation}</Text>
+                  <View className="flex-row items-center justify-center bg-white px-4 py-1 rounded-2xl my-2 mt-5  border-muted-300">
+                    <Text className="text-muted-600 font-semibold text-lg">Campus</Text>
+                    <Feather name="arrow-right-circle" size={20} color={colors.secondary[500]} className="mx-2" />
+                    <Text className="text-muted-600 font-semibold text-lg">{route?.endLocation}</Text>
                   </View>
 
                   {fromCampusStudent?.length > 0 &&
                     fromCampusStudent?.map((schedule) => <ScheduleCard key={schedule._id} schedule={schedule} />)}
                   {fromCampusStudent?.length == 0 && (
-                    <Text className="text-gray-600 bg-white shadow-sm font-semibold text-sm text-center my-3 border py-3 rounded-lg border-gray-300">
+                    <Text className="text-muted-600 bg-white shadow-sm font-semibold text-sm text-center my-3 border py-3 rounded-lg border-muted-300">
                       No schedule found
                     </Text>
                   )}
@@ -225,31 +225,31 @@ const BusSchedule = () => {
             ) : (
               <>
                 <View className="">
-                  <View className="flex-row items-center justify-center bg-white px-4 py-1 rounded-2xl my-2  border-gray-300">
-                    <Text className="text-gray-600 font-semibold text-md">{route?.endLocation}</Text>
-                    <Feather name="arrow-right-circle" size={20} color="#2563EB" className="mx-2" />
-                    <Text className="text-gray-600 font-semibold text-md">{route?.startLocation}</Text>
+                  <View className="flex-row items-center justify-center bg-white px-4 py-1 rounded-2xl my-2  border-muted-300">
+                    <Text className="text-muted-600 font-semibold text-md">{route?.endLocation}</Text>
+                    <Feather name="arrow-right-circle" size={20} color={colors.secondary[500]} className="mx-2" />
+                    <Text className="text-muted-600 font-semibold text-md">{route?.startLocation}</Text>
                   </View>
 
                   {toCampusEmployee?.length > 0 &&
                     toCampusEmployee?.map((schedule) => <ScheduleCard key={schedule._id} schedule={schedule} />)}
                   {toCampusEmployee?.length == 0 && (
-                    <Text className="text-gray-600 bg-white shadow-sm font-semibold text-sm text-center my-3 border py-3 rounded-lg border-gray-300">
+                    <Text className="text-muted-600 bg-white shadow-sm font-semibold text-sm text-center my-3 border py-3 rounded-lg border-muted-300">
                       No schedule found
                     </Text>
                   )}
                 </View>
                 <View className="">
-                  <View className="flex-row items-center justify-center bg-white px-4 py-1 rounded-2xl my-2 mt-5  border-gray-300">
-                    <Text className="text-gray-600 font-semibold text-md">{route?.startLocation}</Text>
-                    <Feather name="arrow-right-circle" size={20} color="#2563EB" className="mx-2" />
-                    <Text className="text-gray-600 font-semibold text-md">{route?.endLocation}</Text>
+                  <View className="flex-row items-center justify-center bg-white px-4 py-1 rounded-2xl my-2 mt-5  border-muted-300">
+                    <Text className="text-muted-600 font-semibold text-md">{route?.startLocation}</Text>
+                    <Feather name="arrow-right-circle" size={20} color={colors.secondary[500]} className="mx-2" />
+                    <Text className="text-muted-600 font-semibold text-md">{route?.endLocation}</Text>
                   </View>
 
                   {fromCampusEmployee?.length > 0 &&
                     fromCampusEmployee?.map((schedule) => <ScheduleCard key={schedule._id} schedule={schedule} />)}
                   {fromCampusEmployee?.length == 0 && (
-                    <Text className="text-gray-600 bg-white shadow-sm font-semibold text-sm text-center my-3 border py-3 rounded-lg border-gray-300">
+                    <Text className="text-muted-600 bg-white shadow-sm font-semibold text-sm text-center my-3 border py-3 rounded-lg border-muted-300">
                       No schedule found
                     </Text>
                   )}

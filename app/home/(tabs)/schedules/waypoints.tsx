@@ -8,13 +8,13 @@ const Waypoints = () => {
   const { route } = useAppSelector((state) => state.auth);
 
   if (!route) {
-    return <Text className="text-center mt-4 text-gray-600">No route selected</Text>;
+    return <Text className="text-center mt-4 text-muted-600">No route selected</Text>;
   }
 
   const waypoints = getWaypoints(route.name) || [];
 
   if (waypoints.length === 0) {
-    return <Text className="text-center mt-4 text-gray-600">No waypoints available for this route</Text>;
+    return <Text className="text-center mt-4 text-muted-600">No waypoints available for this route</Text>;
   }
 
   const getDensityColor = (density: string) => {
@@ -26,16 +26,16 @@ const Waypoints = () => {
       case "low":
         return "bg-green-100 text-green-800";
       default:
-        return "bg-gray-100 text-gray-800";
+        return "bg-muted-100 text-muted-800";
     }
   };
 
   return (
-    <View className="flex-1 bg-gray-50 p-4">
+    <View className="flex-1 bg-muted-50 p-4">
       {/* Header */}
-      <View className="bg-primary-700 rounded-xl p-4 mb-4">
-        <Text className="text-xl font-bold text-gray-800 text-center mb-1">{route.endLocation} to Campus</Text>
-        {/* <Text className="text-gray-500 text-center">
+      <View className="bg-primary-400 rounded-xl p-4 mb-4">
+        <Text className="text-xl font-bold text-muted-800 text-center mb-1">{route.endLocation} to Campus</Text>
+        {/* <Text className="text-muted-500 text-center">
           <MaterialIcons name="directions-bus" size={16} color="#6b7280" /> {route.name} Route
         </Text> */}
       </View>
@@ -50,29 +50,29 @@ const Waypoints = () => {
             <View className="items-center w-10">
               {/* Top Node */}
               {index === 0 ? (
-                <View className="w-6 h-6 bg-blue-600 rounded-full items-center justify-center">
+                <View className="w-6 h-6 bg-secondary-600 rounded-full items-center justify-center">
                   <FontAwesome5 name="flag" size={12} color="white" />
                 </View>
               ) : (
-                <View className="w-4 h-4 bg-blue-400 rounded-full mt-1.5" />
+                <View className="w-4 h-4 bg-secondary-400 rounded-full mt-1.5" />
               )}
 
               {/* Line */}
-              {index !== waypoints.length - 1 && <View className="w-0.5 flex-1 bg-blue-200 mt-1" />}
+              {index !== waypoints.length - 1 && <View className="w-0.5 flex-1 bg-secondary-200 mt-1" />}
 
               {/* Last Node (School) */}
               {index === waypoints.length - 1 && (
-                <View className="w-6 h-6 bg-green-600 rounded-full items-center justify-center mt-1">
+                <View className="w-6 h-6 bg-secondary-600 rounded-full items-center justify-center mt-1">
                   <Ionicons name="school" size={14} color="white" />
                 </View>
               )}
             </View>
 
             {/* Waypoint Card */}
-            <View className="flex-1 bg-white border border-gray-300 rounded-lg shadow-sm p-3 ml-3">
+            <View className="flex-1 bg-white border border-muted-300 rounded-lg shadow-sm p-3 ml-3">
               <View className="flex-row justify-between items-start">
                 <View className="flex-1 pr-2">
-                  <Text className="text-lg font-semibold text-gray-800">{item.location}</Text>
+                  <Text className="text-lg font-semibold text-muted-800">{item.location}</Text>
 
                   <View className="flex-row items-center justify-start py-1">
                     {item.estimatedTime && (
@@ -97,7 +97,7 @@ const Waypoints = () => {
 
                 {/* Location Pin */}
                 <TouchableOpacity className="p-1" onPress={() => console.log("Navigate to", item.location)}>
-                  <Entypo name="location-pin" size={26} color="#3b82f6" />
+                  <Entypo name="location-pin" size={26} color="#818cf8" />
                 </TouchableOpacity>
               </View>
             </View>
