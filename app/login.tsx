@@ -16,8 +16,8 @@ import { colors } from "@/config/colors";
 const Login = () => {
   const dispatch = useAppDispatch();
   const router = useRouter();
-  const [email, setEmail] = useState("musa11@diu.edu.bd");
-  const [password, setPassword] = useState("qwerty");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
   const [login, { isLoading }] = useLoginMutation();

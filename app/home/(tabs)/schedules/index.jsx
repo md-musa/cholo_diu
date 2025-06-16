@@ -52,6 +52,16 @@ const BusSchedule = () => {
   const toCampusEmployee = processSchedules(scheduleResult?.schedules?.to_campus?.employee || []);
   const fromCampusEmployee = processSchedules(scheduleResult?.schedules?.from_campus?.employee || []);
 
+  const NoSchedule = ({ message }) => (
+    <View className="flex-col items-center justify-center my-6 py-4 px-4 bg-muted-100 rounded-xl border border-muted-200 shadow-sm">
+      <MaterialCommunityIcons name="bus-clock" size={40} color={colors.tertiary[400]} />
+      <Text className="text-muted-700 font-semibold text-base mt-3 mb-1">No Schedule Available</Text>
+      <Text className="text-muted-500 text-center">
+        {message || "There are currently no bus schedules for this selection."}
+      </Text>
+    </View>
+  );
+
   return (
     <ScrollView className="flex-1 bg-muted-50 px-4">
       <View className="">
@@ -198,12 +208,10 @@ const BusSchedule = () => {
                     <Text className="text-muted-600 font-semibold text-lg">Campus</Text>
                   </View>
 
-                  {toCampusStudent?.length > 0 &&
-                    toCampusStudent?.map((schedule) => <ScheduleCard key={schedule._id} schedule={schedule} />)}
-                  {toCampusStudent?.length == 0 && (
-                    <Text className="text-muted-600 bg-white shadow-sm font-semibold text-sm text-center my-3 border py-3 rounded-lg border-muted-300">
-                      No schedule found
-                    </Text>
+                  {toCampusStudent?.length > 0 ? (
+                    toCampusStudent?.map((schedule) => <ScheduleCard key={schedule._id} schedule={schedule} />)
+                  ) : (
+                    <NoSchedule message="No bus schedule found for students going to campus." />
                   )}
                 </View>
                 <View className="">
@@ -213,12 +221,10 @@ const BusSchedule = () => {
                     <Text className="text-muted-600 font-semibold text-lg">{route?.endLocation}</Text>
                   </View>
 
-                  {fromCampusStudent?.length > 0 &&
-                    fromCampusStudent?.map((schedule) => <ScheduleCard key={schedule._id} schedule={schedule} />)}
-                  {fromCampusStudent?.length == 0 && (
-                    <Text className="text-muted-600 bg-white shadow-sm font-semibold text-sm text-center my-3 border py-3 rounded-lg border-muted-300">
-                      No schedule found
-                    </Text>
+                  {fromCampusStudent?.length > 0 ? (
+                    fromCampusStudent?.map((schedule) => <ScheduleCard key={schedule._id} schedule={schedule} />)
+                  ) : (
+                    <NoSchedule message="No bus schedule found for students leaving campus." />
                   )}
                 </View>
               </>
@@ -226,32 +232,28 @@ const BusSchedule = () => {
               <>
                 <View className="">
                   <View className="flex-row items-center justify-center bg-white px-4 py-1 rounded-2xl my-2  border-muted-300">
-                    <Text className="text-muted-600 font-semibold text-md">{route?.endLocation}</Text>
+                    <Text className="text-muted-600 font-semibold text-lg">{route?.endLocation}</Text>
                     <Feather name="arrow-right-circle" size={20} color={colors.secondary[500]} className="mx-2" />
-                    <Text className="text-muted-600 font-semibold text-md">{route?.startLocation}</Text>
+                    <Text className="text-muted-600 font-semibold text-lg">Campus</Text>
                   </View>
 
-                  {toCampusEmployee?.length > 0 &&
-                    toCampusEmployee?.map((schedule) => <ScheduleCard key={schedule._id} schedule={schedule} />)}
-                  {toCampusEmployee?.length == 0 && (
-                    <Text className="text-muted-600 bg-white shadow-sm font-semibold text-sm text-center my-3 border py-3 rounded-lg border-muted-300">
-                      No schedule found
-                    </Text>
+                  {toCampusEmployee?.length > 0 ? (
+                    toCampusEmployee?.map((schedule) => <ScheduleCard key={schedule._id} schedule={schedule} />)
+                  ) : (
+                    <NoSchedule message="No bus schedule found for employees going to campus." />
                   )}
                 </View>
                 <View className="">
                   <View className="flex-row items-center justify-center bg-white px-4 py-1 rounded-2xl my-2 mt-5  border-muted-300">
-                    <Text className="text-muted-600 font-semibold text-md">{route?.startLocation}</Text>
+                    <Text className="text-muted-600 font-semibold text-lg">Campus</Text>
                     <Feather name="arrow-right-circle" size={20} color={colors.secondary[500]} className="mx-2" />
-                    <Text className="text-muted-600 font-semibold text-md">{route?.endLocation}</Text>
+                    <Text className="text-muted-600 font-semibold text-lg">{route?.endLocation}</Text>
                   </View>
 
-                  {fromCampusEmployee?.length > 0 &&
-                    fromCampusEmployee?.map((schedule) => <ScheduleCard key={schedule._id} schedule={schedule} />)}
-                  {fromCampusEmployee?.length == 0 && (
-                    <Text className="text-muted-600 bg-white shadow-sm font-semibold text-sm text-center my-3 border py-3 rounded-lg border-muted-300">
-                      No schedule found
-                    </Text>
+                  {fromCampusEmployee?.length > 0 ? (
+                    fromCampusEmployee?.map((schedule) => <ScheduleCard key={schedule._id} schedule={schedule} />)
+                  ) : (
+                    <NoSchedule message="No bus schedule found for employees leaving campus." />
                   )}
                 </View>
               </>

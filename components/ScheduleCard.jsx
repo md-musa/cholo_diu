@@ -1,4 +1,4 @@
-import { View, Text, ScrollView, TouchableOpacity } from "react-native";
+import { View, Text, TouchableOpacity } from "react-native";
 import React from "react";
 import { useAppSelector } from "@/store/storeConfig";
 import { Ionicons, MaterialIcons, FontAwesome5, MaterialCommunityIcons } from "@expo/vector-icons"; // Added more icon sets
@@ -14,7 +14,11 @@ const ScheduleCard = (props) => {
     <View
       key={_id}
       className={`rounded-lg my-2 border ${
-        status === "Ongoing" ? "bg-secondary-50 border-secondary-400" : "border-muted-400 bg-white shadow-md"
+        status === "Ongoing"
+          ? "bg-secondary-50 border-secondary-400"
+          : status === "Next"
+          ? "border-primary-400 bg-primary-50 shadow-md"
+          : "border-muted-400 bg-white shadow-md"
       }`}
     >
       {/* Top section with time and status */}

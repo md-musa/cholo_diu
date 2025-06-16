@@ -58,55 +58,6 @@ const MapComponent = ({ mapRef, zoom, cameraRef, currentCenter, handleRegionDidC
       {/* ---- Image Load ------ */}
       <MapLibreGL.Images images={{ marker: busMarker, UniIcon: UniIcon, pinIcon: pinIcon, busMarkerGreen }} />
 
-      {/* --------- Show user location ----------*/}
-      {isBroadcasting && location ? (
-        <MapLibreGL.ShapeSource
-          id="currentBusLocation-1"
-          shape={{
-            type: "FeatureCollection",
-            features: [
-              {
-                type: "Feature",
-                geometry: {
-                  type: "Point",
-                  coordinates: [location.longitude, location.latitude],
-                },
-                properties: {
-                  title: `You\n${cpfl(activeTrip.bus.name)}\n${cpfl(activeTrip.busType)} bus`,
-                  heading: location.heading,
-                },
-              },
-            ],
-          }}
-        >
-          <MapLibreGL.CircleLayer id="currentBusLocation-2" style={styles.currentBusShadow1} />
-          <MapLibreGL.CircleLayer id="currentBusLocation-3" style={styles.currentBusShadow2} />
-          <MapLibreGL.CircleLayer id="currentBusLocation-4" style={styles.currentBusShadow3} />
-          <MapLibreGL.SymbolLayer id="currentBusMarker" style={styles.currentBusMarker} />
-        </MapLibreGL.ShapeSource>
-      ) : (
-        location && (
-          <MapLibreGL.ShapeSource
-            id="userLocation-1"
-            shape={{
-              type: "FeatureCollection",
-              features: [
-                {
-                  type: "Feature",
-                  geometry: {
-                    type: "Point",
-                    coordinates: [location.longitude, location.latitude],
-                  },
-                },
-              ],
-            }}
-          >
-            <MapLibreGL.CircleLayer id="userShadow-1" style={styles.userShadow} />
-            <MapLibreGL.CircleLayer id="userDot-1" style={styles.userDot} />
-          </MapLibreGL.ShapeSource>
-        )
-      )}
-
       {/* ------- Stopages --------- */}
       {waypoints && (
         <MapLibreGL.ShapeSource
@@ -192,6 +143,55 @@ const MapComponent = ({ mapRef, zoom, cameraRef, currentCenter, handleRegionDidC
         <MapLibreGL.SymbolLayer id="busMarkerLayer" style={styles.busMarker} />
       </MapLibreGL.ShapeSource>
 
+      {/* --------- Show user location ----------*/}
+      {isBroadcasting && location ? (
+        <MapLibreGL.ShapeSource
+          id="currentBusLocation-1"
+          shape={{
+            type: "FeatureCollection",
+            features: [
+              {
+                type: "Feature",
+                geometry: {
+                  type: "Point",
+                  coordinates: [location.longitude, location.latitude],
+                },
+                properties: {
+                  title: `You\n${cpfl(activeTrip.bus.name)}\n${cpfl(activeTrip.busType)} bus`,
+                  heading: location.heading,
+                },
+              },
+            ],
+          }}
+        >
+          <MapLibreGL.CircleLayer id="currentBusLocation-2" style={styles.currentBusShadow1} />
+          <MapLibreGL.CircleLayer id="currentBusLocation-3" style={styles.currentBusShadow2} />
+          <MapLibreGL.CircleLayer id="currentBusLocation-4" style={styles.currentBusShadow3} />
+          <MapLibreGL.SymbolLayer id="currentBusMarker" style={styles.currentBusMarker} />
+        </MapLibreGL.ShapeSource>
+      ) : (
+        location && (
+          <MapLibreGL.ShapeSource
+            id="userLocation-1"
+            shape={{
+              type: "FeatureCollection",
+              features: [
+                {
+                  type: "Feature",
+                  geometry: {
+                    type: "Point",
+                    coordinates: [location.longitude, location.latitude],
+                  },
+                },
+              ],
+            }}
+          >
+            <MapLibreGL.CircleLayer id="userShadow-1" style={styles.userShadow} />
+            <MapLibreGL.CircleLayer id="userDot-1" style={styles.userDot} />
+          </MapLibreGL.ShapeSource>
+        )
+      )}
+
       {/* Show bus details (callout) */}
       {busInfo && busInfo.geometry && (
         <MapLibreGL.MarkerView coordinate={busInfo.geometry.coordinates}>
@@ -252,7 +252,7 @@ const styles = StyleSheet.create({
     textHaloWidth: 0.1,
   },
   currentBusShadow1: {
-    circleRadius: 17,
+    circleRadius: 18,
     circleColor: "rgba(0, 50, 255, 0.2)",
     circleBlur: 0,
   },
