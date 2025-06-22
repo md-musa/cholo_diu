@@ -28,7 +28,7 @@ const HomeMapSection = () => {
   };
 
   useEffect(() => {
-    const routeCenter = getCurrentRouteCenterCords(route.name);
+    const routeCenter = getCurrentRouteCenterCords(route.routeNo);
     console.log("Route Cener", routeCenter);
     if (routeCenter) {
       setCurrentCenter(routeCenter);
@@ -67,7 +67,7 @@ const HomeMapSection = () => {
 
       <TouchableOpacity className="absolute top-3 left-3 bg-white border border-muted-300 rounded-md shadow flex-row py-1 px-2 items-center justify-center">
         <MaterialIcons name="route" size={18} color="#4b4b4b" />
-        <Text className="text-sm capitalize color-[#2c2c2c]"> {route.endLocation}</Text>
+        <Text className="text-sm capitalize color-[#2c2c2c]"> {route.routeName}</Text>
       </TouchableOpacity>
 
       <TouchableOpacity

@@ -65,7 +65,7 @@ export default function Settings() {
               <Text className="text-white text-sm capitalize">{userData?.role}</Text>
             </View>
             <View className="bg-secondary-500 px-4 mx-2 py-2 rounded-full">
-              <Text className="text-white text-sm">{route?.endLocation || "N/A"}</Text>
+              <Text className="text-white text-sm">{route?.routeName || "N/A"}</Text>
             </View>
           </View>
         </View>

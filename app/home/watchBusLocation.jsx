@@ -45,7 +45,7 @@ const WatchBusLocation = () => {
     if (paramsData?.latitude) {
       highlightBus([parseFloat(paramsData.longitude), parseFloat(paramsData.latitude)]);
     }
-    const routeCenter = getCurrentRouteCenterCords(route.name);
+    const routeCenter = getCurrentRouteCenterCords(route.routeNo);
     if (routeCenter) {
       setCurrentCenter(routeCenter);
     }

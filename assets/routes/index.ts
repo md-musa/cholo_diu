@@ -1,36 +1,61 @@
-import { mirpur1Route, uttaraRoute } from "./waylines";
-import { mirpur1Waypint, uttaraWaypoint } from "./waypoints";
+import { baipail } from "./routesAndWaypoints/baipail";
+import { dhamrai } from "./routesAndWaypoints/dhamrai";
+import { dhanmondi } from "./routesAndWaypoints/dhanmondi";
+import { ecb } from "./routesAndWaypoints/ecb";
+import { konabariPukurPar } from "./routesAndWaypoints/konabariPukurPar";
+import { mirpur1 } from "./routesAndWaypoints/mirpur1";
+import { savar } from "./routesAndWaypoints/savar";
+import { tongiCollegeGate } from "./routesAndWaypoints/tongiCollegeGate";
+import { uttara } from "./routesAndWaypoints/uttara";
 
-export const ROUTES = {
-  R2: {
-    wayline: uttaraRoute,
-    waypoints: uttaraWaypoint,
-  },
-  R12: {
-    wayline: mirpur1Route,
-    waypoints: mirpur1Waypint,
-  },
+type RouteKey = "R1" | "R2" | "R3" | "R4" | "R5" | "R6" | "R7" | "R8" | "R12";
+
+const routes = {
+  R1: dhanmondi,
+  R2: uttara,
+  R3: tongiCollegeGate,
+  R4: ecb,
+  R5: konabariPukurPar,
+  R6: baipail,
+  R7: dhamrai,
+  R8: savar,
+  R9: dhanmondi,
+  R10: uttara,
+  R12: mirpur1,
 };
 
-type RouteKey = keyof typeof ROUTES;
-
 export const getWayline = (routeNo: RouteKey) => {
-  return ROUTES[routeNo]?.wayline ?? null;
+  return {
+    type: "FeatureCollection",
+    features: [
+      {
+        type: "Feature",
+        properties: {},
+        geometry: {
+          coordinates: routes[routeNo]?.wayline ?? [],
+          type: "LineString",
+        },
+      },
+    ],
+  };
 };
 
 export const getWaypoints = (routeNo: RouteKey) => {
-  return ROUTES[routeNo]?.waypoints ?? null;
+  return routes[routeNo]?.waypoints ?? [];
 };
 
 export const getCurrentRouteCenterCords = (routeNo: RouteKey) => {
-  // return 66% index of coordinates
-  const wayline = getWayline(routeNo);
-  let coordinates: number[][] = [];
+  const wayline = routes[routeNo]?.wayline;
 
-  if (wayline) {
-    coordinates = wayline.features[0].geometry.coordinates;
+  if (!Array.isArray(wayline) || wayline.length === 0) {
+    return null;
   }
+  const index = Math.floor(wayline.length / 2);
+  return wayline[index];
+};
 
-  const index = Math.floor(coordinates.length / 2);
-  return coordinates[index];
+export const RouteAndWaypointsService = {
+  getWayline,
+  getWaypoints,
+  getCurrentRouteCenterCords,
 };

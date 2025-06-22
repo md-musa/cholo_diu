@@ -142,7 +142,7 @@ const BusSchedule = () => {
               {routes?.map((route) => (
                 <Picker.Item
                   key={route?._id}
-                  label={`${route.endLocation}`}
+                  label={`${route.routeName}`}
                   value={route._id}
                   style={{
                     fontSize: 14,
@@ -203,7 +203,7 @@ const BusSchedule = () => {
               <>
                 <View className="">
                   <View className="flex-row items-center justify-center bg-white px-4 py-1 rounded-2xl my-2  border-muted-300">
-                    <Text className="text-muted-600 font-semibold text-lg">{route?.endLocation}</Text>
+                    <Text className="text-muted-600 font-semibold text-lg">{route?.routeName}</Text>
                     <Feather name="arrow-right-circle" size={20} color={colors.secondary[500]} className="mx-2" />
                     <Text className="text-muted-600 font-semibold text-lg">Campus</Text>
                   </View>
@@ -218,7 +218,7 @@ const BusSchedule = () => {
                   <View className="flex-row items-center justify-center bg-white px-4 py-1 rounded-2xl my-2 mt-5  border-muted-300">
                     <Text className="text-muted-600 font-semibold text-lg">Campus</Text>
                     <Feather name="arrow-right-circle" size={20} color={colors.secondary[500]} className="mx-2" />
-                    <Text className="text-muted-600 font-semibold text-lg">{route?.endLocation}</Text>
+                    <Text className="text-muted-600 font-semibold text-lg">{route?.routeName}</Text>
                   </View>
 
                   {fromCampusStudent?.length > 0 ? (
@@ -232,7 +232,7 @@ const BusSchedule = () => {
               <>
                 <View className="">
                   <View className="flex-row items-center justify-center bg-white px-4 py-1 rounded-2xl my-2  border-muted-300">
-                    <Text className="text-muted-600 font-semibold text-lg">{route?.endLocation}</Text>
+                    <Text className="text-muted-600 font-semibold text-lg">{route?.routeName}</Text>
                     <Feather name="arrow-right-circle" size={20} color={colors.secondary[500]} className="mx-2" />
                     <Text className="text-muted-600 font-semibold text-lg">Campus</Text>
                   </View>
@@ -247,7 +247,7 @@ const BusSchedule = () => {
                   <View className="flex-row items-center justify-center bg-white px-4 py-1 rounded-2xl my-2 mt-5  border-muted-300">
                     <Text className="text-muted-600 font-semibold text-lg">Campus</Text>
                     <Feather name="arrow-right-circle" size={20} color={colors.secondary[500]} className="mx-2" />
-                    <Text className="text-muted-600 font-semibold text-lg">{route?.endLocation}</Text>
+                    <Text className="text-muted-600 font-semibold text-lg">{route?.routeName}</Text>
                   </View>
 
                   {fromCampusEmployee?.length > 0 ? (

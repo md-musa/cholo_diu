@@ -2,12 +2,11 @@ import { STUDENT_DENSITY, USER_ROLES } from "@/constants";
 
 export interface IRoute {
   _id: string;
-  name: string;
-  startLocation: string;
-  endLocation: string;
+  routeNo: string;
+  routeName: string;
   totalDistance?: number; // in kilometers
   estimatedTime?: number; // in minutes
-  wayline?: JSON; // matches Mongoose Mixed
+  wayline?: unknown; // matches Mongoose Mixed
   assignedBuses?: string[]; // array of ObjectIds as strings
   waypoints?: {
     location?: string;

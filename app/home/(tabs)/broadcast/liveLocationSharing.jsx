@@ -115,7 +115,7 @@ function LiveLocationSharing() {
           <View className="flex-[0.65]">
             <Text className="text-sm text-muted-700">
               Sharing <Text className="font-bold capitalize">{activeTrip.bus.name}</Text>'s location for the
-              <Text className="font-bold">{" "}{route?.endLocation}</Text> route
+              <Text className="font-bold">{" "}{route?.routeName}</Text> route
             </Text>
           </View>
 

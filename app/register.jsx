@@ -99,7 +99,7 @@ const Register = () => {
               >
                 <Picker.Item label="Select your bus route" value="" />
                 {routes?.map((route) => (
-                  <Picker.Item key={route._id} label={`${route.name}: ${route.endLocation} Route`} value={route._id} />
+                  <Picker.Item key={route._id} label={`${route.routeNo}: ${route.routeName} Route`} value={route._id} />
                 ))}
               </Picker>
             </View>

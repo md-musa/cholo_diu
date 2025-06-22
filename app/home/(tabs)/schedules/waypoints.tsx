@@ -11,7 +11,7 @@ const Waypoints = () => {
     return <Text className="text-center mt-4 text-muted-600">No route selected</Text>;
   }
 
-  const waypoints = getWaypoints(route.name) || [];
+  const waypoints = getWaypoints(route.routeNo) || [];
 
   if (waypoints.length === 0) {
     return <Text className="text-center mt-4 text-muted-600">No waypoints available for this route</Text>;
@@ -34,7 +34,7 @@ const Waypoints = () => {
     <View className="flex-1 bg-muted-50 p-4">
       {/* Header */}
       <View className="bg-primary-400 rounded-xl p-4 mb-4">
-        <Text className="text-xl font-bold text-muted-800 text-center mb-1">{route.endLocation} to Campus</Text>
+        <Text className="text-xl font-bold text-muted-800 text-center mb-1">{route.routeName} to Campus</Text>
         {/* <Text className="text-muted-500 text-center">
           <MaterialIcons name="directions-bus" size={16} color="#6b7280" /> {route.name} Route
         </Text> */}

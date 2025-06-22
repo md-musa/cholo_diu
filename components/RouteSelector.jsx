@@ -69,7 +69,7 @@ const RouteSelector = () => {
           {isRoutesLoading && route ? (
             <Picker.Item
               key={route?._id}
-              label={`${route.endLocation}`}
+              label={`${route.routeName}`}
               value={route._id}
               style={{
                 fontWeight: "bold",
@@ -81,7 +81,7 @@ const RouteSelector = () => {
             routes?.map((route) => (
               <Picker.Item
                 key={route?._id}
-                label={`${route.endLocation}`}
+                label={`${route.routeName}`}
                 value={route._id}
                 style={{
                   fontWeight: "bold",
@@ -132,7 +132,7 @@ const RouteSelector = () => {
           {/* To Campus Row */}
           <View className="flex-row border-b border-white">
             <View className="flex-1 p-2 justify-center">
-              <Text className="text-white text-md">{`To ${route?.startLocation}`}</Text>
+              <Text className="text-white text-md">{`To Campus`}</Text>
             </View>
             <View className="flex-1 p-2 items-center justify-center border-l border-r border-white">
               <Text className="text-white text-md text-center">
@@ -149,7 +149,7 @@ const RouteSelector = () => {
           {/* From Campus Row */}
           <View className="flex-row">
             <View className="flex-1 p-2 justify-center">
-              <Text className="text-white text-md">{`From ${route?.startLocation}`}</Text>
+              <Text className="text-white text-md">{`From Campus`}</Text>
             </View>
             <View className="flex-1 p-2 items-center justify-center border-l border-r border-white">
               <Text className="text-white text-md text-center">

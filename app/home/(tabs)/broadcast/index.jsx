@@ -124,7 +124,7 @@ const Index = () => {
             Help the campus community track bus in real-time
           </Text>
           <Text className="text-sm text-center mt-2 bg-secondary-200 text-black rounded-md px-2">
-            Current Route: <Text className="text-muted-700">{route.endLocation}</Text>
+            Current Route: <Text className="text-muted-700">{route.routeName}</Text>
           </Text>
         </View>
 

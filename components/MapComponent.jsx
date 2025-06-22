@@ -20,7 +20,7 @@ const MapComponent = ({ mapRef, zoom, cameraRef, currentCenter, handleRegionDidC
   const { isBroadcasting, activeTrip } = useAppSelector((state) => state.broadcast);
   const { activeBuses } = useAppSelector((state) => state.busLocation);
   const [busInfo, setBusInfo] = useState(null);
-  const waypoints = getWaypoints(route.name);
+  const waypoints = getWaypoints(route.routeNo);
 
   return (
     <MapLibreGL.MapView
@@ -48,7 +48,7 @@ const MapComponent = ({ mapRef, zoom, cameraRef, currentCenter, handleRegionDidC
       </MapLibreGL.RasterSource>
 
       {/* ----- Route highlighter ------ */}
-      <MapLibreGL.ShapeSource id="routeSource" shape={getWayline(route.name)}>
+      <MapLibreGL.ShapeSource id="routeSource" shape={getWayline(route.routeNo)}>
         <MapLibreGL.LineLayer
           id="routeLayer"
           style={{ lineColor: "#2e2e2e", lineWidth: 2, lineCap: "round", lineJoin: "round" }}
