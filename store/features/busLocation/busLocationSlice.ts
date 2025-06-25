@@ -42,7 +42,7 @@ const busLocationSlice = createSlice({
 
       // const { isBroadcasting, activeTrip } = store.getState().broadcast;
       // if (isBroadcasting && data.trip.busName === activeTrip?.bus.name) return;
-
+      console.log("[🚍]", JSON.stringify(data, null, 2));
       state.activeBuses[data.trip.busName] = data;
       state.currentlyConnectedUserCount = data.currUserCnt;
     },

@@ -1,3 +1,4 @@
+import { SCHEDULE_STATUS } from "@/constants";
 import moment from "moment";
 
 export function findOngoingOrNextSchedule(schedules) {
@@ -14,14 +15,14 @@ export function findOngoingOrNextSchedule(schedules) {
 
     // Check if the current time is within schedule time to +15 minutes range
     if (now.isBetween(scheduleTime, scheduleEndTime)) {
-      ongoingSchedule = { ...schedule, status: "ongoing" };
+      ongoingSchedule = { ...schedule, status: SCHEDULE_STATUS.NEXT };
     }
     // Find the next upcoming schedule (smallest future time)
     else if (scheduleTime.isAfter(now)) {
       const timeDiff = scheduleTime.diff(now, "minutes");
       if (timeDiff < nextScheduleTimeDiff) {
         nextScheduleTimeDiff = timeDiff;
-        nextSchedule = { ...schedule, status: "next" };
+        nextSchedule = { ...schedule, status: SCHEDULE_STATUS.NEXT };
       }
     }
   });
@@ -40,7 +41,7 @@ export function processSchedules(schedules) {
   // Helper function to determine the status
   const getStatus = (scheduleTime) => {
     const scheduleMoment = moment(scheduleTime, "HH:mm");
-    return now.isBetween(scheduleMoment, scheduleMoment.clone().add(15, "minutes")) ? "Ongoing" : null;
+    return now.isBetween(scheduleMoment, scheduleMoment.clone().add(15, "minutes")) ? SCHEDULE_STATUS.NEXT : null;
   };
 
   // Sort schedules by time
@@ -51,9 +52,9 @@ export function processSchedules(schedules) {
     const status = getStatus(schedule.time);
     const formattedTime = moment(schedule.time, "HH:mm").format("hh:mm A");
 
-    // Assign "Next" status only to the first future schedule
+    // Assign SCHEDULE_STATUS.NEXT status only to the first future schedule
     if (!status && index === array.findIndex((s) => moment(s.time, "HH:mm").isAfter(now))) {
-      return { ...schedule, formattedTime, status: "Next" };
+      return { ...schedule, formattedTime, status: SCHEDULE_STATUS.NEXT };
     }
 
     return { ...schedule, formattedTime, status: status || null };

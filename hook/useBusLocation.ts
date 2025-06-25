@@ -9,7 +9,6 @@ import { clearBuses, removeInactiveBuses, updateBusLocation } from "@/store/feat
 export const useBusLocation = () => {
   const dispatch = useAppDispatch();
   const { route } = useAppSelector((state) => state.auth);
-  const { isBroadcasting, activeTrip } = useAppSelector((state) => state.broadcast);
   const [isDisconnected, setIsDisconnected] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
 
@@ -45,13 +44,12 @@ export const useBusLocation = () => {
     dispatch(clearBuses());
 
     const handleLocationUpdate = (data: any) => {
-      if (isBroadcasting && activeTrip?.bus.name === data?.trip.busName) return;
       dispatch(updateBusLocation(data));
       setIsDisconnected(false);
     };
 
     const handleDisconnect = () => {
-     // console.warn("🚫 Socket disconnected");
+      // console.warn("🚫 Socket disconnected");
       setIsDisconnected(true);
       setMessage("Disconnected from server");
     };
@@ -66,7 +64,7 @@ export const useBusLocation = () => {
     };
 
     const handleConnectError = (error: any) => {
-     // console.error("⚠️ Socket connect error:", error?.message);
+      // console.error("⚠️ Socket connect error:", error?.message);
       setIsDisconnected(true);
       setMessage("Disconnected from server");
     };

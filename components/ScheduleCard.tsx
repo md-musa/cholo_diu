@@ -4,20 +4,39 @@ import { useAppSelector } from "@/store/storeConfig";
 import { Ionicons, MaterialIcons, FontAwesome5, MaterialCommunityIcons } from "@expo/vector-icons"; // Added more icon sets
 import { useRouter } from "expo-router";
 import { colors } from "@/config/colors";
+import { SCHEDULE_STATUS } from "@/constants";
 
-const ScheduleCard = (props) => {
+interface AssignedBus {
+  _id: string;
+  name: string;
+  [key: string]: any;
+}
+
+export interface Schedule {
+  _id: string;
+  status: string;
+  formattedTime: string;
+  note?: string;
+  serviceType?: string;
+  assignedBuses: AssignedBus[];
+}
+
+interface ScheduleCardProps {
+  schedule: Schedule;
+}
+
+const ScheduleCard: React.FC<ScheduleCardProps> = (props) => {
   const router = useRouter();
   const { activeBuses } = useAppSelector((state) => state.busLocation);
-  const { _id, status, formattedTime, note, assignedBuses } = props.schedule;
+  const { status, formattedTime, note, assignedBuses, serviceType } = props.schedule;
 
   return (
     <View
-      key={_id}
       className={`rounded-lg my-2 border ${
-        status === "Ongoing"
+        status === SCHEDULE_STATUS.NEXT
           ? "bg-secondary-50 border-secondary-400"
-          : status === "Next"
-          ? "border-primary-400 bg-primary-50 shadow-md"
+          : status === SCHEDULE_STATUS.ACTIVE
+          ? "border-pink-400 bg-pink-50 shadow-md"
           : "border-muted-400 bg-white shadow-md"
       }`}
     >
@@ -28,10 +47,14 @@ const ScheduleCard = (props) => {
             <FontAwesome5
               name="clock"
               size={16}
-              color={status === "Ongoing" ? colors.secondary[500] : colors.muted[500]}
-              className="mr-2"
+              color={status === SCHEDULE_STATUS.NEXT ? colors.secondary[500] : colors.muted[500]}
+              style={{ marginRight: 8 }}
             />
-            <Text className={`text-lg ${status === "Ongoing" ? "font-semibold text-secondary-600" : "text-muted-800"}`}>
+            <Text
+              className={`text-lg ${
+                status === SCHEDULE_STATUS.NEXT ? "font-semibold text-secondary-600" : "text-muted-800"
+              }`}
+            >
               {formattedTime}
             </Text>
           </View>
@@ -40,8 +63,8 @@ const ScheduleCard = (props) => {
             <View className="flex-row items-center">
               <Text
                 className={`text-sm ${
-                  status === "Next"
-                    ? "text-primary-500 bg-primary-50 border border-primary-400"
+                  status === SCHEDULE_STATUS.ACTIVE
+                    ? "text-pink-500 bg-pink-50 border border-pink-400"
                     : "text-purple-900 bg-purple-100 border border-purple-400"
                 } py-1 px-4 rounded-full font-semibold`}
               >
@@ -50,24 +73,32 @@ const ScheduleCard = (props) => {
             </View>
           )}
         </View>
+        {/* couldbe shuttle service */}
+        {serviceType && (
+          <View className="flex-row bg-secondary-600 rounded-full px-2 my-1">
+            <Text className="text-sm mr-2 text-muted-100 capitalize">{serviceType}</Text>
+          </View>
+        )}
 
         {note && (
           <View className="flex-row items-start">
             <MaterialCommunityIcons
               name="note-text-outline"
               size={17}
-              color={status === "Ongoing" ? colors.secondary[500] : colors.muted[500]}
-              className="mr-1"
+              color={status === SCHEDULE_STATUS.NEXT ? colors.secondary[500] : colors.muted[500]}
+              style={{ marginRight: 4 }}
             />
             <Text>
               <Text
-                className={`text-sm font-semibold ${status === "Ongoing" ? "text-secondary-500" : "text-muted-700"}`}
+                className={`text-sm font-semibold ${
+                  status === SCHEDULE_STATUS.NEXT ? "text-secondary-500" : "text-muted-700"
+                }`}
               >
                 Note:
               </Text>
               <Text
                 className={`text-sm capitalize ${
-                  status === "Ongoing" ? "font-semibold text-secondary-500" : "text-muted-700"
+                  status === SCHEDULE_STATUS.NEXT ? "font-semibold text-secondary-500" : "text-muted-700"
                 }`}
               >
                 {" " + note}
@@ -85,21 +116,23 @@ const ScheduleCard = (props) => {
         {assignedBuses.length > 0 ? (
           <View className="flex-row flex-wrap">
             {assignedBuses.map((bus) => {
-              const isActive = activeBuses[bus.name];
+              const isActive = bus.name && activeBuses[bus.name];
+
+              const handleBusPress = () => {
+                if (isActive) {
+                  router.push({
+                    pathname: "/home/watchBusLocation",
+                    params: {
+                      latitude: isActive.latitude,
+                      longitude: isActive.longitude,
+                    },
+                  });
+                }
+              };
 
               return (
                 <TouchableOpacity
-                  onPress={() => {
-                    if (isActive) {
-                      router.push({
-                        pathname: "/home/watchBusLocation",
-                        params: {
-                          latitude: isActive.latitude,
-                          longitude: isActive.longitude,
-                        },
-                      });
-                    }
-                  }}
+                  onPress={handleBusPress}
                   key={bus._id}
                   className={`flex-row items-center px-2 py-1 mr-2 mb-2 rounded-full border ${
                     isActive ? "bg-yellow-50 border-yellow-300" : "bg-muted-100 border-muted-400"
@@ -107,14 +140,14 @@ const ScheduleCard = (props) => {
                 >
                   <Ionicons name="bus" size={16} color={colors.muted[800]} />
                   <Text className="ml-1 text-sm text-muted-800 capitalize">{bus.name}</Text>
-                  {isActive && <Ionicons name="location" size={16} color="#f59e42" className="ml-1" />}
+                  {isActive && <Ionicons name="location" size={16} color="#f59e42" />}
                 </TouchableOpacity>
               );
             })}
           </View>
         ) : (
           <View className="flex-row items-center justify-center">
-            <MaterialIcons name="info-outline" size={16} color={colors.muted[500]} className="mr-1" />
+            <MaterialIcons name="info-outline" size={16} color={colors.muted[500]} style={{ marginRight: 4 }} />
             <Text className="text-sm text-center text-muted-600">No bus assigned yet</Text>
           </View>
         )}

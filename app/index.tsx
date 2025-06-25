@@ -5,14 +5,14 @@ import coverImage from "@/assets/images/login_bg.png";
 import * as SplashScreen from "expo-splash-screen";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { jwtDecode } from "jwt-decode";
-
+import * as Location from "expo-location";
 import { ASYNC_STORAGE_KEYS, USER_ROLES } from "@/constants";
 import { useAppDispatch } from "@/store/storeConfig";
 import { AuthUser, clearCredentials, setCredentials } from "@/store/features/auth/authSlice";
 import LoadingScreen from "../components/UI/LoadingScreen";
 
 // Prevent splash from auto-hiding
-SplashScreen.preventAutoHideAsync();
+// SplashScreen.preventAutoHideAsync();
 
 interface DecodedToken {
   _id: string;
@@ -25,6 +25,14 @@ const Index = () => {
   const dispatch = useAppDispatch();
   const router = useRouter();
   const [appReady, setAppReady] = useState(false);
+  const checkPermissions = async () => {
+    const fg = await Location.getForegroundPermissionsAsync();
+    const bg = await Location.getBackgroundPermissionsAsync();
+
+    console.log("Foreground:", fg.status); // granted / denied
+    console.log("Background:", bg.status); // granted / denied
+  };
+  checkPermissions();
 
   useEffect(() => {
     const initialize = async () => {
@@ -32,7 +40,7 @@ const Index = () => {
         const token = await AsyncStorage.getItem(ASYNC_STORAGE_KEYS.AUTH_TOKEN);
         const routeStr = await AsyncStorage.getItem(ASYNC_STORAGE_KEYS.CURRENT_ROUTE);
         const route = routeStr ? JSON.parse(routeStr) : null;
-       // console.log("token:", token);
+        // console.log("token:", token);
         if (!token) {
           dispatch(clearCredentials());
           return;
@@ -49,8 +57,8 @@ const Index = () => {
         dispatch(setCredentials({ user, route, accessToken: token }));
         router.replace("/home");
       } catch (err) {
-       // console.log("error");
-       // console.error("Initialization error:", err);
+        // console.log("error");
+        // console.error("Initialization error:", err);
         dispatch(clearCredentials());
       } finally {
         setAppReady(true);
@@ -62,8 +70,8 @@ const Index = () => {
 
   const onLayoutRootView = useCallback(async () => {
     if (appReady) {
-      await SplashScreen.hideAsync();
-     // console.log("appready");
+      // await SplashScreen.hideAsync();
+      console.log("appready");
     }
   }, [appReady]);
 

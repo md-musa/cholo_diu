@@ -21,6 +21,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { USER_ROLES } from "@/constants";
 import { colors } from "@/config/colors";
 import LoadingIndicator from "@/components/UI/LoadingIndicator";
+import { ensureBackgroundLocationPermission } from "@/utils/askForBackgroundLocationPermission";
 
 const Index = () => {
   const router = useRouter();
@@ -50,6 +51,9 @@ const Index = () => {
       Alert.alert("Incomplete Information", "Please select a bus, bus type, and direction.");
       return;
     }
+
+    const hasBgPermission = await ensureBackgroundLocationPermission();
+    if (!hasBgPermission) return;
 
     Alert.alert("Confirm Sharing", `Start sharing location of ${selectedBus.name} (${busType}, ${direction})?`, [
       { text: "Cancel", style: "cancel" },
@@ -86,7 +90,7 @@ const Index = () => {
 
             router.push("/home/broadcast/liveLocationSharing");
           } catch (error) {
-           // console.error("[broadcast] Error creating trip:\n", JSON.stringify(error.response.data.message, null, 2));
+            // console.error("[broadcast] Error creating trip:\n", JSON.stringify(error.response.data.message, null, 2));
             Alert.alert("Error", "Failed to start sharing. Please try again.");
           }
         },

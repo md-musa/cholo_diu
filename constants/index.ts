@@ -19,8 +19,14 @@ export enum STUDENT_DENSITY {
 export enum TRIP_STATUS {
   SCHEDULED = "scheduled",
   ONGOING = "ongoing",
+  ACTIVE = "active",
   COMPLETED = "completed",
   CANCELED = "cancelled",
+}
+
+export enum SCHEDULE_STATUS {
+  ACTIVE = "active",
+  NEXT = "next",
 }
 
 export enum BUS_TYPES {

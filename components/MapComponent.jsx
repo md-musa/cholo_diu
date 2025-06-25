@@ -36,7 +36,13 @@ const MapComponent = ({ mapRef, zoom, cameraRef, currentCenter, handleRegionDidC
       onRegionDidChange={handleRegionDidChange}
     >
       {/*------ Recentering map -------- */}
-      <MapLibreGL.Camera ref={cameraRef} zoomLevel={zoom} centerCoordinate={currentCenter} />
+      <MapLibreGL.Camera
+        animationMode="flyTo"
+        // animationDuration={0}
+        ref={cameraRef}
+        zoomLevel={zoom}
+        centerCoordinate={currentCenter}
+      />
 
       {/* --------- Load tile --------- */}
       <MapLibreGL.RasterSource

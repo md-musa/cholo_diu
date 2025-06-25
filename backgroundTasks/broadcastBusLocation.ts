@@ -15,7 +15,7 @@ const startBackgroundLocationTask = async (taskData: LocationTaskData) => {
     const options = {
       taskName: "location_sharing",
       taskTitle: "You're Sharing Location",
-      taskDesc: "Sharing live location with passengers",
+      taskDesc: "Sharing live location with with students and employees",
       taskIcon: {
         name: "ic_launcher",
         type: "mipmap",

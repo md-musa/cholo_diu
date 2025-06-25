@@ -1,23 +1,38 @@
 import { Stack } from "expo-router";
 import "../global.css";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { View } from "react-native";
+import { Text, View } from "react-native";
 import { Provider } from "react-redux";
 import { store } from "@/store/storeConfig";
 import BroadcastManager from "@/components/UI/BroadcastManager";
 import BusLocationManager from "@/components/UI/BusLocationManager";
 import { Toasts } from "@backpackapp-io/react-native-toast";
-import { useEffect } from "react";
-import { Linking } from "react-native";
+import { useEffect, useState } from "react";
+import { useNetInfo } from "@react-native-community/netinfo";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 export default function RootLayout() {
-  useEffect(() => {
-    const subscription = Linking.addEventListener("url", (event) => {
-      //console.log("URL received: ", event);
-    });
+  const netInfo = useNetInfo();
 
-    return () => subscription.remove();
-  }, []);
+  const [hasConnectedOnce, setHasConnectedOnce] = useState(false);
+
+  useEffect(() => {
+    if (netInfo.isConnected) {
+      setHasConnectedOnce(true);
+    }
+  }, [netInfo.isConnected]);
+
+  if (!hasConnectedOnce && !netInfo.isConnected) {
+    return (
+      <View className="flex-1 justify-center items-center bg-neutral-50">
+        <MaterialCommunityIcons name="wifi-off" size={64} color="#f87171" style={{ marginBottom: 16 }} />
+        <Text className="text-xl font-bold text-red-500">No Internet Connection</Text>
+        <Text className="text-base text-neutral-500 mt-2 text-center">Please check your connection and try again.</Text>
+      </View>
+    );
+  }
+
+  console.log("📶: ", netInfo.isConnected);
 
   return (
     <Provider store={store}>

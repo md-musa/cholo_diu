@@ -42,11 +42,19 @@ const HomeMapSection = () => {
     try {
       const center = await mapRef.current.getCenter();
       const currentZoom = await mapRef.current.getZoom();
-      // // console.log("Center:", center);
-      // // console.log("Zoom:", currentZoom);
 
-      setCurrentCenter(center);
-      setZoom(currentZoom);
+      // trime last 3-4 digits of the center coordinates and zoom level to avoid unnecessary updates
+      const trimmedCenter = [parseFloat(center[0].toFixed(3)), parseFloat(center[1].toFixed(3))];
+      const trimmedZoom = parseFloat(currentZoom.toFixed(2));
+      if (trimmedCenter[0] === currentCenter[0] && trimmedCenter[1] === currentCenter[1] && trimmedZoom === zoom) {
+        return; // No change in center or zoom
+      }
+      // Update state only if there is a change
+      console.log("Region changed:");
+      console.log("Center:", trimmedCenter);
+      console.log("Zoom:", trimmedZoom);
+      setCurrentCenter(trimmedCenter);
+      setZoom(trimmedZoom);
     } catch (error) {
       //console.warn("Map region change error:", error);
     }
@@ -63,11 +71,11 @@ const HomeMapSection = () => {
         setCurrentCenter={setCurrentCenter}
         handleRegionDidChange={handleRegionDidChange}
       />
-      <StatusOverlayComponent  />
+      <StatusOverlayComponent />
 
       <TouchableOpacity className="absolute top-3 left-3 bg-white border border-muted-300 rounded-md shadow flex-row py-1 px-2 items-center justify-center">
         <MaterialIcons name="route" size={18} color="#4b4b4b" />
-        <Text className="text-sm capitalize color-[#2c2c2c]"> {route.routeName}</Text>
+        <Text className="text-sm capitalize color-[#2c2c2c]"> {route?.routeName}</Text>
       </TouchableOpacity>
 
       <TouchableOpacity
