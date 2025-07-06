@@ -51,7 +51,7 @@ export const useBusLocation = () => {
     const handleDisconnect = () => {
       // console.warn("🚫 Socket disconnected");
       setIsDisconnected(true);
-      setMessage("Disconnected from server");
+      // setMessage("Disconnected from server");
     };
 
     const handleConnect = () => {
@@ -66,7 +66,7 @@ export const useBusLocation = () => {
     const handleConnectError = (error: any) => {
       // console.error("⚠️ Socket connect error:", error?.message);
       setIsDisconnected(true);
-      setMessage("Disconnected from server");
+      // setMessage("Disconnected from server");
     };
 
     // Attach socket listeners

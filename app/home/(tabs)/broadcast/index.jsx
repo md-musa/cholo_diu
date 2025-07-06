@@ -22,6 +22,8 @@ import { USER_ROLES } from "@/constants";
 import { colors } from "@/config/colors";
 import LoadingIndicator from "@/components/UI/LoadingIndicator";
 import { ensureBackgroundLocationPermission } from "@/utils/askForBackgroundLocationPermission";
+import { ToastUtil } from "@/utils/toastUtil";
+import LiveMapLocation from "@/components/broadcast/LiveMapLocation";
 
 const Index = () => {
   const router = useRouter();
@@ -39,7 +41,7 @@ const Index = () => {
 
   useEffect(() => {
     if (busesError) {
-      Alert.alert("Error", "Failed to load buses. Please try again later.");
+      ToastUtil.error("Failed to load buses. Please try again later.");
     }
   }, [busesError]);
 
@@ -48,7 +50,7 @@ const Index = () => {
 
   const handleStartSharing = async () => {
     if (!isValid) {
-      Alert.alert("Incomplete Information", "Please select a bus, bus type, and direction.");
+      ToastUtil.error("Please select a bus, bus type, and direction.");
       return;
     }
 
@@ -81,17 +83,9 @@ const Index = () => {
             );
             await AsyncStorage.setItem("tripId", data._id);
 
-            // console.log("Broadcast data set:", {
-            //   bus: selectedBus,
-            //   busType,
-            //   tripId: data._id,
-            //   note,
-            // });
-
-            router.push("/home/broadcast/liveLocationSharing");
+            // router.push("/home/broadcast/liveLocationSharing");
           } catch (error) {
-            // console.error("[broadcast] Error creating trip:\n", JSON.stringify(error.response.data.message, null, 2));
-            Alert.alert("Error", "Failed to start sharing. Please try again.");
+            ToastUtil.error("Failed to start sharing. Please try again.");
           }
         },
       },
@@ -99,25 +93,8 @@ const Index = () => {
   };
 
   if (isBusesLoading) return <LoadingScreen />;
+  if (isBroadcasting) return <LiveMapLocation />;
 
-  if (isBroadcasting) {
-    return (
-      <View className="flex-1 justify-center items-center bg-muted-100 px-6">
-        <Ionicons name="alert-circle" size={48} color={colors.secondary[500]} />
-        <Text className="mt-4 text-lg font-semibold text-muted-900">Already Broadcasting</Text>
-        <Text className="mt-2 text-muted-700 text-center">
-          You are already sharing a bus location. Tap below to go to the live sharing screen.
-        </Text>
-        <TouchableOpacity
-          className="mt-6 bg-secondary-700 px-6 py-3 rounded-lg flex-row items-center"
-          onPress={() => router.push("/home/broadcast/liveLocationSharing")}
-        >
-          <Ionicons name="location" size={20} color="white" className="mr-2" />
-          <Text className="text-white font-bold text-lg">Go to Live Sharing</Text>
-        </TouchableOpacity>
-      </View>
-    );
-  }
 
   return (
     <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} className="flex-1 bg-muted-100">

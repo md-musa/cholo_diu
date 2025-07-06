@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Image, StyleSheet, Text, View } from "react-native";
 import * as MapLibreGL from "@maplibre/maplibre-react-native";
 import { generateMarkers } from "@/utils/mappingHelper";
@@ -10,17 +10,28 @@ import { useAppSelector } from "@/store/storeConfig";
 import { getWayline, getWaypoints, ROUTES } from "@/assets/routes";
 import useLocation from "@/hook/useLocation";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { MapUtils } from "@/utils/mapUtils";
 function cpfl(string) {
   return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
-const MapComponent = ({ mapRef, zoom, cameraRef, currentCenter, handleRegionDidChange }) => {
+const MapComponent = ({ mapRef, zoom, setZoom, cameraRef, currentCenter, setCurrentCenter }) => {
   const { location } = useLocation();
   const { route } = useAppSelector((state) => state.auth);
   const { isBroadcasting, activeTrip } = useAppSelector((state) => state.broadcast);
   const { activeBuses } = useAppSelector((state) => state.busLocation);
   const [busInfo, setBusInfo] = useState(null);
-  const waypoints = getWaypoints(route.routeNo);
+  const waypoints = getWaypoints(route?.routeNo);
+  // console.log("[Mapcomponent rerendered]");
+
+  const [loaded, setLoaded] = useState(false);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setLoaded(true);
+      // console.log("Map fully loaded [3s passed]");
+    }, 3000);
+  }, []);
 
   return (
     <MapLibreGL.MapView
@@ -33,17 +44,21 @@ const MapComponent = ({ mapRef, zoom, cameraRef, currentCenter, handleRegionDidC
       attributionEnabled={true}
       style={styles.map}
       ref={mapRef}
-      onRegionDidChange={handleRegionDidChange}
+      // if map is fully loaded, then hanlderegiondidchange will be calable
+
+      onRegionDidChange={
+        loaded ? () => MapUtils.handleRegionDidChange(mapRef, zoom, setZoom, currentCenter, setCurrentCenter) : null
+      }
     >
       {/*------ Recentering map -------- */}
       <MapLibreGL.Camera
+        centerCoordinate={currentCenter} // Default to DIU campus coordinates
         animationMode="flyTo"
-        // animationDuration={0}
+        maxZoomLevel={20}
+        minZoomLevel={8}
         ref={cameraRef}
         zoomLevel={zoom}
-        centerCoordinate={currentCenter}
       />
-
       {/* --------- Load tile --------- */}
       <MapLibreGL.RasterSource
         id="osm"
@@ -52,18 +67,15 @@ const MapComponent = ({ mapRef, zoom, cameraRef, currentCenter, handleRegionDidC
       >
         <MapLibreGL.RasterLayer id="osmLayer" sourceID="osm" />
       </MapLibreGL.RasterSource>
-
       {/* ----- Route highlighter ------ */}
-      <MapLibreGL.ShapeSource id="routeSource" shape={getWayline(route.routeNo)}>
+      <MapLibreGL.ShapeSource id="routeSource" shape={getWayline(route?.routeNo)}>
         <MapLibreGL.LineLayer
           id="routeLayer"
           style={{ lineColor: "#2e2e2e", lineWidth: 2, lineCap: "round", lineJoin: "round" }}
         />
       </MapLibreGL.ShapeSource>
-
       {/* ---- Image Load ------ */}
       <MapLibreGL.Images images={{ marker: busMarker, UniIcon: UniIcon, pinIcon: pinIcon, busMarkerGreen }} />
-
       {/* ------- Stopages --------- */}
       {waypoints && (
         <MapLibreGL.ShapeSource
@@ -86,7 +98,6 @@ const MapComponent = ({ mapRef, zoom, cameraRef, currentCenter, handleRegionDidC
           <MapLibreGL.SymbolLayer id="stopageLabels" style={styles.stopageInfo} />
         </MapLibreGL.ShapeSource>
       )}
-
       {/* ------ University and Trasnport Location Symbol */}
       <MapLibreGL.ShapeSource
         id="userLocation-2"
@@ -133,7 +144,6 @@ const MapComponent = ({ mapRef, zoom, cameraRef, currentCenter, handleRegionDidC
           }}
         />
       </MapLibreGL.ShapeSource>
-
       {/* -----Show buses location-------*/}
       <MapLibreGL.ShapeSource
         id="busMarkers"
@@ -148,11 +158,32 @@ const MapComponent = ({ mapRef, zoom, cameraRef, currentCenter, handleRegionDidC
         <MapLibreGL.CircleLayer id="userShadow4" style={styles.busShadow3} />
         <MapLibreGL.SymbolLayer id="busMarkerLayer" style={styles.busMarker} />
       </MapLibreGL.ShapeSource>
-
       {/* --------- Show user location ----------*/}
-      {isBroadcasting && location ? (
+
+      {location && !isBroadcasting && (
         <MapLibreGL.ShapeSource
-          id="currentBusLocation-1"
+          id="userLocation-666"
+          shape={{
+            type: "FeatureCollection",
+            features: [
+              {
+                type: "Feature",
+                geometry: {
+                  type: "Point",
+                  coordinates: [location.longitude, location.latitude],
+                },
+              },
+            ],
+          }}
+        >
+          <MapLibreGL.CircleLayer id="userShadow-777" style={styles.userShadow} />
+          <MapLibreGL.CircleLayer id="userDot-888" style={styles.userDot} />
+        </MapLibreGL.ShapeSource>
+      )}
+
+      {isBroadcasting && activeTrip && location && (
+        <MapLibreGL.ShapeSource
+          id="currentBusLocation-111"
           shape={{
             type: "FeatureCollection",
             features: [
@@ -170,35 +201,14 @@ const MapComponent = ({ mapRef, zoom, cameraRef, currentCenter, handleRegionDidC
             ],
           }}
         >
-          <MapLibreGL.CircleLayer id="currentBusLocation-2" style={styles.currentBusShadow1} />
-          <MapLibreGL.CircleLayer id="currentBusLocation-3" style={styles.currentBusShadow2} />
-          <MapLibreGL.CircleLayer id="currentBusLocation-4" style={styles.currentBusShadow3} />
-          <MapLibreGL.SymbolLayer id="currentBusMarker" style={styles.currentBusMarker} />
+          <MapLibreGL.CircleLayer id="currentBusLocation-2222" style={styles.currentBusShadow1} />
+          <MapLibreGL.CircleLayer id="currentBusLocation-3333" style={styles.currentBusShadow2} />
+          <MapLibreGL.CircleLayer id="currentBusLocation-4444" style={styles.currentBusShadow3} />
+          <MapLibreGL.SymbolLayer id="currentBusMarker-55555" style={styles.currentBusMarker} />
         </MapLibreGL.ShapeSource>
-      ) : (
-        location && (
-          <MapLibreGL.ShapeSource
-            id="userLocation-1"
-            shape={{
-              type: "FeatureCollection",
-              features: [
-                {
-                  type: "Feature",
-                  geometry: {
-                    type: "Point",
-                    coordinates: [location.longitude, location.latitude],
-                  },
-                },
-              ],
-            }}
-          >
-            <MapLibreGL.CircleLayer id="userShadow-1" style={styles.userShadow} />
-            <MapLibreGL.CircleLayer id="userDot-1" style={styles.userDot} />
-          </MapLibreGL.ShapeSource>
-        )
       )}
 
-      {/* Show bus details (callout) */}
+      {/* --------------Show bus details (callout) -------------- */}
       {busInfo && busInfo.geometry && (
         <MapLibreGL.MarkerView coordinate={busInfo.geometry.coordinates}>
           <MapLibreGL.Callout>
@@ -253,9 +263,10 @@ const styles = StyleSheet.create({
     textSize: 11,
     textColor: "black",
     textAnchor: "bottom",
-    textOffset: [0, 6],
+    textOffset: [0, 5.25],
     textHaloColor: "black",
     textHaloWidth: 0.1,
+    textRotate: ["get", "heading"], // This will rotate the label with the marker heading
   },
   currentBusShadow1: {
     circleRadius: 18,
@@ -284,6 +295,7 @@ const styles = StyleSheet.create({
     textOffset: [0, 5.25],
     textHaloColor: "black",
     textHaloWidth: 0.1,
+    textRotate: ["get", "heading"], // This will rotate the label with the marker heading
   },
   userShadow: {
     circleRadius: 20,

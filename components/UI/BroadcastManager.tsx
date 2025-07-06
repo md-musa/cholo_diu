@@ -4,6 +4,7 @@ import { useAppSelector } from "@/store/storeConfig";
 import { usePathname, useRouter } from "expo-router";
 import { Image } from "react-native";
 import { Text, TouchableOpacity, View } from "react-native";
+import broadcastGifImage from "@/assets/images/broadcast.gif";
 
 export default function BroadcastManager() {
   useBusLocationBroadcast();
@@ -18,10 +19,10 @@ export default function BroadcastManager() {
   if (!isBroadcasting || shouldShowBroadcastManager) return null;
 
   return (
-    <TouchableOpacity onPress={() => router.push("/home/broadcast/liveLocationSharing")} className="z-50">
+    <TouchableOpacity onPress={() => router.push("/home/broadcast")} className="z-50">
       <View className="flex-row items-center justify-center p-1 bg-red-600">
         <Image
-          source={{ uri: "https://media.lordicon.com/icons/wired/outline/1657-alert.gif" }}
+          source={broadcastGifImage}
           style={{ width: 22, height: 22 }}
           resizeMode="contain"
           className="rounded-2xl"

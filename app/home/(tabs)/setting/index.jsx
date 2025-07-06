@@ -25,7 +25,7 @@ export default function Settings() {
         setUserData(data);
         //console.log(data);
       } catch (error) {
-       // console.log(error);
+        // console.log(error);
       }
     };
     getUserData();
@@ -98,7 +98,11 @@ export default function Settings() {
           <Text className="text-lg font-semibold text-muted-800 mb-4">Support</Text>
           {/* <SettingOption icon="help-circle-outline" text="Help Center" onPress={() => {}} /> */}
           <SettingOption icon="mail-outline" text="Contact Support" onPress={handleContact} />
-          <SettingOption icon="shield-checkmark-outline" text="Privacy Policy" onPress={() => {}} />
+          <SettingOption
+            icon="shield-checkmark-outline"
+            text="Privacy Policy"
+            onPress={() => router.push("/home/setting/privacyAndPolicy")}
+          />
         </View>
 
         {/* Logout */}
@@ -119,16 +123,16 @@ export default function Settings() {
       {/* <View className="px-5 mt-2 border border-muted-300 mx-5 bg-white rounded-2xl p-5 shadow-sm my-2">
         <Text className="text-lg font-semibold text-muted-800 mb-4">Developed by:</Text> */}
 
-        {/* Developer Profile */}
-        {/* <View className="flex-row items-start mb-4">
+      {/* Developer Profile */}
+      {/* <View className="flex-row items-start mb-4">
         
           <Image
             source={musaImg} // Replace with your image
             className="w-20 h-20 rounded-full border-2 border-muted-300"
           /> */}
 
-        {/* Developer Info */}
-        {/* <View className="ml-4 flex-1">
+      {/* Developer Info */}
+      {/* <View className="ml-4 flex-1">
             <Text className="text-xl font-bold text-muted-900">Mohammad Musa</Text>
             <Text className="text-muted-600">Software Developer</Text>
             <Text className="text-muted-500 text-sm mt-1">
@@ -168,8 +172,8 @@ export default function Settings() {
           </View>
         </View> */}
 
-        {/* Skills/Technologies */}
-        {/* <View className="mt-4">
+      {/* Skills/Technologies */}
+      {/* <View className="mt-4">
           <Text className="text-md font-semibold text-muted-700 mb-2">Technologies Used:</Text>
           <View className="flex-row flex-wrap">
             {["React Native", "Expo", "Node.js", "TypeScript", "Tailwind CSS"].map((tech) => (
@@ -180,8 +184,8 @@ export default function Settings() {
           </View>
         </View> */}
 
-        {/* Contact Button */}
-        {/* <TouchableOpacity
+      {/* Contact Button */}
+      {/* <TouchableOpacity
           className="mt-5 bg-secondary-600 py-3 rounded-lg flex-row items-center justify-center"
           onPress={() => Linking.openURL("mailto:mohammad.musa706@gmail.com")}
         >

@@ -47,12 +47,22 @@ const ScheduleCard: React.FC<ScheduleCardProps> = (props) => {
             <FontAwesome5
               name="clock"
               size={16}
-              color={status === SCHEDULE_STATUS.NEXT ? colors.secondary[500] : colors.muted[500]}
+              color={
+                status === SCHEDULE_STATUS.ACTIVE
+                  ? "#ec4899"
+                  : status === SCHEDULE_STATUS.NEXT
+                  ? colors.secondary[500]
+                  : colors.muted[500]
+              }
               style={{ marginRight: 8 }}
             />
             <Text
               className={`text-lg ${
-                status === SCHEDULE_STATUS.NEXT ? "font-semibold text-secondary-600" : "text-muted-800"
+                status === SCHEDULE_STATUS.ACTIVE
+                  ? "font-semibold text-pink-500"
+                  : status === SCHEDULE_STATUS.NEXT
+                  ? "font-semibold text-secondary-600"
+                  : "text-muted-800"
               }`}
             >
               {formattedTime}
@@ -65,8 +75,8 @@ const ScheduleCard: React.FC<ScheduleCardProps> = (props) => {
                 className={`text-sm ${
                   status === SCHEDULE_STATUS.ACTIVE
                     ? "text-pink-500 bg-pink-50 border border-pink-400"
-                    : "text-purple-900 bg-purple-100 border border-purple-400"
-                } py-1 px-4 rounded-full font-semibold`}
+                    : "text-secondary-700 bg-secondary-100 border border-secondary-400"
+                } px-4 py-0.5 rounded-full font-semibold capitalize`}
               >
                 {status}
               </Text>
@@ -82,35 +92,18 @@ const ScheduleCard: React.FC<ScheduleCardProps> = (props) => {
 
         {note && (
           <View className="flex-row items-start">
-            <MaterialCommunityIcons
-              name="note-text-outline"
-              size={17}
-              color={status === SCHEDULE_STATUS.NEXT ? colors.secondary[500] : colors.muted[500]}
-              style={{ marginRight: 4 }}
-            />
             <Text>
-              <Text
-                className={`text-sm font-semibold ${
-                  status === SCHEDULE_STATUS.NEXT ? "text-secondary-500" : "text-muted-700"
-                }`}
-              >
-                Note:
-              </Text>
-              <Text
-                className={`text-sm capitalize ${
-                  status === SCHEDULE_STATUS.NEXT ? "font-semibold text-secondary-500" : "text-muted-700"
-                }`}
-              >
-                {" " + note}
-              </Text>
+              <Text className="text-sm font-semibold text-muted-700">Note:</Text>
+              <Text className={`text-sm text-muted-700`}>{" " + (note.charAt(0).toUpperCase() + note.slice(1))}</Text>
             </Text>
           </View>
         )}
       </View>
 
-      <View className="px-3 py-1">
+      <View className="px-3 py-2">
         <View className="flex-row items-center mb-1">
-          <Text className="text-md text-muted-700">Assigned Buses:</Text>
+          <Ionicons name="bus" size={16} color={colors.muted[500]} style={{ marginRight: 6 }} />
+          <Text className="text-lg text-muted-700">Assigned Buses:</Text>
         </View>
 
         {assignedBuses.length > 0 ? (
@@ -138,7 +131,7 @@ const ScheduleCard: React.FC<ScheduleCardProps> = (props) => {
                     isActive ? "bg-yellow-50 border-yellow-300" : "bg-muted-100 border-muted-400"
                   }`}
                 >
-                  <Ionicons name="bus" size={16} color={colors.muted[800]} />
+                  {/* <Ionicons name="bus" size={16} color={colors.muted[800]} /> */}
                   <Text className="ml-1 text-sm text-muted-800 capitalize">{bus.name}</Text>
                   {isActive && <Ionicons name="location" size={16} color="#f59e42" />}
                 </TouchableOpacity>

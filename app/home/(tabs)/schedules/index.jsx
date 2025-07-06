@@ -31,7 +31,7 @@ const BusSchedule = () => {
 
   const { data: routes } = useGetRoutesQuery();
   const { data: scheduleResult, isLoading: isScheduleLoading } = useGetScheduleByRouteQuery({
-    routeId: route._id,
+    routeId: route?._id,
     day: selectedDay,
   });
 
@@ -120,7 +120,7 @@ const BusSchedule = () => {
 
           <View className="flex-row items-center flex-[0.4] rounded-lg overflow-hidden">
             <Picker
-              selectedValue={route._id}
+              selectedValue={route?._id}
               onValueChange={handleRouteChange}
               enabled={!isBroadcasting}
               style={{
@@ -130,7 +130,7 @@ const BusSchedule = () => {
                 color: "black",
               }}
               dropdownIconColor="black"
-              mode="dropdown"
+              mode="dialog"
             >
               <Picker.Item
                 label="Select a route"
@@ -142,8 +142,8 @@ const BusSchedule = () => {
               {routes?.map((route) => (
                 <Picker.Item
                   key={route?._id}
-                  label={`${route.routeName}`}
-                  value={route._id}
+                  label={`${route?.routeName}`}
+                  value={route?._id}
                   style={{
                     fontSize: 14,
                   }}
@@ -209,7 +209,7 @@ const BusSchedule = () => {
                   </View>
 
                   {toCampusStudent?.length > 0 ? (
-                    toCampusStudent?.map((schedule) => <ScheduleCard key={schedule._id} schedule={schedule} />)
+                    toCampusStudent?.map((schedule) => <ScheduleCard key={schedule?._id} schedule={schedule} />)
                   ) : (
                     <NoSchedule message="No bus schedule found for students going to campus." />
                   )}
@@ -222,7 +222,7 @@ const BusSchedule = () => {
                   </View>
 
                   {fromCampusStudent?.length > 0 ? (
-                    fromCampusStudent?.map((schedule) => <ScheduleCard key={schedule._id} schedule={schedule} />)
+                    fromCampusStudent?.map((schedule) => <ScheduleCard key={schedule?._id} schedule={schedule} />)
                   ) : (
                     <NoSchedule message="No bus schedule found for students leaving campus." />
                   )}
@@ -238,7 +238,7 @@ const BusSchedule = () => {
                   </View>
 
                   {toCampusEmployee?.length > 0 ? (
-                    toCampusEmployee?.map((schedule) => <ScheduleCard key={schedule._id} schedule={schedule} />)
+                    toCampusEmployee?.map((schedule) => <ScheduleCard key={schedule?._id} schedule={schedule} />)
                   ) : (
                     <NoSchedule message="No bus schedule found for employees going to campus." />
                   )}
@@ -251,7 +251,7 @@ const BusSchedule = () => {
                   </View>
 
                   {fromCampusEmployee?.length > 0 ? (
-                    fromCampusEmployee?.map((schedule) => <ScheduleCard key={schedule._id} schedule={schedule} />)
+                    fromCampusEmployee?.map((schedule) => <ScheduleCard key={schedule?._id} schedule={schedule} />)
                   ) : (
                     <NoSchedule message="No bus schedule found for employees leaving campus." />
                   )}

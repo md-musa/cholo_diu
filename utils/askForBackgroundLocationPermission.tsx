@@ -17,40 +17,42 @@ export const ensureBackgroundLocationPermission = async (): Promise<boolean> => 
     // 2. Not granted: show alert to user
     return new Promise<boolean>((resolve) => {
       Alert.alert(
-        "Background Location Permission Required",
-        "To broadcast your bus location in the background, background location access is needed. Please enable it when prompted.",
+        "Background Location Needed",
+        "To share your bus location in the background, please enable **Allow all the time** for location access.",
         [
           {
-            text: "Cancel",
-            style: "cancel",
-            onPress: () => resolve(false),
+        text: "Cancel",
+        style: "cancel",
+        onPress: () => resolve(false),
           },
           {
-            text: "OK",
-            onPress: async () => {
-              try {
-                // 4. Now request background permission
-                const { status: newBgStatus } = await Location.requestBackgroundPermissionsAsync();
-                if (newBgStatus === "granted") {
-                  return resolve(true);
-                } else {
-                  // 5. Optional: open settings if permission denied again
-                  Alert.alert("Permission Not Granted", "You can enable background location manually from settings.", [
-                    {
-                      text: "Open Settings",
-                      onPress: () => {
-                        Linking.openSettings();
-                        resolve(false);
-                      },
-                    },
-                    { text: "Cancel", style: "cancel", onPress: () => resolve(false) },
-                  ]);
-                }
-              } catch (error) {
-                console.error("Error requesting permissions:", error);
-                resolve(false);
-              }
+        text: "OK",
+        onPress: async () => {
+          try {
+            const { status: newBgStatus } = await Location.requestBackgroundPermissionsAsync();
+            if (newBgStatus === "granted") {
+          return resolve(true);
+            } else {
+          Alert.alert(
+            "Permission Not Granted",
+            "To share your bus location in the background, please enable **Allow all the time** for location access.",
+            [
+              {
+            text: "Open Settings",
+            onPress: () => {
+              Linking.openSettings();
+              resolve(false);
             },
+              },
+              { text: "Cancel", style: "cancel", onPress: () => resolve(false) },
+            ]
+          );
+            }
+          } catch (error) {
+            console.error("Error requesting permissions:", error);
+            resolve(false);
+          }
+        },
           },
         ]
       );

@@ -1,3 +1,4 @@
+import { min } from "moment";
 import { baipail } from "./routesAndWaypoints/baipail";
 import { dhamrai } from "./routesAndWaypoints/dhamrai";
 import { dhanmondi } from "./routesAndWaypoints/dhanmondi";
@@ -54,8 +55,24 @@ export const getCurrentRouteCenterCords = (routeNo: RouteKey) => {
   return wayline[index];
 };
 
+const getRouteBoundaries = (routeNo: RouteKey) => {
+  const wayline = routes[routeNo]?.wayline;
+  if (!Array.isArray(wayline) || wayline.length === 0) {
+    return null;
+  }
+  const firstPoint = wayline[0];
+  const lastPoint = wayline[wayline.length - 1];
+  return {
+    minLongitude: Math.min(firstPoint[0], lastPoint[0]),
+    maxLongitude: Math.max(firstPoint[0], lastPoint[0]),
+    minLatitude: Math.min(firstPoint[1], lastPoint[1]),
+    maxLatitude: Math.max(firstPoint[1], lastPoint[1]),
+  };
+};
+
 export const RouteAndWaypointsService = {
   getWayline,
   getWaypoints,
   getCurrentRouteCenterCords,
+  getRouteBoundaries,
 };

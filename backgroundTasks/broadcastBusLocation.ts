@@ -2,7 +2,6 @@ import BackgroundService from "react-native-background-actions";
 import * as Location from "expo-location";
 import socket from "@/config/socketIoConfig";
 import { SOCKET_EVENTS } from "@/constants";
-import { ILocationData } from "@/hook/useLocation";
 
 const sleep = (time: number) => new Promise((resolve) => setTimeout(resolve, time));
 
@@ -21,7 +20,7 @@ const startBackgroundLocationTask = async (taskData: LocationTaskData) => {
         type: "mipmap",
       },
       color: "#0066cc",
-      linkingURI: "cholo://home/broadcast/liveLocationSharing",
+      linkingURI: "cholo://home/broadcast",
       parameters: taskData,
     };
 
@@ -40,14 +39,14 @@ const startBackgroundLocationTask = async (taskData: LocationTaskData) => {
       const watcher = await Location.watchPositionAsync(
         {
           accuracy: Location.Accuracy.BestForNavigation,
-          timeInterval: 4000,
-          distanceInterval: 3,
+          timeInterval: 5000,
+          distanceInterval: 5,
         },
         (location) => {
           if (!socket.connected) {
             socket.connect();
           }
-         // console.log("[BACKGROUND BROADCAST]: ", location);
+          //  console.log("[BACKGROUND BROADCAST]: ", location);
           socket.emit(SOCKET_EVENTS.BROADCAST_BUS_LOCATION, {
             tripId,
             latitude: location.coords.latitude,
@@ -62,18 +61,18 @@ const startBackgroundLocationTask = async (taskData: LocationTaskData) => {
 
       // Keep the task running
       while (BackgroundService.isRunning()) {
-       // console.log("[Inside background loop]");
+        //  console.log("[Inside background loop]");
         await sleep(5000);
       }
 
       watcher.remove();
     }, options);
   } catch (error) {
+    // console.log("[Background Task Error]: ", error);
     console.error("Failed to start background task:", JSON.stringify(error, null, 2));
     throw error;
   }
 };
-
 
 const stopBackgroundLocationTask = async () => {
   if (await BackgroundService.isRunning()) {

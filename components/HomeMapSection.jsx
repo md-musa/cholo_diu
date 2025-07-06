@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, {  useEffect, useRef, useState } from "react";
 import { View, TouchableOpacity, Text } from "react-native";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
@@ -7,6 +7,8 @@ import StatusOverlayComponent from "@/components/UI/StatusOverlayComponent";
 import { getCurrentRouteCenterCords } from "@/assets/routes";
 import { useAppSelector } from "@/store/storeConfig";
 import useLocation from "@/hook/useLocation";
+import { MapUtils } from "@/utils/mapUtils";
+
 
 const HomeMapSection = () => {
   const router = useRouter();
@@ -15,50 +17,17 @@ const HomeMapSection = () => {
   const { route } = useAppSelector((state) => state.auth);
 
   const mapRef = useRef(null);
-  const [zoom, setZoom] = useState(12);
-  const [currentCenter, setCurrentCenter] = useState([90.320463, 23.87739]);
+  const [zoom, setZoom] = useState(11);
 
-  const centerToUserLocation = () => {
-    cameraRef.current?.setCamera({
-      centerCoordinate: [location.longitude, location.latitude],
-      zoomLevel: 14,
-    });
-    setZoom(14);
-    setCurrentCenter([location.longitude, location.latitude]);
-  };
+  const [currentCenter, setCurrentCenter] = useState([90.320463, 23.879]);
 
   useEffect(() => {
     const routeCenter = getCurrentRouteCenterCords(route.routeNo);
-    console.log("Route Cener", routeCenter);
+    // console.log("Route Cener", routeCenter);
     if (routeCenter) {
-      setCurrentCenter(routeCenter);
+      MapUtils.changeMapCenter(routeCenter, setCurrentCenter, setZoom, 11);
     }
   }, [route]);
-
-  // Handle map region changes
-  const handleRegionDidChange = useCallback(async () => {
-    if (!mapRef.current) return;
-
-    try {
-      const center = await mapRef.current.getCenter();
-      const currentZoom = await mapRef.current.getZoom();
-
-      // trime last 3-4 digits of the center coordinates and zoom level to avoid unnecessary updates
-      const trimmedCenter = [parseFloat(center[0].toFixed(3)), parseFloat(center[1].toFixed(3))];
-      const trimmedZoom = parseFloat(currentZoom.toFixed(2));
-      if (trimmedCenter[0] === currentCenter[0] && trimmedCenter[1] === currentCenter[1] && trimmedZoom === zoom) {
-        return; // No change in center or zoom
-      }
-      // Update state only if there is a change
-      console.log("Region changed:");
-      console.log("Center:", trimmedCenter);
-      console.log("Zoom:", trimmedZoom);
-      setCurrentCenter(trimmedCenter);
-      setZoom(trimmedZoom);
-    } catch (error) {
-      //console.warn("Map region change error:", error);
-    }
-  }, []);
 
   return (
     <View className="flex-1 relative mt-4 rounded-xl overflow-hidden border border-muted-300">
@@ -69,7 +38,6 @@ const HomeMapSection = () => {
         mapRef={mapRef}
         currentCenter={currentCenter}
         setCurrentCenter={setCurrentCenter}
-        handleRegionDidChange={handleRegionDidChange}
       />
       <StatusOverlayComponent />
 
@@ -80,7 +48,9 @@ const HomeMapSection = () => {
 
       <TouchableOpacity
         className="absolute bottom-20 right-3 bg-white  border border-muted-300 rounded-full shadow flex-row p-3 items-center justify-center"
-        onPress={centerToUserLocation}
+        onPress={() => MapUtils.centerToUserLocation(cameraRef, location, setZoom, setCurrentCenter, 15)}
+        disabled={!location}
+        style={{ opacity: location ? 1 : 0.5 }}
       >
         {/* <Text className="text-black text-base mx-2"></Text> */}
         <Ionicons name="locate" size={25} color="black" />

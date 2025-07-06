@@ -3,7 +3,7 @@ import { View, Text, TouchableOpacity, Alert, Image, StatusBar } from "react-nat
 import { Ionicons } from "@expo/vector-icons";
 
 import StatusOverlayComponent from "@/components/UI/StatusOverlayComponent";
-import { useRouter } from "expo-router";
+import { Stack, useRouter } from "expo-router";
 import LoadingScreen from "@/components/UI/LoadingScreen";
 import { useAppDispatch, useAppSelector } from "@/store/storeConfig";
 import { stopBroadcasting } from "@/store/features/broadcast/broadcastSlice";
@@ -12,7 +12,7 @@ import MapComponent from "@/components/MapComponent";
 import { MapUtils } from "@/utils/mapUtils";
 import broadcastGifImage from "@/assets/images/broadcast.gif";
 
-function LiveLocationSharing() {
+function LiveMapLocation() {
   const router = useRouter();
   const dispatch = useAppDispatch();
   const { location } = useLocation();
@@ -43,7 +43,6 @@ function LiveLocationSharing() {
           text: "Stop",
           onPress: () => {
             dispatch(stopBroadcasting());
-            router.back();
           },
           style: "destructive",
         },
@@ -56,7 +55,8 @@ function LiveLocationSharing() {
 
   return (
     <View className="flex-1 bg-muted-100">
-      <StatusBar barStyle="light-content" hidden={true} />
+      <StatusBar barStyle="light-content" />
+      <Stack.Screen options={{ title: "Location..." }} />
 
       <MapComponent
         mapRef={mapRef}
@@ -76,13 +76,6 @@ function LiveLocationSharing() {
       >
         <Ionicons name="locate" size={28} color="black" />
       </TouchableOpacity>
-
-      {/* <TouchableOpacity
-        className="absolute top-10 left-5 bg-white border border-muted-300 rounded-full shadow flex-row p-2 items-center justify-center"
-        // onPress={handleStopSharing}
-      >
-        <Ionicons name="arrow-back" size={25} color="black" />
-      </TouchableOpacity> */}
 
       {/*-------Route Details---------*/}
       <View className="px-4 mb-4">
@@ -121,4 +114,4 @@ function LiveLocationSharing() {
   );
 }
 
-export default LiveLocationSharing;
+export default LiveMapLocation;

@@ -1,11 +1,10 @@
-import { View, Text, Image, SafeAreaView, TouchableOpacity } from "react-native";
-import React, { useEffect, useCallback, useState } from "react";
+import { View, Text, Image, TouchableOpacity } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import React, { useEffect,  useState } from "react";
 import { useRouter } from "expo-router";
 import coverImage from "@/assets/images/login_bg.png";
-import * as SplashScreen from "expo-splash-screen";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { jwtDecode } from "jwt-decode";
-import * as Location from "expo-location";
 import { ASYNC_STORAGE_KEYS, USER_ROLES } from "@/constants";
 import { useAppDispatch } from "@/store/storeConfig";
 import { AuthUser, clearCredentials, setCredentials } from "@/store/features/auth/authSlice";
@@ -25,14 +24,14 @@ const Index = () => {
   const dispatch = useAppDispatch();
   const router = useRouter();
   const [appReady, setAppReady] = useState(false);
-  const checkPermissions = async () => {
-    const fg = await Location.getForegroundPermissionsAsync();
-    const bg = await Location.getBackgroundPermissionsAsync();
+  // const checkPermissions = async () => {
+  //   const fg = await Location.getForegroundPermissionsAsync();
+  //   const bg = await Location.getBackgroundPermissionsAsync();
 
-    console.log("Foreground:", fg.status); // granted / denied
-    console.log("Background:", bg.status); // granted / denied
-  };
-  checkPermissions();
+  //   console.log("Foreground:", fg.status); // granted / denied
+  //   console.log("Background:", bg.status); // granted / denied
+  // };
+  // checkPermissions();
 
   useEffect(() => {
     const initialize = async () => {
@@ -68,19 +67,21 @@ const Index = () => {
     initialize();
   }, []);
 
-  const onLayoutRootView = useCallback(async () => {
-    if (appReady) {
-      // await SplashScreen.hideAsync();
-      console.log("appready");
-    }
-  }, [appReady]);
+  // const onLayoutRootView = useCallback(async () => {
+  //   if (appReady) {
+  //     await SplashScreen.hideAsync();
+  //     console.log("appready");
+  //   }
+  // }, [appReady]);
 
   if (!appReady) {
     return <LoadingScreen />;
   }
 
+
+
   return (
-    <SafeAreaView className="flex justify-end h-full bg-white" onLayout={onLayoutRootView}>
+    <SafeAreaView className="flex justify-end h-full bg-white">
       <Image
         source={coverImage}
         className="w-4/5 h-[30%] mx-auto rounded-lg mt-5"

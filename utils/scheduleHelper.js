@@ -41,7 +41,7 @@ export function processSchedules(schedules) {
   // Helper function to determine the status
   const getStatus = (scheduleTime) => {
     const scheduleMoment = moment(scheduleTime, "HH:mm");
-    return now.isBetween(scheduleMoment, scheduleMoment.clone().add(15, "minutes")) ? SCHEDULE_STATUS.NEXT : null;
+    return now.isBetween(scheduleMoment, scheduleMoment.clone().add(15, "minutes")) ? SCHEDULE_STATUS.ACTIVE : null;
   };
 
   // Sort schedules by time
