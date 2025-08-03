@@ -22,8 +22,28 @@ const RouteSelector = () => {
     new Date().toLocaleString("en-US", { weekday: "long" }).toLowerCase() === "friday" ? "Friday" : "Weekdays"
   );
 
-  const { data: routes, isLoading: isRoutesLoading } = useGetRoutesQuery();
-  const { data: scheduleResult } = useGetScheduleByRouteQuery({ routeId: route?._id, day: selectedDay });
+  const { data: routes, isLoading: isRoutesLoading, refetch: refetchRoutes } = useGetRoutesQuery();
+
+  const {
+    data: scheduleResult,
+    refetch: refetchSchedule,
+    isFetching: isScheduleFetching,
+  } = useGetScheduleByRouteQuery({ routeId: route?._id, day: selectedDay }, { skip: !route?._id });
+
+  const [refreshing, setRefreshing] = useState(false);
+
+  const handleRefresh = async () => {
+    if (!route?._id) return;
+
+    setRefreshing(true);
+    try {
+      await Promise.all([refetchRoutes(), refetchSchedule()]);
+    } catch (err) {
+      console.error("Refresh failed", err);
+    } finally {
+      setRefreshing(false);
+    }
+  };
 
   if (!route) return null;
   const handleRouteChange = async (selectedRouteId) => {
@@ -39,10 +59,9 @@ const RouteSelector = () => {
   return (
     <View className="bg-primary-500 p-4 rounded-xl">
       <View className="flex flex-row items-center bg-white border border-muted-300 rounded-xl px-3">
-        {/* <Image source={busImage} className="rounded-md" resizeMode="contain" style={{ width: 30, height: 30 }} /> */}
-
-        {/* <MaterialIcons name="route" size={24} color="#24204DE6" className="bg-muted-200 p-1 rounded-lg"/> */}
-        <MaterialCommunityIcons name="routes" size={24} color="#24204DE6" className="bg-muted-200 p-1 rounded-md" />
+        <View className="bg-[#F0F0F0] p-1.5 rounded-full mr-1">
+          <MaterialCommunityIcons name="routes" size={22} color="#24204DE6" />
+        </View>
         <Picker
           selectedValue={route._id}
           onValueChange={handleRouteChange}

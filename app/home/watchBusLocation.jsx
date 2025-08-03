@@ -14,6 +14,7 @@ const WatchBusLocation = () => {
   const router = useRouter();
   const paramsData = useLocalSearchParams();
   const { route } = useAppSelector((state) => state.auth);
+  const { activeBuses } = useAppSelector((state) => state.busLocation);
 
   const bottomSheetRef = useRef(null);
   const { location } = useLocation();
@@ -76,6 +77,7 @@ const WatchBusLocation = () => {
           }
         }}
         closeBottomSheet={() => bottomSheetRef.current?.close()}
+        activeBuses={activeBuses}
       />
     </View>
   );

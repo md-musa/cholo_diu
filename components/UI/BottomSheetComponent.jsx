@@ -5,7 +5,8 @@ import AvailableBusListCard from "./AvailableBusListCard";
 import { MaterialIcons } from "@expo/vector-icons"; // or use any icon library you prefer
 
 const BottomSheetComponent = ({ bottomSheetRef, activeBuses, closeBottomSheet, highlightBus }) => {
-  
+  // console.log('🔴', activeBuses);
+
   return (
     <BottomSheet ref={bottomSheetRef} snapPoints={["30%", "50%", "60%", "75%", "90%"]} index={1}>
       <BottomSheetView className="px-5">

@@ -38,6 +38,7 @@ const Index = () => {
       try {
         const token = await AsyncStorage.getItem(ASYNC_STORAGE_KEYS.AUTH_TOKEN);
         const routeStr = await AsyncStorage.getItem(ASYNC_STORAGE_KEYS.CURRENT_ROUTE);
+        console.log(routeStr)
         const route = routeStr ? JSON.parse(routeStr) : null;
         // console.log("token:", token);
         if (!token) {

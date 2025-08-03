@@ -22,14 +22,12 @@ const MapComponent = ({ mapRef, zoom, setZoom, cameraRef, currentCenter, setCurr
   const { activeBuses } = useAppSelector((state) => state.busLocation);
   const [busInfo, setBusInfo] = useState(null);
   const waypoints = getWaypoints(route?.routeNo);
-  // console.log("[Mapcomponent rerendered]");
 
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
     setTimeout(() => {
       setLoaded(true);
-      // console.log("Map fully loaded [3s passed]");
     }, 3000);
   }, []);
 
@@ -158,6 +156,35 @@ const MapComponent = ({ mapRef, zoom, setZoom, cameraRef, currentCenter, setCurr
         <MapLibreGL.CircleLayer id="userShadow4" style={styles.busShadow3} />
         <MapLibreGL.SymbolLayer id="busMarkerLayer" style={styles.busMarker} />
       </MapLibreGL.ShapeSource>
+
+      {/* <MapLibreGL.ShapeSource
+        id="busMarkers"
+        shape={{
+          type: "FeatureCollection",
+          features: [
+            {
+              type: "Feature",
+              properties: {
+                name: "Sample Location",
+                description: "This is a dummy point.",
+              },
+              geometry: {
+                type: "Point",
+                coordinates: [90.4125, 23.8103],
+              },
+            },
+          ],
+        }}
+        onPress={(e) => {
+          setBusInfo(e.features[0]);
+          setTimeout(() => setBusInfo(null), 3000);
+        }}
+      >
+        <MapLibreGL.CircleLayer id="userShadow2" style={styles.busShadow1} />
+        <MapLibreGL.CircleLayer id="userShadow3" style={styles.busShadow2} />
+        <MapLibreGL.CircleLayer id="userShadow4" style={styles.busShadow3} />
+        <MapLibreGL.SymbolLayer id="busMarkerLayer" style={styles.busMarker} />
+      </MapLibreGL.ShapeSource> */}
       {/* --------- Show user location ----------*/}
 
       {location && !isBroadcasting && (

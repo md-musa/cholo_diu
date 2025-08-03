@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, TouchableOpacity, ScrollView } from "react-native";
+import { View, Text, TouchableOpacity, ScrollView, RefreshControl } from "react-native";
 import { processSchedules } from "@/utils/scheduleHelper";
 import ScheduleCard from "@/components/ScheduleCard";
 import { Feather, FontAwesome5, MaterialCommunityIcons } from "@expo/vector-icons";
@@ -29,11 +29,28 @@ const BusSchedule = () => {
     new Date().toLocaleString("en-US", { weekday: "long" }).toLowerCase() === "friday" ? "friday" : "weekdays"
   );
 
-  const { data: routes } = useGetRoutesQuery();
-  const { data: scheduleResult, isLoading: isScheduleLoading } = useGetScheduleByRouteQuery({
+  const { data: routes, isRoutesLoading, refetch: refetchRoutes } = useGetRoutesQuery();
+  const {
+    data: scheduleResult,
+    isLoading: isScheduleLoading,
+    refetch: refetchSchedule,
+  } = useGetScheduleByRouteQuery({
     routeId: route?._id,
     day: selectedDay,
   });
+
+  const [refreshing, setRefreshing] = useState(false);
+
+  const onRefresh = async () => {
+    setRefreshing(true);
+    try {
+      await Promise.all([refetchRoutes(), refetchSchedule()]);
+    } catch (err) {
+      console.error("Refresh error:", err);
+    } finally {
+      setRefreshing(false);
+    }
+  };
 
   // console.log(JSON.stringify(scheduleResult, null, 2));
   useEffect(() => {
@@ -45,7 +62,7 @@ const BusSchedule = () => {
     dispatch(updateRoute(selectedRouteData));
     await AsyncStorage.setItem(ASYNC_STORAGE_KEYS.CURRENT_ROUTE, JSON.stringify(selectedRouteData));
   };
-  if (isScheduleLoading) return <LoadingScreen />;
+  if (isScheduleLoading || isRoutesLoading) return <LoadingScreen />;
 
   const toCampusStudent = processSchedules(scheduleResult?.schedules?.to_campus?.student || []);
   const fromCampusStudent = processSchedules(scheduleResult?.schedules?.from_campus?.student || []);
@@ -63,7 +80,10 @@ const BusSchedule = () => {
   );
 
   return (
-    <ScrollView className="flex-1 bg-muted-50 px-4">
+    <ScrollView
+      className="flex-1 bg-muted-50 px-4"
+      refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+    >
       <View className="">
         <View className="mt-4 my-2">
           <View className="flex-row flex-wrap mb-3">
@@ -118,7 +138,7 @@ const BusSchedule = () => {
             </Text>
           </View>
 
-          <View className="flex-row items-center flex-[0.4] rounded-lg overflow-hidden">
+          <View className="flex-row items-center flex-[0.5] rounded-lg overflow-hidden">
             <Picker
               selectedValue={route?._id}
               onValueChange={handleRouteChange}

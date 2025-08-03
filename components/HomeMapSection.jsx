@@ -1,4 +1,4 @@
-import React, {  useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { View, TouchableOpacity, Text } from "react-native";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
@@ -8,7 +8,6 @@ import { getCurrentRouteCenterCords } from "@/assets/routes";
 import { useAppSelector } from "@/store/storeConfig";
 import useLocation from "@/hook/useLocation";
 import { MapUtils } from "@/utils/mapUtils";
-
 
 const HomeMapSection = () => {
   const router = useRouter();
@@ -23,7 +22,6 @@ const HomeMapSection = () => {
 
   useEffect(() => {
     const routeCenter = getCurrentRouteCenterCords(route.routeNo);
-    // console.log("Route Cener", routeCenter);
     if (routeCenter) {
       MapUtils.changeMapCenter(routeCenter, setCurrentCenter, setZoom, 11);
     }

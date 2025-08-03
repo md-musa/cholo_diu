@@ -41,6 +41,10 @@ export const getWayline = (routeNo: RouteKey) => {
   };
 };
 
+export const getWaylineCoords = (routeNo: RouteKey) => {
+  return routes[routeNo]?.wayline ?? [];
+};
+
 export const getWaypoints = (routeNo: RouteKey) => {
   return routes[routeNo]?.waypoints ?? [];
 };
@@ -75,4 +79,5 @@ export const RouteAndWaypointsService = {
   getWaypoints,
   getCurrentRouteCenterCords,
   getRouteBoundaries,
+  getWaylineCoords
 };
