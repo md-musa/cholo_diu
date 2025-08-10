@@ -33,7 +33,10 @@ const WatchBusLocation = () => {
 
   useEffect(() => {
     if (paramsData.longitude && paramsData.latitude) {
-      MapUtils.highlightBus([parseFloat(paramsData.longitude), parseFloat(paramsData.latitude)]);
+      MapUtils.highlightBus(cameraRef, setZoom, setCurrentCenter, [
+        parseFloat(paramsData.longitude),
+        parseFloat(paramsData.latitude),
+      ]);
     }
   }, []);
 
@@ -69,12 +72,8 @@ const WatchBusLocation = () => {
 
       <BottomSheetComponent
         bottomSheetRef={bottomSheetRef}
-        highlightBus={() => {
-          const longitude = parseFloat(paramsData.longitude);
-          const latitude = parseFloat(paramsData.latitude);
-          if (!isNaN(longitude) && !isNaN(latitude)) {
-            MapUtils.highlightBus([longitude, latitude]);
-          }
+        highlightBus={([long, lat]) => {
+          MapUtils.highlightBus(cameraRef, setZoom, setCurrentCenter, [long, lat]);
         }}
         closeBottomSheet={() => bottomSheetRef.current?.close()}
         activeBuses={activeBuses}

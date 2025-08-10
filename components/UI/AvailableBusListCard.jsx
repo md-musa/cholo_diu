@@ -7,19 +7,6 @@ import { getWaylineCoords } from "@/assets/routes";
 import { useSelector } from "react-redux";
 import { useAppSelector } from "@/store/storeConfig";
 
-function formatBangladeshTime(timestamp) {
-  if (!timestamp) return "Unknown";
-  const date = new Date(timestamp);
-  const utc = date.getTime() + date.getTimezoneOffset() * 60000;
-  const bdTime = new Date(utc + 6 * 60 * 60000);
-  return bdTime.toLocaleTimeString("en-BD", {
-    hour: "2-digit",
-    minute: "2-digit",
-    second: "2-digit",
-    hour12: true,
-  });
-}
-
 export default function AvailableBusListCard({ item, highlightBus }) {
   const [distanceData, setDistanceData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -65,7 +52,6 @@ export default function AvailableBusListCard({ item, highlightBus }) {
   }, [item]);
 
   if (!item) return <Text className="text-center text-gray-500">Not available</Text>;
-
   const { trip, latitude, longitude, speed, heading, timestamp } = item;
 
   return (
@@ -93,7 +79,7 @@ export default function AvailableBusListCard({ item, highlightBus }) {
             <>
               <View className="flex-row items-center mt-1">
                 {/* <MaterialIcons name="schedule" size={20} color="#6b7280" /> */}
-                <Text className="ml-1 text-md">
+                <Text className="ml-1 text-lg">
                   {distanceData?.distanceKm} Km ({distanceData?.estimatedTimeMin} min)
                 </Text>
               </View>

@@ -8,7 +8,7 @@ export function generateMarkers(activeBuses) {
       },
       properties: {
         icon: "marker",
-        title: `${cpfl(data.trip.busName)}\n${cpfl(data.trip.busType) + " bus"}\n${(data.speed * 3.6).toFixed(2)} km/h`,
+        title: `${cpfl(data.trip.busName)}`,
         direction: data.trip.direction,
         heading: data.heading,
         speed: data.speed,

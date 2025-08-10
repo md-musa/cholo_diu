@@ -1,4 +1,4 @@
-function centerToUserLocation(cameraRef: any, location: any, setZoom: any, setCurrentCenter: any, zoom: 15) {
+function centerToUserLocation(cameraRef: any, location: any, setZoom: any, setCurrentCenter: any, zoom = 15) {
   if (!location) return;
   setZoom(zoom);
   setCurrentCenter([location.longitude, location.latitude]);

@@ -10,7 +10,7 @@ const BottomSheetComponent = ({ bottomSheetRef, activeBuses, closeBottomSheet, h
   return (
     <BottomSheet ref={bottomSheetRef} snapPoints={["30%", "50%", "60%", "75%", "90%"]} index={1}>
       <BottomSheetView className="px-5">
-        <Text className="text-xl font-bold text-center my-2">Available buses</Text>
+        <Text className="text-xl font-bold text-center my-2">Available Buses</Text>
 
         {activeBuses && Object.keys(activeBuses).length > 0 ? (
           <FlatList
@@ -22,7 +22,7 @@ const BottomSheetComponent = ({ bottomSheetRef, activeBuses, closeBottomSheet, h
         ) : (
           <View className="flex items-center justify-center my-8">
             <MaterialIcons name="directions-bus" size={48} color="#888" />
-            <Text className="text-center mt-2 text-muted-500">No buses available</Text>
+            <Text className="text-center mt-2 text-muted-500">None sharing bus location</Text>
           </View>
         )}
       </BottomSheetView>

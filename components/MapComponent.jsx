@@ -142,6 +142,7 @@ const MapComponent = ({ mapRef, zoom, setZoom, cameraRef, currentCenter, setCurr
           }}
         />
       </MapLibreGL.ShapeSource>
+
       {/* -----Show buses location-------*/}
       <MapLibreGL.ShapeSource
         id="busMarkers"
@@ -290,7 +291,7 @@ const styles = StyleSheet.create({
     textSize: 11,
     textColor: "black",
     textAnchor: "bottom",
-    textOffset: [0, 5.25],
+    textOffset: [0, 2.8],
     textHaloColor: "black",
     textHaloWidth: 0.1,
     textRotate: ["get", "heading"], // This will rotate the label with the marker heading
