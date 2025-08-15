@@ -127,13 +127,11 @@ const ScheduleCard: React.FC<ScheduleCardProps> = (props) => {
                 <TouchableOpacity
                   onPress={handleBusPress}
                   key={bus._id}
-                  className={`flex-row items-center px-2 py-1 mr-2 mb-2 rounded-full border ${
-                    isActive ? "bg-yellow-50 border-yellow-300" : "bg-muted-100 border-muted-400"
-                  }`}
+                  className={`flex-row items-center px-2 py-1 mr-2 mb-2 rounded-full border border-muted-300 bg-gray-50`}
                 >
                   {/* <Ionicons name="bus" size={16} color={colors.muted[800]} /> */}
                   <Text className="ml-1 text-sm text-muted-800 capitalize">{bus.name}</Text>
-                  {isActive && <Ionicons name="location" size={16} color="#f59e42" />}
+                  {isActive && <Ionicons name="location" size={16} color={colors.muted[500]} />}
                 </TouchableOpacity>
               );
             })}

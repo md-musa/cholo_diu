@@ -72,30 +72,43 @@ export default function AvailableBusListCard({ item, highlightBus }) {
         </View>
 
         {/* Distance & ETA */}
-        <View className="flex-row flex-wrap mt-1 items-center">
+        <View className="flex-row items-center justify-between">
           {loading ? (
-            <ActivityIndicator size="small" color="#6b7280" />
+            <Text className="text-gray-500 text-sm">Calculating distance...</Text>
           ) : (
             <>
-              <View className="flex-row items-center mt-1">
-                {/* <MaterialIcons name="schedule" size={20} color="#6b7280" /> */}
+              <View className="flex-row items-center">
                 <Text className="ml-1 text-lg">
-                  {distanceData?.distanceKm} Km ({distanceData?.estimatedTimeMin} min)
+                  {distanceData && formatDistanceAndTime(distanceData.distanceKm, distanceData.estimatedTimeMin)}
                 </Text>
               </View>
             </>
           )}
+          <TouchableOpacity
+            onPress={() => highlightBus([longitude, latitude])}
+            className="bg-secondary-600 px-6 py-2 rounded-full self-end"
+          >
+            <MaterialIcons name="location-on" size={18} color="white" />
+          </TouchableOpacity>
         </View>
       </View>
-
-      {/* Track Button */}
-      <TouchableOpacity
-        onPress={() => highlightBus([longitude, latitude])}
-        className="bg-secondary-600 px-6 py-2 rounded-full flex-row items-center ml-3"
-      >
-        <MaterialIcons name="location-on" size={18} color="white" />
-        {/* <Text className="text-white text-sm font-semibold ml-1">Track</Text> */}
-      </TouchableOpacity>
     </View>
   );
+}
+
+function formatDistanceAndTime(distanceKm, estimatedTimeMin) {
+  const distance = distanceKm < 1 ? `${Math.round(distanceKm * 1000)} m` : `${distanceKm.toFixed(1)} Km`;
+
+  let time;
+  if (estimatedTimeMin < 1) {
+    time = `${Math.round(estimatedTimeMin * 60)} sec`;
+  } else if (estimatedTimeMin >= 60) {
+    const hours = Math.floor(estimatedTimeMin / 60);
+    const minutes = Math.round(estimatedTimeMin % 60);
+    time = minutes > 0 ? `${hours} h ${minutes} min` : `${hours} h`;
+  } else {
+    time = `${Math.round(estimatedTimeMin)} min`;
+  }
+
+  return `${distance} (${time})`;
 }

@@ -123,24 +123,24 @@ const RouteSelector = () => {
       {/* 3x3 Grid */}
       <View className="border-b border-white rounded-t-xl overflow-hidden">
         {/* Grid Container */}
-        <View className="flex-col">
+        <View className="flex-col-[1.5fr_1fr_1fr]">
           {/* Header Row */}
           <View className="flex-row bg-muted-50/15 border-b border-white">
-            <View className="flex-1 p-2 items-center justify-center">
+            <View className="flex-[3.5] px-1 py-2 items-center justify-center">
               <View className="flex-row items-center">
                 <MaterialCommunityIcons name="swap-vertical-variant" size={20} color="#fff" />
                 <Text className="text-white text-md font-semibold ml-2">Route</Text>
               </View>
             </View>
 
-            <View className="flex-1 p-2 items-center justify-center border-l border-r border-white">
+            <View className="flex-[3.25] px-1 py-2 items-center justify-center border-l border-r border-white">
               <View className="flex-row items-center">
                 <FontAwesome5 name="user-graduate" size={15} color="#fff" />
                 <Text className="text-white text-md font-semibold ml-2">Student</Text>
               </View>
             </View>
 
-            <View className="flex-1 p-2 items-center justify-center">
+            <View className="flex-[3.25] px-1 py-2 items-center justify-center">
               <View className="flex-row items-center justify-end">
                 <FontAwesome5 name="user-tie" size={15} color="#fff" />
                 <Text className="text-white text-md font-semibold ml-2">Employee</Text>
@@ -150,34 +150,34 @@ const RouteSelector = () => {
 
           {/* To Campus Row */}
           <View className="flex-row border-b border-white">
-            <View className="flex-1 p-2 justify-center">
+            <View className="flex-[3.5] px-1 py-2 justify-center">
               <Text className="text-white text-md">{`To Campus`}</Text>
             </View>
-            <View className="flex-1 p-2 items-center justify-center border-l border-r border-white">
+            <View className="flex-[3.25] px-1 py-2 items-center justify-center border-l border-r border-white">
               <Text className="text-white text-md text-center">
-                {toCampusStudent ? toCampusStudent.formattedTime : "No schedule"}
+                {toCampusStudent ? toCampusStudent.formattedTime : "No Sch."}
               </Text>
             </View>
-            <View className="flex-1 p-2 items-center justify-center">
+            <View className="flex-[3.25] px-1 py-2 items-center justify-center">
               <Text className="text-white text-md text-right">
-                {toCampusEmployee ? toCampusEmployee.formattedTime : "No schedule"}
+                {toCampusEmployee ? toCampusEmployee.formattedTime : "No Sch."}
               </Text>
             </View>
           </View>
 
           {/* From Campus Row */}
           <View className="flex-row">
-            <View className="flex-1 p-2 justify-center">
+            <View className="flex-[3.5] px-1 py-2 justify-center">
               <Text className="text-white text-md">{`From Campus`}</Text>
             </View>
-            <View className="flex-1 p-2 items-center justify-center border-l border-r border-white">
+            <View className="flex-[3.25] px-1 py-2 items-center justify-center border-l border-r border-white">
               <Text className="text-white text-md text-center">
-                {fromCampusStudent ? fromCampusStudent.formattedTime : "No schedule"}
+                {fromCampusStudent ? fromCampusStudent.formattedTime : "No Sch."}
               </Text>
             </View>
-            <View className="flex-1 p-2 items-center justify-center">
+            <View className="flex-[3.25] px-1 py-2 items-center justify-center">
               <Text className="text-white text-md text-right">
-                {fromCampusEmployee ? fromCampusEmployee.formattedTime : "No schedule"}
+                {fromCampusEmployee ? fromCampusEmployee.formattedTime : "No Sch."}
               </Text>
             </View>
           </View>

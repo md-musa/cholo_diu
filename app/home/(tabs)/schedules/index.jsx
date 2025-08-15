@@ -86,14 +86,14 @@ const BusSchedule = () => {
     >
       <View className="">
         <View className="mt-4 my-2">
-          <View className="flex-row flex-wrap mb-3">
+          <View className="flex-row mb-3">
             {scheduleTypes.map((type) => (
               <TouchableOpacity
                 key={type}
-                className={`mx-1 px-4 py-1 border rounded-full ${
+                className={`mx-1 px-3 py-1 border rounded-full ${
                   selectedType === type ? "bg-secondary-500" : "bg-muted-100"
                 } border-muted-300`}
-                disabled={true} // Disabled as requested
+                disabled={true} 
               >
                 <Text className={`capitalize ${selectedType === type ? "text-white" : "text-muted-500"}`}>{type}</Text>
               </TouchableOpacity>
@@ -128,7 +128,7 @@ const BusSchedule = () => {
         <View className="mt-4 flex-row justify-between items-center px-4">
           <View className="flex-row items-center flex-[0.6]">
             <Feather name="calendar" size={20} color="white" style={{ marginRight: 8 }} />
-            <Text className="text-lg font-semibold text-white">
+            <Text className="text-md font-semibold text-white">
               {new Date().toLocaleDateString("en-GB", {
                 weekday: "short",
                 day: "numeric",
