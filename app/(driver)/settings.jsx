@@ -75,7 +75,7 @@ export default function Settings() {
           <SettingOption
             icon="shield-checkmark-outline"
             text="Privacy Policy"
-            onPress={() => router.push("/home/setting/privacyAndPolicy")}
+            onPress={() => router.push("/(passenger)/setting/privacyAndPolicy")}
           />
         </SectionCard>
 

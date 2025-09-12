@@ -12,14 +12,14 @@ export default function BroadcastManager() {
   const pathname = usePathname();
   const { isBroadcasting, activeTrip } = useAppSelector((state) => state.broadcast);
 
-  const excludedPaths = ["/home/broadcast/liveLocationSharing", "/home/broadcast", "/home/watchBusLocation"];
+  const excludedPaths = ["/(passenger)/broadcast/liveLocationSharing", "/(passenger)/broadcast", "/(passenger)/watchBusLocation"];
 
   //console.log("[BroadcastManager]");
   const shouldShowBroadcastManager = excludedPaths.includes(pathname);
   if (!isBroadcasting || shouldShowBroadcastManager) return null;
 
   return (
-    <TouchableOpacity onPress={() => router.push("/home/broadcast")} className="z-50">
+    <TouchableOpacity onPress={() => router.push("/(passenger)/broadcast")} className="z-50">
       <View className="flex-row items-center justify-center p-1 bg-red-600">
         <Image
           source={broadcastGifImage}

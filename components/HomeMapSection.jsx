@@ -56,7 +56,7 @@ const HomeMapSection = () => {
 
       <TouchableOpacity
         className="absolute bottom-6 right-3 bg-white border border-muted-300 rounded-full shadow-lg flex-row p-2 items-center justify-center"
-        onPress={() => router.push("/home/watchBusLocation")}
+        onPress={() => router.push("/(passenger)/watchBusLocation")}
       >
         <Text className="text-black text-base mx-2">Full Screen</Text>
         <Ionicons name="expand" size={22} color="black" />

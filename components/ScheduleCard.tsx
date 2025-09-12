@@ -114,7 +114,7 @@ const ScheduleCard: React.FC<ScheduleCardProps> = (props) => {
               const handleBusPress = () => {
                 if (isActive) {
                   router.push({
-                    pathname: "/home/watchBusLocation",
+                    pathname: "/(passenger)/watchBusLocation",
                     params: {
                       latitude: isActive.latitude,
                       longitude: isActive.longitude,

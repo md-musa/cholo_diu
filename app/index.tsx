@@ -1,6 +1,6 @@
 import { View, Text, Image, TouchableOpacity } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import React, { useEffect,  useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "expo-router";
 import coverImage from "@/assets/images/login_bg.png";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -38,7 +38,7 @@ const Index = () => {
       try {
         const token = await AsyncStorage.getItem(ASYNC_STORAGE_KEYS.AUTH_TOKEN);
         const routeStr = await AsyncStorage.getItem(ASYNC_STORAGE_KEYS.CURRENT_ROUTE);
-        console.log(routeStr)
+        console.log(routeStr);
         const route = routeStr ? JSON.parse(routeStr) : null;
         // console.log("token:", token);
         if (!token) {
@@ -53,9 +53,23 @@ const Index = () => {
           role: decoded.role,
           email: decoded.email,
         };
+        decoded.role = "driver" as USER_ROLES.DRIVER; // Temporary hardcoding for testing
 
         dispatch(setCredentials({ user, route, accessToken: token }));
-        router.replace("/home");
+        console.log("Decoded Token:", decoded);
+        switch (decoded.role) {
+          case USER_ROLES.EMPLOYEE:
+            router.replace("/(passenger)");
+            break;
+          case USER_ROLES.STUDENT:
+            router.replace("/(passenger)");
+            break;
+          case USER_ROLES.DRIVER:
+            router.replace("/(driver)");
+            break;
+          default:
+            router.replace("/(auth)/login");
+        }
       } catch (err) {
         // console.log("error");
         // console.error("Initialization error:", err);
@@ -78,8 +92,6 @@ const Index = () => {
   if (!appReady) {
     return <LoadingScreen />;
   }
-
-
 
   return (
     <SafeAreaView className="flex justify-end h-full bg-white">

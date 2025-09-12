@@ -117,7 +117,7 @@ const BusSchedule = () => {
       </View>
 
       <TouchableOpacity
-        onPress={() => router.push("/home/schedules/waypoints")}
+        onPress={() => router.push("/(passenger)/schedules/waypoints")}
         className="py-2 mt-2 mb-1 bg-white border border-muted-300 rounded-full flex-row items-center justify-center"
       >
         <MaterialCommunityIcons name="map-marker-path" size={18} color="black" style={{ marginRight: 8 }} />

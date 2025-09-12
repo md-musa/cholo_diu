@@ -184,7 +184,7 @@ const RouteSelector = () => {
         </View>
       </View>
 
-      <Link className="text-right text-white mt-2 text-md font-semibold" href="/home/schedules">
+      <Link className="text-right text-white mt-2 text-md font-semibold" href="/(passenger)/schedules">
         <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "flex-end" }}>
           <Text className="text-white">View all </Text>
           <MaterialIcons name="arrow-forward-ios" size={14} color="#fff" />

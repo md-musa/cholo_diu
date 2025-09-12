@@ -83,7 +83,7 @@ const Index = () => {
             );
             await AsyncStorage.setItem("tripId", data._id);
 
-            // router.push("/home/broadcast/liveLocationSharing");
+            // router.push("/(passenger)/broadcast/liveLocationSharing");
           } catch (error) {
             ToastUtil.error("Failed to start sharing. Please try again.");
           }

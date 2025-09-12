@@ -20,7 +20,7 @@ const startBackgroundLocationTask = async (taskData: LocationTaskData) => {
         type: "mipmap",
       },
       color: "#0066cc",
-      linkingURI: "cholo://home/broadcast",
+      linkingURI: "cholo://(passenger)/broadcast",
       parameters: taskData,
     };
 

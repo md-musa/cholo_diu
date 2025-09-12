@@ -3,6 +3,7 @@ export enum USER_ROLES {
   EMPLOYEE = "employee",
   ADMIN = "admin",
   SUPER_ADMIN = "super_admin",
+  DRIVER = "driver",
 }
 
 export enum BUS_STATUS {

@@ -9,12 +9,18 @@ export const scheduleApi = createApi({
   endpoints: (builder) => ({
     getScheduleByRoute: builder.query<ISchedule[], { routeId: string; day: string }>({
       query: ({ routeId, day }) => ({
-        url: "/schedules/get-single-route-schedule",
+        url: "/schedules",
         method: "GET",
         params: { routeId, day: day.toLowerCase() },
+      }),
+    }),
+    getScheduleByDriver: builder.query<any, { driverId: string }>({
+      query: ({ driverId }) => ({
+        url: `/schedule-assignments/driver/${driverId}`,
+        method: "GET",
       }),
     }),
   }),
 });
 
-export const { useGetScheduleByRouteQuery } = scheduleApi;
+export const { useGetScheduleByRouteQuery, useGetScheduleByDriverQuery } = scheduleApi;
