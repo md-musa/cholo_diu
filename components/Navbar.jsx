@@ -8,7 +8,7 @@ const Navbar = () => {
   const navigation = useNavigation();
 
   return (
-    <View className="flex-row justify-between items-center bg-white w-full py-2 mb-2">
+    <View className="flex-row justify-between items-center bg-white w-full  p-2 mb-2">
       {/* Logo on the left */}
       <View className="flex-row items-center">
         {/* <Image source={busImage} className="rounded-full" resizeMode="contain" style={{ width: 35, height: 35 }} /> */}

@@ -13,7 +13,7 @@ const DriverSchedule = () => {
   const [selectedDay, setSelectedDay] = useState(
     new Date().toLocaleString("en-US", { weekday: "long" }).toLowerCase() === "friday" ? "friday" : "weekdays"
   );
-  console.log(user);
+
   const {
     data: scheduleResult,
     isLoading: isScheduleLoading,
@@ -22,10 +22,42 @@ const DriverSchedule = () => {
   } = useGetScheduleByDriverQuery({
     driverId: user?._id,
   });
-  console.log("Schedule Result:", JSON.stringify(scheduleResult, null, 2));
-  console.log("Schedule Error:", error);
 
   const [refreshing, setRefreshing] = useState(false);
+  const [filteredSchedules, setFilteredSchedules] = useState([]);
+
+  // Filter schedules based on selected day
+  useEffect(() => {
+    if (scheduleResult && scheduleResult.length > 0) {
+      const filtered = scheduleResult.filter((schedule) => {
+        // Check if the schedule has a day property
+        if (schedule.day) {
+          if (selectedDay === "friday") {
+            return schedule.day.toLowerCase() === "friday";
+          } else {
+            // For weekdays, show all days except Friday
+            return schedule.day.toLowerCase() !== "friday";
+          }
+        }
+
+        // If no day property exists, use the scheduleId.day as fallback
+        if (schedule.scheduleId && schedule.scheduleId.day) {
+          if (selectedDay === "friday") {
+            return schedule.scheduleId.day.toLowerCase() === "friday";
+          } else {
+            return schedule.scheduleId.day.toLowerCase() !== "friday";
+          }
+        }
+
+        // If no day information is available, show all schedules for weekdays
+        return selectedDay === "weekdays";
+      });
+
+      setFilteredSchedules(filtered);
+    } else {
+      setFilteredSchedules([]);
+    }
+  }, [scheduleResult, selectedDay]);
 
   const onRefresh = async () => {
     setRefreshing(true);
@@ -40,37 +72,11 @@ const DriverSchedule = () => {
 
   if (isScheduleLoading) return <LoadingScreen />;
 
-  const getTimeLeft = (tripTime) => {
-    try {
-      const now = new Date();
-      const [hours, minutes] = tripTime.split(":").map(Number); // assuming "HH:mm" format
-      const tripDate = new Date();
-      tripDate.setHours(hours, minutes, 0, 0);
-
-      const diffMs = tripDate - now;
-      if (diffMs <= 0) return "Starting soon";
-
-      const diffMin = Math.floor(diffMs / 60000);
-      const hrs = Math.floor(diffMin / 60);
-      const mins = diffMin % 60;
-
-      if (hrs > 0) return `${hrs}h ${mins}m left`;
-      return `${mins}m left`;
-    } catch {
-      return "";
-    }
-  };
-
-  const handleStartTrip = (trip) => {
-    Alert.alert("Trip Started", `Bus: ${trip.busName}\nTime: ${trip.time}`);
-    // TODO: emit socket event or API call to backend
-  };
-
   return (
-    <>
+    <View className="flex-1 bg-gray-100">
       <Navbar />
       <ScrollView
-        className="flex-1 bg-muted-50 px-4"
+        className="flex-1"
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
       >
         {/* Schedule Type (Weekdays / Friday) */}
@@ -90,7 +96,7 @@ const DriverSchedule = () => {
           ))}
         </View>
 
-        <View className="mt-6 bg-white rounded-xl shadow-md p-4">
+        <View className="mt-6 p-4">
           <View className="flex-row items-center mb-3">
             <Feather name="calendar" size={20} color={colors.secondary[600]} style={{ marginRight: 8 }} />
             <Text className="text-lg font-bold text-black">
@@ -102,18 +108,20 @@ const DriverSchedule = () => {
             </Text>
           </View>
 
-          {scheduleResult?.length > 0 ? (
-            scheduleResult.map((assignment) => <DriverScheduleCard data={assignment} />)
+          {filteredSchedules.length > 0 ? (
+            filteredSchedules.map((assignment) => (
+              <DriverScheduleCard key={assignment._id || assignment.tripId} data={assignment} refetchSchedule={refetch} />
+            ))
           ) : (
             <View className="flex-col items-center justify-center my-6 py-6 px-4 bg-muted-100 rounded-xl border border-muted-200">
               <MaterialCommunityIcons name="bus-clock" size={50} color={colors.tertiary[400]} />
               <Text className="text-black font-semibold text-base mt-3">No Schedule Found</Text>
-              <Text className="text-muted-500 text-center mt-1">No trips available for today.</Text>
+              <Text className="text-muted-500 text-center mt-1">No trips available for {selectedDay}.</Text>
             </View>
           )}
         </View>
       </ScrollView>
-    </>
+    </View>
   );
 };
 
