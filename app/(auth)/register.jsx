@@ -8,7 +8,7 @@ import { Link, useRouter } from "expo-router";
 import Toast from "react-native-toast-message";
 import { useRegisterMutation } from "@/store/features/auth/authApi";
 import { useGetRoutesQuery } from "@/store/features/route/routeApi";
-import { ASYNC_STORAGE_KEYS } from "@/constants";
+import { ASYNC_STORAGE_KEYS, USER_ROLES } from "@/constants";
 import { useAppDispatch } from "@/store/storeConfig";
 import { AuthUtil } from "@/utils/authUtil";
 import { setCredentials } from "@/store/features/auth/authSlice";
@@ -48,7 +48,19 @@ const Register = () => {
 
       dispatch(setCredentials({ user, route: user.routeId, accessToken }));
       ToastUtil.success(`Welcome, ${user.name}!`);
-      router.replace("/home");
+      switch (user.role) {
+        case USER_ROLES.EMPLOYEE:
+          router.replace("/(passenger)");
+          break;
+        case USER_ROLES.STUDENT:
+          router.replace("/(passenger)");
+          break;
+        case USER_ROLES.DRIVER:
+          router.replace("/(driver)");
+          break;
+        default:
+          router.replace("/(auth)/login");
+      }
     } catch (err) {
       ToastUtil.error(err?.message || "Unexpected error occurred");
     }

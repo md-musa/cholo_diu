@@ -34,10 +34,14 @@ const BusSchedule = () => {
     data: scheduleResult,
     isLoading: isScheduleLoading,
     refetch: refetchSchedule,
+    error: scheduleError,
   } = useGetScheduleByRouteQuery({
     routeId: route?._id,
-    day: selectedDay,
+    operatingDays: selectedDay,
   });
+
+  console.log(scheduleError);
+  console.log("---------", JSON.stringify(scheduleResult, null, 2));
 
   const [refreshing, setRefreshing] = useState(false);
 
@@ -85,34 +89,27 @@ const BusSchedule = () => {
       refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
     >
       <View className="">
-        <View className="mt-4 my-2">
-          <View className="flex-row mb-3">
-            {scheduleTypes.map((type) => (
-              <TouchableOpacity
-                key={type}
-                className={`mx-1 px-3 py-1 border rounded-full ${
-                  selectedType === type ? "bg-secondary-500" : "bg-muted-100"
-                } border-muted-300`}
-                disabled={true} 
-              >
-                <Text className={`capitalize ${selectedType === type ? "text-white" : "text-muted-500"}`}>{type}</Text>
-              </TouchableOpacity>
-            ))}
-          </View>
+        <View className="flex-row items-center mt-4 my-2">
+          <TouchableOpacity
+            className={`mx-1 px-3 py-1 border rounded-full bg-secondary-500 border-muted-300`}
+            disabled={true}
+          >
+            <Text className="capitalize text-white">{selectedType}</Text>
+          </TouchableOpacity>
+
+          <Text className="text-2xl text-gray-500 px-2">|</Text>
           {/* ---- Schedule days -----  */}
-          <View className="flex-row flex-wrap">
-            {scheduleDays.map((day) => (
-              <TouchableOpacity
-                key={day}
-                className={`mx-1 px-4 py-1 border rounded-full ${
-                  selectedDay === day ? "bg-secondary-500" : "bg-white"
-                } border-muted-300`}
-                onPress={() => setSelectedDay(day)}
-              >
-                <Text className={`capitalize ${selectedDay === day ? "text-white" : "text-black"}`}>{day}</Text>
-              </TouchableOpacity>
-            ))}
-          </View>
+          {scheduleDays.map((day) => (
+            <TouchableOpacity
+              key={day}
+              className={`mx-1 px-4 py-1 border rounded-full ${
+                selectedDay === day ? "bg-secondary-500" : "bg-white"
+              } border-muted-300`}
+              onPress={() => setSelectedDay(day)}
+            >
+              <Text className={`capitalize ${selectedDay === day ? "text-white" : "text-black"}`}>{day}</Text>
+            </TouchableOpacity>
+          ))}
         </View>
       </View>
 

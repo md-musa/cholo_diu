@@ -1,4 +1,4 @@
-import { Tabs } from "expo-router";
+import { Stack, Tabs } from "expo-router";
 import { MaterialIcons, FontAwesome5, Ionicons, Feather } from "@expo/vector-icons";
 import { colors } from "@/config/colors";
 
@@ -32,8 +32,8 @@ export default function TabLayout() {
       <Tabs.Screen
         name="setting"
         options={{
-          title: "Settings",
-          tabBarIcon: ({ color, size }) => <Feather name="settings" size={21} color={color} />,
+          title: "Setting",
+          tabBarIcon: ({ color, size }) => <MaterialIcons name="settings" size={21} color={color} />,
         }}
       />
     </Tabs>

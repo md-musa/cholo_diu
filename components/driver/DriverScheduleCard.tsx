@@ -5,8 +5,13 @@ import moment from "moment";
 import { colors } from "@/config/colors";
 import { useCreateTripMutation, useUpdateTripMutation } from "@/store/features/trip/tripApi";
 import { TRIP_STATUS } from "@/constants";
+import { useRouter } from "expo-router";
+import { startBroadcasting } from "@/store/features/broadcast/broadcastSlice";
+import { useAppDispatch } from "@/store/storeConfig";
 
 const DriverScheduleCard = ({ data, refetchSchedule }: any) => {
+  const router = useRouter();
+  const dispatch = useAppDispatch();
   const { scheduleId, busId, tripStatus: rawTripStatus, tripId } = data || {};
   console.log("DriverScheduleCard data:", JSON.stringify(data, null, 2));
 
@@ -37,6 +42,20 @@ const DriverScheduleCard = ({ data, refetchSchedule }: any) => {
     } catch (err) {
       console.error("Failed to update/create trip:", err);
     }
+  };
+
+  const handleLocationShare = (tripId: string) => {
+    console.log("Starting location share for trip:", tripId);
+
+    dispatch(
+      startBroadcasting({
+        busName: busId?.name,
+        busType: scheduleId.userType,
+        tripId: tripId,
+        note: "",
+      })
+    );
+    router.navigate("/liveLocationSharing");
   };
 
   // Time formatting safely
@@ -110,6 +129,13 @@ const DriverScheduleCard = ({ data, refetchSchedule }: any) => {
           )}
         </TouchableOpacity>
       )}
+
+      <TouchableOpacity
+        className="mt-3 py-3 px-4 rounded-lg items-center bg-gray-200"
+        onPress={() => handleLocationShare(tripId)}
+      >
+        <Text className="text-gray-800 font-semibold text-lg">Share Location</Text>
+      </TouchableOpacity>
     </View>
   );
 };

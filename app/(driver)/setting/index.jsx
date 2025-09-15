@@ -33,7 +33,7 @@ export default function Settings() {
     try {
       router.dismissAll();
       await AsyncStorage.clear();
-      router.replace("/");
+      router.replace("/(auth)/login");
       dispatch(clearCredentials());
     } catch (err) {
       console.log("Logout failed:", err.message);

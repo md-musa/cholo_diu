@@ -8,7 +8,7 @@ import { ToastUtil } from "@/utils/toastUtil";
 import LoadingIndicator from "@/components/UI/LoadingIndicator";
 import { useLoginMutation } from "@/store/features/auth/authApi";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { ASYNC_STORAGE_KEYS } from "@/constants";
+import { ASYNC_STORAGE_KEYS, USER_ROLES } from "@/constants";
 import { useAppDispatch } from "@/store/storeConfig";
 import { setCredentials } from "@/store/features/auth/authSlice";
 import { colors } from "@/config/colors";
@@ -33,7 +33,20 @@ const Login = () => {
 
       dispatch(setCredentials({ user, route: user.routeId, accessToken }));
       ToastUtil.success(`Welcome, ${user.name}!`);
-      router.replace("/home");
+
+      switch (user.role) {
+        case USER_ROLES.EMPLOYEE:
+          router.replace("/(passenger)");
+          break;
+        case USER_ROLES.STUDENT:
+          router.replace("/(passenger)");
+          break;
+        case USER_ROLES.DRIVER:
+          router.replace("/(driver)");
+          break;
+        default:
+          router.replace("/(auth)/login");
+      }
     } catch (err) {
       // console.log("🟥 Login Error", JSON.stringify(err, null, 2));
       ToastUtil.error(err?.response?.data.errorMessages[0].message || "Login error");

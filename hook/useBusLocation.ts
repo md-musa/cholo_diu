@@ -44,6 +44,7 @@ export const useBusLocation = () => {
     dispatch(clearBuses());
 
     const handleLocationUpdate = (data: any) => {
+      console.log("[🚍]", JSON.stringify(data, null, 2));
       dispatch(updateBusLocation(data));
       setIsDisconnected(false);
     };

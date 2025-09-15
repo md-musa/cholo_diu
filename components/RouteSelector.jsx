@@ -19,7 +19,7 @@ const RouteSelector = () => {
   const { route } = useAppSelector((state) => state.auth);
   const { isBroadcasting } = useAppSelector((state) => state.broadcast);
   const [selectedDay, setSelectedDay] = useState(
-    new Date().toLocaleString("en-US", { weekday: "long" }).toLowerCase() === "friday" ? "Friday" : "Weekdays"
+    new Date().toLocaleString("en-US", { weekday: "long" }).toLowerCase() === "friday" ? "friday" : "weekdays"
   );
 
   const { data: routes, isLoading: isRoutesLoading, refetch: refetchRoutes } = useGetRoutesQuery();
@@ -28,8 +28,9 @@ const RouteSelector = () => {
     data: scheduleResult,
     refetch: refetchSchedule,
     isFetching: isScheduleFetching,
-  } = useGetScheduleByRouteQuery({ routeId: route?._id, day: selectedDay }, { skip: !route?._id });
-
+  } = useGetScheduleByRouteQuery({ routeId: route?._id, operatingDays: selectedDay }, { skip: !route?._id });
+  
+  console.log("Schedule Result[home]:", scheduleResult);
   const [refreshing, setRefreshing] = useState(false);
 
   const handleRefresh = async () => {

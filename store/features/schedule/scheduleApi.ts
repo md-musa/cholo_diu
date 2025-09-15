@@ -7,11 +7,11 @@ export const scheduleApi = createApi({
   baseQuery: axiosBaseQuery(),
   refetchOnReconnect: true,
   endpoints: (builder) => ({
-    getScheduleByRoute: builder.query<ISchedule[], { routeId: string; day: string }>({
-      query: ({ routeId, day }) => ({
-        url: "/schedules",
+    getScheduleByRoute: builder.query<ISchedule[], { routeId: string; operatingDays: string }>({
+      query: ({ routeId, operatingDays }) => ({
+        url: `/schedules/route/${routeId}`,
         method: "GET",
-        params: { routeId, day: day.toLowerCase() },
+        params: { operatingDays },
       }),
     }),
     getScheduleByDriver: builder.query<any, { driverId: string }>({

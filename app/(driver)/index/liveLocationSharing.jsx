@@ -3,7 +3,7 @@ import { View, Text, TouchableOpacity, Alert, Image, StatusBar } from "react-nat
 import { Ionicons } from "@expo/vector-icons";
 
 import StatusOverlayComponent from "@/components/UI/StatusOverlayComponent";
-import { Stack, useRouter } from "expo-router";
+import { useRouter } from "expo-router";
 import LoadingScreen from "@/components/UI/LoadingScreen";
 import { useAppDispatch, useAppSelector } from "@/store/storeConfig";
 import { stopBroadcasting } from "@/store/features/broadcast/broadcastSlice";
@@ -12,7 +12,8 @@ import MapComponent from "@/components/MapComponent";
 import { MapUtils } from "@/utils/mapUtils";
 import broadcastGifImage from "@/assets/images/broadcast.gif";
 
-function LiveMapLocation() {
+function LiveLocationSharing() {
+  console.log("LiveLocationSharing rendered");
   const router = useRouter();
   const dispatch = useAppDispatch();
   const { location } = useLocation();
@@ -23,6 +24,8 @@ function LiveMapLocation() {
   const [zoom, setZoom] = useState(18);
   const cameraRef = useRef(null);
   const mapRef = useRef(null);
+
+  console.log(activeTrip, route, location);
 
   useEffect(() => {
     if (location) {
@@ -43,6 +46,7 @@ function LiveMapLocation() {
           text: "Stop",
           onPress: () => {
             dispatch(stopBroadcasting());
+            router.back();
           },
           style: "destructive",
         },
@@ -55,8 +59,7 @@ function LiveMapLocation() {
 
   return (
     <View className="flex-1 bg-muted-100">
-      <StatusBar barStyle="light-content" />
-      <Stack.Screen options={{ title: "Location..." }} />
+      <StatusBar barStyle="light-content" hidden={true} />
 
       <MapComponent
         mapRef={mapRef}
@@ -77,6 +80,13 @@ function LiveMapLocation() {
         <Ionicons name="locate" size={28} color="black" />
       </TouchableOpacity>
 
+      {/* <TouchableOpacity
+        className="absolute top-10 left-5 bg-white border border-muted-300 rounded-full shadow flex-row p-2 items-center justify-center"
+        // onPress={handleStopSharing}
+      >
+        <Ionicons name="arrow-back" size={25} color="black" />
+      </TouchableOpacity> */}
+
       {/*-------Route Details---------*/}
       <View className="px-4 mb-4">
         {/* Info Card */}
@@ -89,7 +99,7 @@ function LiveMapLocation() {
           {/* Info Text */}
           <View className="flex-[0.65]">
             <Text className="text-sm text-muted-700">
-              Sharing <Text className="font-bold capitalize">{activeTrip?.busName}</Text>'s location for the
+              Sharing <Text className="font-bold capitalize">{activeTrip.busName}</Text>'s location for the
               <Text className="font-bold"> {route?.routeName}</Text> route
             </Text>
           </View>
@@ -114,4 +124,4 @@ function LiveMapLocation() {
   );
 }
 
-export default LiveMapLocation;
+export default LiveLocationSharing;

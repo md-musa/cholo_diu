@@ -4,7 +4,7 @@ import { IBus } from "../bus/busInterface";
 import { BUS_TYPES } from "@/constants";
 
 interface IBroadcast {
-  bus: IBus;
+  busName: IBus;
   busType: BUS_TYPES;
   tripId: string;
   note: string;

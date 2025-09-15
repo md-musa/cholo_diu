@@ -29,7 +29,7 @@ export default function BroadcastManager() {
         />
 
         <Text className="text-white font-bold mx-2">
-          Sharing location for <Text className="capitalize">{activeTrip?.bus.name}</Text>
+          Sharing location for <Text className="capitalize">{activeTrip?.busName}</Text>
         </Text>
 
         <Text className="border border-muted-200 bg-red-600/70 text-white font-semibold px-3 rounded-lg">Stop</Text>

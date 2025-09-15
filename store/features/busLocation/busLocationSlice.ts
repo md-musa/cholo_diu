@@ -1,23 +1,16 @@
-import { store } from "@/store/storeConfig";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-export interface TripData {
-  _id: string;
-  routeId: string;
-  hostId: string;
-  busName: string;
-  departureTime?: string;
-  direction?: "to_campus" | "from_campus";
-  busType: string;
-  note?: string;
-}
-
 export interface BusLocationData {
-  trip: TripData;
+  busName: string;
+  direction: "to_campus" | "from_campus";
+  userType: "student" | "employee";
+  routeId: string;
+
   latitude: number;
   longitude: number;
   heading: number;
   speed: number;
+  avgSpeed: number;
   currUserCnt: number;
   timestamp: string;
 }
@@ -38,12 +31,12 @@ const busLocationSlice = createSlice({
   reducers: {
     updateBusLocation: (state, action: PayloadAction<BusLocationData>) => {
       const data = action.payload;
-      if (!data.trip?.busName) return;
+      if (!data.busName) return;
 
       // const { isBroadcasting, activeTrip } = store.getState().broadcast;
       // if (isBroadcasting && data.trip.busName === activeTrip?.bus.name) return;
       // console.log("[🚍]", JSON.stringify(data, null, 2));
-      state.activeBuses[data.trip.busName] = data;
+      state.activeBuses[data.busName] = data;
       state.currentlyConnectedUserCount = data.currUserCnt;
     },
 

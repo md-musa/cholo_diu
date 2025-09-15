@@ -222,7 +222,7 @@ const MapComponent = ({ mapRef, zoom, setZoom, cameraRef, currentCenter, setCurr
                   coordinates: [location.longitude, location.latitude],
                 },
                 properties: {
-                  title: `You\n${cpfl(activeTrip.bus.name)}\n${cpfl(activeTrip.busType)} bus`,
+                  title: `You\n${cpfl(activeTrip.busName)}\n${cpfl(activeTrip.busType)} bus`,
                   heading: location.heading,
                 },
               },

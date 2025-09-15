@@ -53,7 +53,7 @@ const Index = () => {
           role: decoded.role,
           email: decoded.email,
         };
-        decoded.role = "driver" as USER_ROLES.DRIVER; // Temporary hardcoding for testing
+        console.log("User:", user);
 
         dispatch(setCredentials({ user, route, accessToken: token }));
         console.log("Decoded Token:", decoded);

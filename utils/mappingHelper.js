@@ -8,8 +8,8 @@ export function generateMarkers(activeBuses) {
       },
       properties: {
         icon: "marker",
-        title: `${cpfl(data.trip.busName)}`,
-        direction: data.trip.direction,
+        title: `${cpfl(data.busName)}`,
+        direction: data.direction,
         heading: data.heading,
         speed: data.speed,
       },
