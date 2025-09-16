@@ -21,7 +21,7 @@ const HomeMapSection = () => {
   const [currentCenter, setCurrentCenter] = useState([90.320463, 23.879]);
 
   useEffect(() => {
-    const routeCenter = getCurrentRouteCenterCords(route.routeNo);
+    const routeCenter = getCurrentRouteCenterCords(route?.routeNo);
     if (routeCenter) {
       MapUtils.changeMapCenter(routeCenter, setCurrentCenter, setZoom, 11);
     }

@@ -68,6 +68,7 @@ const Index = () => {
               hostId: user._id,
               busName: selectedBus.name,
               busType: busType,
+              direction: direction,
               note: note,
             });
 
@@ -94,7 +95,6 @@ const Index = () => {
 
   if (isBusesLoading) return <LoadingScreen />;
   if (isBroadcasting) return <LiveMapLocation />;
-
 
   return (
     <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} className="flex-1 bg-muted-100">
@@ -221,8 +221,8 @@ const Index = () => {
           </View>
           <View className="flex-row justify-between space-x-3">
             {[
-              { direction: "To Campus", icon: "arrow-up" },
-              { direction: "From Campus", icon: "arrow-down" },
+              { direction: "to_campus", icon: "arrow-up" },
+              { direction: "from_campus", icon: "arrow-down" },
             ].map(({ direction: dir, icon }) => (
               <TouchableOpacity
                 key={dir}

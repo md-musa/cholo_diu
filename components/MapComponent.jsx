@@ -12,6 +12,7 @@ import useLocation from "@/hook/useLocation";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { MapUtils } from "@/utils/mapUtils";
 function cpfl(string) {
+  if (!string) return "";
   return string.charAt(0).toUpperCase() + string.slice(1);
 }
 

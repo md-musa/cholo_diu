@@ -49,6 +49,7 @@ const startBackgroundLocationTask = async (taskData: LocationTaskData) => {
           //  console.log("[BACKGROUND BROADCAST]: ", location);
           socket.emit(SOCKET_EVENTS.BROADCAST_BUS_LOCATION, {
             tripId,
+            broadcaster: "user",
             latitude: location.coords.latitude,
             longitude: location.coords.longitude,
             speed: location.coords.speed,
