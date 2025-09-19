@@ -17,7 +17,7 @@ const Navbar = () => {
       </View>
 
       {/* Settings icon on the right */}
-      <TouchableOpacity onPress={() => router.push("/(passenger)/(tabs)/setting")} className="p-1">
+      <TouchableOpacity className="p-1">
         <Ionicons name="menu" size={27} color="black" />
       </TouchableOpacity>
     </View>

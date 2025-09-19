@@ -30,6 +30,7 @@ const ScheduleCard: React.FC<ScheduleCardProps> = (props) => {
   const { activeBuses } = useAppSelector((state) => state.busLocation);
   const { status, formattedTime, note, assignedBuses, serviceType } = props.schedule;
   console.log("Assigned Buses:", JSON.stringify(assignedBuses, null, 2));
+  console.log(JSON.stringify(props, null, 2));
   return (
     <View
       className={`rounded-lg my-2 border ${
@@ -84,11 +85,11 @@ const ScheduleCard: React.FC<ScheduleCardProps> = (props) => {
           )}
         </View>
         {/* couldbe shuttle service */}
-        {serviceType && (
+        {/* {serviceType && (
           <View className="absolute right-2 top-2 bg-secondary-600 rounded-full px-2 my-1">
             <Text className="text-sm mr-2 text-muted-100 capitalize">{serviceType}</Text>
           </View>
-        )}
+        )} */}
 
         {note && (
           <View className="flex-row items-start">
@@ -107,7 +108,7 @@ const ScheduleCard: React.FC<ScheduleCardProps> = (props) => {
         </View> */}
 
         {assignedBuses.length > 0 ? (
-          <View className="flex-col">
+          <View className="flex-col py-2">
             {assignedBuses.map((bus) => {
               const isActive = bus.busId.name && activeBuses[bus.busId.name];
 
@@ -127,7 +128,7 @@ const ScheduleCard: React.FC<ScheduleCardProps> = (props) => {
                 <TouchableOpacity
                   onPress={handleBusPress}
                   key={bus.busId._id}
-                  className="flex-row items-center px-3 py-2 rounded-2xl border border-gray-300 bg-gray-50 my-2"
+                  className="flex-row items-center px-3 py-2 rounded-2xl border border-gray-300 bg-gray-50 my-1"
                 >
                   {/* 1st Column: Bus */}
                   <View className="flex-1 flex-row items-center">
@@ -159,7 +160,7 @@ const ScheduleCard: React.FC<ScheduleCardProps> = (props) => {
                           : "text-gray-600"
                       }`}
                     >
-                      {"Scheduled"}
+                      {bus.status || "scheduled"}
                     </Text>
                   </View>
                 </TouchableOpacity>

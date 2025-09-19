@@ -8,6 +8,7 @@ import { useRouter } from "expo-router";
 import { Ionicons, FontAwesome, MaterialIcons } from "@expo/vector-icons";
 import axiosInstance from "@/config/axiosInstance";
 import musaImg from "@/assets/images/musa2.jpg";
+import NavbarDriver from "../../components/NavbarDriver";
 
 export default function Settings() {
   const dispatch = useAppDispatch();
@@ -42,11 +43,12 @@ export default function Settings() {
 
   return (
     <ScrollView className="flex-1 bg-muted-100">
+      <NavbarDriver />
       {/* Profile Header */}
-      <View className="bg-secondary-600 pb-8 pt-12 px-6 rounded-b-3xl shadow-lg">
+      <View className="bg-secondary-600 py-14 rounded-b-3xl shadow-lg">
         <View className="items-center -mt-16">
           <View className="bg-white p-1 rounded-full shadow-xl">
-            {/* <Image
+            {/* <Image 
               source={require("../../../../assets/images/profile_placeholder.png")}
               className="w-32 h-32 rounded-full border-4 border-secondary-100"
             /> */}
@@ -57,16 +59,13 @@ export default function Settings() {
             <View className="bg-secondary-500 px-4 py-2 rounded-full mx-2">
               <Text className="text-white text-sm capitalize">Role: {userData?.role}</Text>
             </View>
-            <View className="bg-secondary-500 px-4 py-2 rounded-full mx-2">
-              <Text className="text-white text-sm">Route: {route?.routeName || "N/A"}</Text>
-            </View>
           </View>
         </View>
       </View>
 
       <View className="px-5 mt-4">
         {/* Support Section */}
-        <SectionCard title="Support">
+        {/* <SectionCard title="Support">
           <SettingOption
             icon="mail-outline"
             text="Contact Support"
@@ -75,9 +74,9 @@ export default function Settings() {
           <SettingOption
             icon="shield-checkmark-outline"
             text="Privacy Policy"
-            onPress={() => router.push("/(passenger)/setting/privacyAndPolicy")}
+            // onPress={() => router.push("/(passenger)/setting/privacyAndPolicy")}
           />
-        </SectionCard>
+        </SectionCard> */}
 
         {/* Logout */}
         <TouchableOpacity

@@ -14,7 +14,7 @@ import { useRouter } from "expo-router";
 import LoadingScreen from "@/components/UI/LoadingScreen";
 import { useGetBusesQuery } from "@/store/features/bus/busApi";
 import { useAppDispatch, useAppSelector } from "@/store/storeConfig";
-import { useCreateTripMutation } from "@/store/features/trip/tripApi";
+import { useCreateTripByUserMutation, useCreateTripMutation } from "@/store/features/trip/tripApi";
 import { TripUtil } from "@/utils/tripUtil";
 import { startBroadcasting } from "@/store/features/broadcast/broadcastSlice";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -30,7 +30,7 @@ const Index = () => {
   const dispatch = useAppDispatch();
   const { user, route } = useAppSelector((state) => state.auth);
   const { isBroadcasting } = useAppSelector((state) => state.broadcast);
-  const [createTrip, { isLoading: isCreatingTrip }] = useCreateTripMutation();
+  const [createTripByUser, { isLoading: isCreatingTrip }] = useCreateTripByUserMutation();
   const { data: buses, isLoading: isBusesLoading, error: busesError } = useGetBusesQuery();
 
   const [busType, setBusType] = useState("");
@@ -63,7 +63,7 @@ const Index = () => {
         text: "Confirm",
         onPress: async () => {
           try {
-            const { data } = await createTrip({
+            const { data } = await createTripByUser({
               routeId: route._id,
               hostId: user._id,
               busName: selectedBus.name,

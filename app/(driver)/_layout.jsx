@@ -1,5 +1,5 @@
-import { Stack, Tabs } from "expo-router";
-import { MaterialIcons, FontAwesome5, Ionicons, Feather } from "@expo/vector-icons";
+import { Tabs } from "expo-router";
+import { MaterialIcons } from "@expo/vector-icons";
 import { colors } from "@/config/colors";
 
 export default function TabLayout() {
@@ -7,10 +7,10 @@ export default function TabLayout() {
     <Tabs
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: colors.secondary[500], // Active icon/text color
-        tabBarInactiveTintColor: colors.muted[500], // Inactive icon/text color
+        tabBarActiveTintColor: colors.secondary[500],
+        tabBarInactiveTintColor: colors.muted[500],
         tabBarStyle: {
-          backgroundColor: "#FFFFFF", // Tab bar background
+          backgroundColor: "#FFFFFF",
           borderTopWidth: 0,
           paddingBottom: 4,
           height: 55,
@@ -21,19 +21,21 @@ export default function TabLayout() {
         },
       }}
     >
+      {/* Home Tab */}
       <Tabs.Screen
         name="index"
         options={{
           title: "Home",
-          tabBarIcon: ({ color, size }) => <MaterialIcons name="home" size={22} color={color} />,
+          tabBarIcon: ({ color, size }) => <MaterialIcons name="home" size={size} color={color} />,
         }}
       />
 
+      {/* Settings Tab */}
       <Tabs.Screen
-        name="setting"
+        name="settings"
         options={{
-          title: "Setting",
-          tabBarIcon: ({ color, size }) => <MaterialIcons name="settings" size={21} color={color} />,
+          title: "Settings",
+          tabBarIcon: ({ color, size }) => <MaterialIcons name="settings" size={size} color={color} />,
         }}
       />
     </Tabs>
