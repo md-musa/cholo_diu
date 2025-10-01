@@ -146,14 +146,14 @@ const ScheduleCard: React.FC<ScheduleCardProps> = (props) => {
                   <View className="flex-1 flex-row items-center justify-end">
                     <Ionicons
                       name={
-                        bus.status === "ongoing" ? "time" : bus.status === "completed" ? "checkmark-circle" : "calendar"
+                        bus.status === "departed" ? "time" : bus.status === "completed" ? "checkmark-circle" : "calendar"
                       }
                       size={16}
-                      color={bus.status === "ongoing" ? "#2563EB" : bus.status === "completed" ? "#16A34A" : "#6B7280"}
+                      color={bus.status === "departed" ? "#2563EB" : bus.status === "completed" ? "#16A34A" : "#6B7280"}
                     />
                     <Text
                       className={`ml-2 text-sm capitalize ${
-                        bus.status === "ongoing"
+                        bus.status === "departed"
                           ? "text-blue-600"
                           : bus.status === "completed"
                           ? "text-green-600"

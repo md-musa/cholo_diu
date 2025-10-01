@@ -121,16 +121,15 @@ const BusSchedule = () => {
         <Text className="text-center text-black text-mg">View Stoppages</Text>
       </TouchableOpacity>
 
-      <View className="bg-tertiary-900 rounded-t-3xl rounded-b-xl my-4 p-1">
-        <View className="mt-4 flex-row justify-between items-center px-4">
+      <View className="bg-tertiary-900 rounded-t-3xl rounded-b-xl my-3 p-1">
+        <View className="mt-2 flex-row justify-between items-center px-4">
           <View className="flex-row items-center flex-[0.6]">
             <Feather name="calendar" size={20} color="white" style={{ marginRight: 8 }} />
-            <Text className="text-md font-semibold text-white">
+            <Text className="text-lg font-semibold text-white">
               {new Date().toLocaleDateString("en-GB", {
                 weekday: "short",
-                day: "numeric",
-                month: "numeric",
-                year: "numeric",
+                day: "2-digit",
+                month: "short",
               })}
             </Text>
           </View>
@@ -170,7 +169,7 @@ const BusSchedule = () => {
           </View>
         </View>
 
-        <View className="bg-white p-4 my-4 rounded-xl">
+        <View className="bg-white p-4 my-3 rounded-xl">
           <View className="flex-row justify-around rounded-md">
             {/* Student Button  */}
             <TouchableOpacity
@@ -219,7 +218,7 @@ const BusSchedule = () => {
             {selectedFilter == "student" ? (
               <>
                 <View className="">
-                  <View className="flex-row items-center justify-center bg-white px-4 py-1 rounded-2xl my-2  border-muted-300">
+                  <View className="flex-row items-center justify-center px-4 py-1 rounded-2xl my-1  border-muted-300">
                     <Text className="text-muted-600 font-semibold text-lg">{route?.routeName}</Text>
                     <Feather name="arrow-right-circle" size={20} color={colors.secondary[500]} className="mx-2" />
                     <Text className="text-muted-600 font-semibold text-lg">Campus</Text>
@@ -248,7 +247,7 @@ const BusSchedule = () => {
             ) : (
               <>
                 <View className="">
-                  <View className="flex-row items-center justify-center bg-white px-4 py-1 rounded-2xl my-2  border-muted-300">
+                  <View className="flex-row items-center justify-center bg-white px-4 py-1 rounded-2xl my-1  border-muted-300">
                     <Text className="text-muted-600 font-semibold text-lg">{route?.routeName}</Text>
                     <Feather name="arrow-right-circle" size={20} color={colors.secondary[500]} className="mx-2" />
                     <Text className="text-muted-600 font-semibold text-lg">Campus</Text>

@@ -8,6 +8,7 @@ import { useRouter } from "expo-router";
 import { Ionicons, FontAwesome, MaterialIcons } from "@expo/vector-icons";
 import axiosInstance from "@/config/axiosInstance";
 import musaImg from "@/assets/images/musa2.jpg";
+import { ASYNC_STORAGE_KEYS } from "@/constants";
 
 export default function Settings() {
   const dispatch = useAppDispatch();
@@ -31,10 +32,12 @@ export default function Settings() {
 
   const handleLogout = async () => {
     try {
-      router.dismissAll();
-      await AsyncStorage.clear();
-      router.replace("/");
+      await AsyncStorage.removeItem(ASYNC_STORAGE_KEYS.USER_TOKEN);
+      await AsyncStorage.removeItem(ASYNC_STORAGE_KEYS.CURRENT_ROUTE);
+
       dispatch(clearCredentials());
+
+      router.replace("/(auth)/login");
     } catch (err) {
       console.log("Logout failed:", err.message);
     }

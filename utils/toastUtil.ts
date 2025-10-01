@@ -2,7 +2,7 @@ import { toast, ToastPosition } from "@backpackapp-io/react-native-toast";
 import { Easing } from "react-native-reanimated";
 
 const DEFAULT_CONFIG = {
-  duration: 3000,
+  duration: 5000,
   position: ToastPosition.TOP,
   animationConfig: {
     duration: 500,

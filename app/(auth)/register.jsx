@@ -1,5 +1,5 @@
 import { View, Text, TextInput, TouchableOpacity, ScrollView } from "react-native";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons, MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
@@ -10,7 +10,6 @@ import { useRegisterMutation } from "@/store/features/auth/authApi";
 import { useGetRoutesQuery } from "@/store/features/route/routeApi";
 import { ASYNC_STORAGE_KEYS, USER_ROLES } from "@/constants";
 import { useAppDispatch } from "@/store/storeConfig";
-import { AuthUtil } from "@/utils/authUtil";
 import { setCredentials } from "@/store/features/auth/authSlice";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { ToastUtil } from "@/utils/toastUtil";
@@ -28,30 +27,75 @@ const Register = () => {
     email: "",
     password: "",
   });
+  const [errors, setErrors] = useState({ name: "", routeId: "", role: "", email: "", password: "" });
 
   const { data: routes } = useGetRoutesQuery();
   const [register, { isLoading }] = useRegisterMutation();
+
+  const handleInputChange = (name, value) => {
+    setFormData((prev) => ({ ...prev, [name]: value }));
+    setErrors((prev) => ({ ...prev, [name]: "" }));
+  };
+
+  const validateForm = () => {
+    let valid = true;
+    const newErrors = { name: "", routeId: "", role: "", email: "", password: "" };
+
+    if (!formData.name.trim()) {
+      newErrors.name = "Full name is required";
+      valid = false;
+    }
+
+    if (!formData.routeId) {
+      newErrors.routeId = "Please select a bus route";
+      valid = false;
+    }
+
+    if (!formData.role) {
+      newErrors.role = "Please select your role";
+      valid = false;
+    }
+
+    if (!formData.email.trim()) {
+      newErrors.email = "University email is required";
+      valid = false;
+    } else {
+      const eduRegex = /^[^\s@]+@(diu\.edu\.bd|daffodilvarsity\.edu\.bd)$/;
+      if (!eduRegex.test(formData.email)) {
+        newErrors.email = "Use your university email";
+        valid = false;
+      }
+    }
+
+    if (!formData.password.trim()) {
+      newErrors.password = "Password is required";
+      valid = false;
+    } else if (formData.password.length < 6) {
+      newErrors.password = "Password must be at least 6 characters";
+      valid = false;
+    }
+
+    setErrors(newErrors);
+    return valid;
+  };
+
   const handleRegistration = async () => {
-    if (!AuthUtil.validateRegistrationForm(formData)) return;
+    if (!validateForm()) return;
 
     try {
-      const result = await register(formData);
+      let notificationToken = "";
 
-      if ("error" in result) {
-        ToastUtil.error(result.error?.data?.errorMessage?.[0]?.message);
-        return;
-      }
+      const payload = { ...formData, notificationToken };
+      const result = await register(payload);
+
       const { accessToken, user } = result.data;
-
       await AsyncStorage.setItem(ASYNC_STORAGE_KEYS.AUTH_TOKEN, accessToken);
       await AsyncStorage.setItem(ASYNC_STORAGE_KEYS.CURRENT_ROUTE, JSON.stringify(user.routeId));
 
       dispatch(setCredentials({ user, route: user.routeId, accessToken }));
-      ToastUtil.success(`Welcome, ${user.name}!`);
+
       switch (user.role) {
         case USER_ROLES.EMPLOYEE:
-          router.replace("/(passenger)");
-          break;
         case USER_ROLES.STUDENT:
           router.replace("/(passenger)");
           break;
@@ -62,27 +106,22 @@ const Register = () => {
           router.replace("/(auth)/login");
       }
     } catch (err) {
-      ToastUtil.error(err?.message || "Unexpected error occurred");
+      ToastUtil.error(err?.data?.errorMessages?.[0]?.message || "Registration failed");
     }
-  };
-
-  const handleInputChange = (name, value) => {
-    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   return (
     <SafeAreaView className="flex-1 bg-white">
       <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
         <View className="flex-1 justify-end px-10 mb-10">
-          {/* Header - Matches Login Page Style */}
-          <View className="">
+          <View>
             <Text className="text-title-2 font-semibold text-center mb-4">Track Your Campus Buses</Text>
             <Text className="text-body text-center text-muted-500 mb-10">
               Register to view real-time bus locations and schedules
             </Text>
           </View>
 
-          {/* Name Input */}
+          {/* Full Name */}
           <View className="my-3">
             <View className="flex-row items-center gap-2 mb-2">
               <Ionicons name="person-outline" size={20} color={colors.muted[700]} />
@@ -92,18 +131,19 @@ const Register = () => {
               value={formData.name}
               onChangeText={(text) => handleInputChange("name", text)}
               placeholder="Enter your full name"
-              className="border border-muted-300 rounded-xl px-4 py-4"
+              className={`border rounded-xl px-4 py-4 ${errors.name ? "border-red-500" : "border-muted-300"}`}
               editable={!isLoading}
             />
+            {errors.name ? <Text className="text-red-500 mt-1">{errors.name}</Text> : null}
           </View>
 
-          {/* Route Picker */}
+          {/* Route */}
           <View className="my-3">
             <View className="flex-row items-center gap-2 mb-2">
               <FontAwesome5 name="route" size={20} color={colors.muted[700]} />
               <Text className="text-lg text-muted-700">Bus Route</Text>
             </View>
-            <View className="border border-muted-300 rounded-xl">
+            <View className={`border rounded-xl ${errors.routeId ? "border-red-500" : "border-muted-300"}`}>
               <Picker
                 selectedValue={formData.routeId}
                 onValueChange={(value) => handleInputChange("routeId", value)}
@@ -111,19 +151,20 @@ const Register = () => {
               >
                 <Picker.Item label="Select your bus route" value="" />
                 {routes?.map((route) => (
-                  <Picker.Item key={route._id} label={`${route.routeNo}: ${route.routeName} Route`} value={route._id} />
+                  <Picker.Item key={route._id} label={`${route.routeNo}: ${route.routeName}`} value={route._id} />
                 ))}
               </Picker>
             </View>
+            {errors.routeId ? <Text className="text-red-500 mt-1">{errors.routeId}</Text> : null}
           </View>
 
-          {/* Role Picker */}
+          {/* Role */}
           <View className="my-3">
             <View className="flex-row items-center gap-2 mb-2">
               <Ionicons name="person-add-outline" size={20} color={colors.muted[700]} />
               <Text className="text-lg text-muted-700">Role</Text>
             </View>
-            <View className="border border-muted-300 rounded-xl">
+            <View className={`border rounded-xl ${errors.role ? "border-red-500" : "border-muted-300"}`}>
               <Picker
                 selectedValue={formData.role}
                 onValueChange={(value) => handleInputChange("role", value)}
@@ -134,9 +175,10 @@ const Register = () => {
                 <Picker.Item label="Employee" value="employee" />
               </Picker>
             </View>
+            {errors.role ? <Text className="text-red-500 mt-1">{errors.role}</Text> : null}
           </View>
 
-          {/* Email Input */}
+          {/* Email */}
           <View className="my-3">
             <View className="flex-row items-center gap-2 mb-2">
               <MaterialCommunityIcons name="email-outline" size={20} color={colors.muted[700]} />
@@ -148,18 +190,23 @@ const Register = () => {
               placeholder="abc@diu.edu.bd"
               keyboardType="email-address"
               autoCapitalize="none"
-              className="border border-muted-300 rounded-xl px-4 py-4"
+              className={`border rounded-xl px-4 py-4 ${errors.email ? "border-red-500" : "border-muted-300"}`}
               editable={!isLoading}
             />
+            {errors.email ? <Text className="text-red-500 mt-1">{errors.email}</Text> : null}
           </View>
 
-          {/* Password Input */}
+          {/* Password */}
           <View className="my-3">
             <View className="flex-row items-center gap-2 mb-2">
               <MaterialIcons name="lock-outline" size={20} color={colors.muted[700]} />
               <Text className="text-lg text-muted-700">Password</Text>
             </View>
-            <View className="flex-row items-center border border-muted-300 rounded-xl px-4 py-4">
+            <View
+              className={`flex-row items-center border rounded-xl px-4 py-4 ${
+                errors.password ? "border-red-500" : "border-muted-300"
+              }`}
+            >
               <TextInput
                 value={formData.password}
                 onChangeText={(text) => handleInputChange("password", text)}
@@ -172,9 +219,10 @@ const Register = () => {
                 <Ionicons name={showPassword ? "eye-off" : "eye"} size={20} color="gray" />
               </TouchableOpacity>
             </View>
+            {errors.password ? <Text className="text-red-500 mt-1">{errors.password}</Text> : null}
           </View>
 
-          {/* Register Button - Matches Login Button Style */}
+          {/* Register Button */}
           <View className="mt-6">
             <TouchableOpacity
               onPress={handleRegistration}
@@ -189,7 +237,7 @@ const Register = () => {
             </TouchableOpacity>
           </View>
 
-          {/* Already have an account - Matches Login Page Link Style */}
+          {/* Already have account */}
           <View className="mt-4 items-center">
             <View className="flex-row">
               <Text className="text-muted-600">Already have an account? </Text>

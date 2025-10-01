@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import {
   View,
   Text,
@@ -14,7 +14,7 @@ import { useRouter } from "expo-router";
 import LoadingScreen from "@/components/UI/LoadingScreen";
 import { useGetBusesQuery } from "@/store/features/bus/busApi";
 import { useAppDispatch, useAppSelector } from "@/store/storeConfig";
-import { useCreateTripByUserMutation, useCreateTripMutation } from "@/store/features/trip/tripApi";
+import { useCreateTripByUserMutation } from "@/store/features/trip/tripApi";
 import { TripUtil } from "@/utils/tripUtil";
 import { startBroadcasting } from "@/store/features/broadcast/broadcastSlice";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -25,72 +25,137 @@ import { ensureBackgroundLocationPermission } from "@/utils/askForBackgroundLoca
 import { ToastUtil } from "@/utils/toastUtil";
 import LiveMapLocation from "@/components/broadcast/LiveMapLocation";
 
+// Reusable Selectable Button
+const SelectableButton = ({ label, icon, selected, onPress }) => (
+  <TouchableOpacity
+    className={`flex-1 mx-1 p-2 rounded-xl items-center border ${
+      selected ? "bg-secondary-50 border-secondary-500" : "bg-muted-50 border-muted-300"
+    }`}
+    onPress={onPress}
+  >
+    <View className="flex-row items-center justify-center">
+      {icon}
+      <Text className={`mx-1 text-sm font-medium capitalize ${selected ? "text-secondary-700" : "text-muted-700"}`}>
+        {label}
+      </Text>
+    </View>
+  </TouchableOpacity>
+);
+
+// Bus Search Component
+const BusSearch = ({ buses, selectedBus, setSelectedBus, searchQuery, setSearchQuery }) => {
+  const filteredBuses = useMemo(() => TripUtil.searchBus(buses || [], searchQuery), [buses, searchQuery]);
+
+  return (
+    <View className="bg-white rounded-xl p-4 mb-4 shadow-sm border border-muted-300">
+      <Text className="text-lg font-semibold text-muted-900 mb-3">Select Bus</Text>
+      <View className="flex-row items-center bg-muted-50 rounded-lg border border-muted-300 px-3 mb-4">
+        <Ionicons name="search" size={18} color={colors.muted[500]} className="mr-2" />
+        <TextInput
+          className="flex-1 h-12 text-muted-900"
+          placeholder="Search buses..."
+          placeholderTextColor={colors.muted[400]}
+          value={searchQuery}
+          onChangeText={setSearchQuery}
+        />
+      </View>
+      <ScrollView className="max-h-64" nestedScrollEnabled>
+        {filteredBuses.length ? (
+          filteredBuses.map((bus) => (
+            <TouchableOpacity
+              key={bus._id}
+              className={`border-b border-muted-300 py-2 px-3 my-1 rounded-lg ${
+                selectedBus?._id === bus._id ? "bg-secondary-50 border-secondary-500" : "bg-white"
+              }`}
+              onPress={() => setSelectedBus(bus)}
+            >
+              <View className="flex-row items-center">
+                <Ionicons
+                  name="bus"
+                  size={18}
+                  color={selectedBus?._id === bus._id ? colors.secondary[500] : colors.muted[500]}
+                />
+                <Text className="flex-1 text-md text-muted-900 ml-3 capitalize">{bus.name}</Text>
+                {selectedBus?._id === bus._id && (
+                  <Ionicons name="checkmark-circle" size={20} color={colors.secondary[500]} />
+                )}
+              </View>
+            </TouchableOpacity>
+          ))
+        ) : (
+          <View className="py-4 items-center">
+            <MaterialIcons name="search-off" size={32} color={colors.muted[500]} />
+            <Text className="text-muted-500 mt-2">No buses found</Text>
+          </View>
+        )}
+      </ScrollView>
+    </View>
+  );
+};
+
 const Index = () => {
   const router = useRouter();
   const dispatch = useAppDispatch();
   const { user, route } = useAppSelector((state) => state.auth);
   const { isBroadcasting } = useAppSelector((state) => state.broadcast);
-  const [createTripByUser, { isLoading: isCreatingTrip }] = useCreateTripByUserMutation();
-  const { data: buses, isLoading: isBusesLoading, error: busesError } = useGetBusesQuery();
 
-  const [busType, setBusType] = useState("");
-  const [direction, setDirection] = useState("");
-  const [selectedBus, setSelectedBus] = useState(null);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [note, setNote] = useState("");
+  const { data: buses, isLoading: isBusesLoading, error: busesError } = useGetBusesQuery();
+  const [createTripByUser, { isLoading: isCreatingTrip }] = useCreateTripByUserMutation();
+
+  const [tripData, setTripData] = useState({
+    busType: "",
+    direction: "",
+    selectedBus: null,
+    note: "",
+  });
 
   useEffect(() => {
-    if (busesError) {
-      ToastUtil.error("Failed to load buses. Please try again later.");
-    }
+    if (busesError) ToastUtil.error("Failed to load buses. Please try again later.");
   }, [busesError]);
 
-  const filteredBuses = TripUtil.searchBus(buses || [], searchQuery);
-  const isValid = selectedBus && busType && direction;
+  const isValid = tripData.selectedBus && tripData.busType && tripData.direction;
 
   const handleStartSharing = async () => {
-    if (!isValid) {
-      ToastUtil.error("Please select a bus, bus type, and direction.");
-      return;
-    }
+    if (!isValid) return ToastUtil.error("Please select a bus, bus type, and direction.");
 
     const hasBgPermission = await ensureBackgroundLocationPermission();
     if (!hasBgPermission) return;
 
-    Alert.alert("Confirm Sharing", `Start sharing location of ${selectedBus.name} (${busType}, ${direction})?`, [
-      { text: "Cancel", style: "cancel" },
-      {
-        text: "Confirm",
-        onPress: async () => {
-          try {
-            const { data } = await createTripByUser({
-              routeId: route._id,
-              hostId: user._id,
-              busName: selectedBus.name,
-              busType: busType,
-              direction: direction,
-              note: note,
-            });
+    Alert.alert(
+      "Confirm Sharing",
+      `Start sharing location of ${tripData.selectedBus.name} (${tripData.busType}, ${tripData.direction})?`,
+      [
+        { text: "Cancel", style: "cancel" },
+        {
+          text: "Confirm",
+          onPress: async () => {
+            try {
+              const { data } = await createTripByUser({
+                routeId: route._id,
+                hostId: user._id,
+                busName: tripData.selectedBus.name,
+                busType: tripData.busType,
+                direction: tripData.direction,
+                note: tripData.note,
+              });
 
-            //console.log("🌊 Trip created:", data);
-
-            dispatch(
-              startBroadcasting({
-                bus: selectedBus,
-                tripId: data._id,
-                busType,
-                note,
-              })
-            );
-            await AsyncStorage.setItem("tripId", data._id);
-
-            // router.push("/(passenger)/broadcast/liveLocationSharing");
-          } catch (error) {
-            ToastUtil.error("Failed to start sharing. Please try again.");
-          }
+              dispatch(
+                startBroadcasting({
+                  bus: tripData.selectedBus,
+                  tripId: data._id,
+                  busType: tripData.busType,
+                  note: tripData.note,
+                })
+              );
+              await AsyncStorage.setItem("tripId", data._id);
+            } catch (error) {
+              ToastUtil.error("Failed to start sharing. Please try again.");
+              console.error(error);
+            }
+          },
         },
-      },
-    ]);
+      ]
+    );
   };
 
   if (isBusesLoading) return <LoadingScreen />;
@@ -109,163 +174,71 @@ const Index = () => {
           </Text>
         </View>
 
-        {/* Bus Search */}
+        <BusSearch
+          buses={buses}
+          selectedBus={tripData.selectedBus}
+          setSelectedBus={(bus) => setTripData((prev) => ({ ...prev, selectedBus: bus }))}
+          searchQuery={tripData.note}
+          setSearchQuery={(text) => setTripData((prev) => ({ ...prev, note: text }))}
+        />
+
+        {/* Bus Type */}
         <View className="bg-white rounded-xl p-4 mb-4 shadow-sm border border-muted-300">
-          <View className="flex-row items-center justify-between mb-3">
-            <Text className="text-lg font-semibold text-muted-900">Select Bus</Text>
-            {/* <MaterialIcons name="directions-bus" size={20} color="#4B5563" /> */}
-          </View>
-
-          <View className="flex-row items-center bg-muted-50 rounded-lg border border-muted-300 px-3 mb-4">
-            <Ionicons name="search" size={18} color={colors.muted[500]} className="mr-2" />
-            <TextInput
-              className="flex-1 h-12 text-muted-900"
-              placeholder="Search buses..."
-              placeholderTextColor={colors.muted[400]}
-              value={searchQuery}
-              onChangeText={setSearchQuery}
-              clearButtonMode="while-editing"
-            />
-          </View>
-
-          {/* Bus List */}
-          <ScrollView className="max-h-64" nestedScrollEnabled>
-            {filteredBuses.length > 0 ? (
-              filteredBuses.map((bus) => {
-                const isSelected = selectedBus?._id === bus._id;
-                return (
-                  <TouchableOpacity
-                    key={bus._id}
-                    className={`border-b border-muted-300 py-2 px-3 my-1 rounded-lg ${
-                      isSelected ? "bg-secondary-50 border border-secondary-500" : "bg-white"
-                    }`}
-                    onPress={() => setSelectedBus(bus)}
-                  >
-                    <View className="flex-row items-center">
-                      <Ionicons name="bus" size={18} color={isSelected ? colors.secondary[500] : colors.muted[500]} />
-                      <Text className="flex-1 text-md text-muted-900 ml-3 capitalize">{bus.name}</Text>
-                      {isSelected && <Ionicons name="checkmark-circle" size={20} color={colors.secondary[500]} />}
-                    </View>
-                  </TouchableOpacity>
-                );
-              })
-            ) : (
-              <View className="py-4 items-center">
-                <MaterialIcons name="search-off" size={32} color={colors.muted[500]} />
-                <Text className="text-muted-500 mt-2">No buses found</Text>
-              </View>
-            )}
-          </ScrollView>
-        </View>
-
-        {/* Bus Type Select */}
-        <View className="bg-white rounded-xl p-4 mb-4 shadow-sm border border-muted-300">
-          <View className="flex-row items-center justify-between mb-3">
-            <Text className="text-lg font-semibold text-muted-900">Bus Type</Text>
-          </View>
+          <Text className="text-lg font-semibold text-muted-900 mb-3">Bus Type</Text>
           <View className="flex-row justify-between space-x-3">
-            <TouchableOpacity
-              key={USER_ROLES.STUDENT}
-              className={`flex-1 mx-1 p-2 rounded-xl items-center border ${
-                busType === USER_ROLES.STUDENT ? "bg-secondary-50 border-secondary-500" : "bg-muted-50 border-muted-300"
-              }`}
-              onPress={() => setBusType(USER_ROLES.STUDENT)}
-            >
-              <View className="flex-row items-center justify-center">
+            <SelectableButton
+              label={USER_ROLES.STUDENT}
+              icon={
                 <FontAwesome5
                   name="user-graduate"
                   size={15}
-                  color={busType === USER_ROLES.STUDENT ? colors.secondary[500] : colors.muted[500]}
+                  color={tripData.busType === USER_ROLES.STUDENT ? colors.secondary[500] : colors.muted[500]}
                 />
-                <Text
-                  className={`mx-1 capitalize text-sm font-medium ${
-                    busType === USER_ROLES.STUDENT ? "text-secondary-700" : "text-muted-700"
-                  }`}
-                >
-                  {USER_ROLES.STUDENT}
-                </Text>
-              </View>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              key={USER_ROLES.EMPLOYEE}
-              className={`flex-1 mx-1 p-2 rounded-xl items-center border ${
-                busType === USER_ROLES.EMPLOYEE
-                  ? "bg-secondary-50 border-secondary-500"
-                  : "bg-muted-50 border-muted-300"
-              }`}
-              onPress={() => setBusType(USER_ROLES.EMPLOYEE)}
-            >
-              <View className="flex-row items-center justify-start">
+              }
+              selected={tripData.busType === USER_ROLES.STUDENT}
+              onPress={() => setTripData((prev) => ({ ...prev, busType: USER_ROLES.STUDENT }))}
+            />
+            <SelectableButton
+              label={USER_ROLES.EMPLOYEE}
+              icon={
                 <MaterialCommunityIcons
                   name="account-tie"
                   size={20}
-                  color={busType === USER_ROLES.EMPLOYEE ? colors.secondary[500] : colors.muted[500]}
+                  color={tripData.busType === USER_ROLES.EMPLOYEE ? colors.secondary[500] : colors.muted[500]}
                 />
-                <Text
-                  className={`mx-1 capitalize text-sm font-medium ${
-                    busType === USER_ROLES.EMPLOYEE ? "text-secondary-700" : "text-muted-700"
-                  }`}
-                >
-                  {USER_ROLES.EMPLOYEE}
-                </Text>
-              </View>
-            </TouchableOpacity>
+              }
+              selected={tripData.busType === USER_ROLES.EMPLOYEE}
+              onPress={() => setTripData((prev) => ({ ...prev, busType: USER_ROLES.EMPLOYEE }))}
+            />
           </View>
         </View>
 
-        {/* Direction Select */}
+        {/* Direction */}
         <View className="bg-white rounded-xl p-4 mb-4 shadow-sm border border-muted-300">
-          <View className="flex-row items-center justify-between mb-3">
-            <Text className="text-lg font-semibold text-muted-900">Bus Direction</Text>
-          </View>
+          <Text className="text-lg font-semibold text-muted-900 mb-3">Bus Direction</Text>
           <View className="flex-row justify-between space-x-3">
             {[
-              { direction: "to_campus", icon: "arrow-up" },
-              { direction: "from_campus", icon: "arrow-down" },
-            ].map(({ direction: dir, icon }) => (
-              <TouchableOpacity
+              { dir: "to_campus", icon: "arrow-up", label: "To Campus" },
+              { dir: "from_campus", icon: "arrow-down", label: "From Campus" },
+            ].map(({ dir, icon, label }) => (
+              <SelectableButton
                 key={dir}
-                className={`flex-1 p-2 mx-1 rounded-xl items-center border ${
-                  direction === dir ? "bg-secondary-50 border-secondary-500" : "bg-muted-50 border-muted-300"
-                }`}
-                onPress={() => setDirection(dir)}
-              >
-                <View className="flex-row items-center justify-center">
+                label={label}
+                icon={
                   <Ionicons
                     name={icon}
                     size={20}
-                    color={direction === dir ? colors.secondary[500] : colors.muted[500]}
+                    color={tripData.direction === dir ? colors.secondary[500] : colors.muted[500]}
                   />
-                  <Text
-                    className={`mx-1 text-sm font-medium ${
-                      direction === dir ? "text-secondary-700" : "text-muted-700"
-                    }`}
-                  >
-                    {dir}
-                  </Text>
-                </View>
-              </TouchableOpacity>
+                }
+                selected={tripData.direction === dir}
+                onPress={() => setTripData((prev) => ({ ...prev, direction: dir }))}
+              />
             ))}
           </View>
         </View>
 
-        {/* Notes
-        <View className="bg-white rounded-xl p-4 shadow-sm border border-muted-300">
-          <View className="flex-row items-center justify-between mb-3">
-            <Text className="text-lg font-semibold text-muted-900">Additional Notes</Text>
-            <Ionicons name="document-text" size={18} color="#4B5563" />
-          </View>
-          <TextInput
-            className="h-20 p-3 bg-muted-50 rounded-lg border border-muted-300 text-muted-900"
-            placeholder="Any special instructions or notes..."
-            placeholderTextColor="#9CA3AF"
-            multiline
-            value={note}
-            onChangeText={setNote}
-          />
-        </View> */}
-        {/* Start Button Fixed at Bottom */}
+        {/* Start Sharing */}
         <TouchableOpacity
           className={`flex-row rounded-xl mt-4 p-2 items-center justify-center shadow-sm ${
             isValid ? "bg-secondary-600" : "bg-muted-400"

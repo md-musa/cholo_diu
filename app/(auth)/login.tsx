@@ -19,25 +19,49 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [errors, setErrors] = useState({ email: "", password: "" });
 
   const [login, { isLoading }] = useLoginMutation();
 
   const handleLogin = async () => {
+    let valid = true;
+    let newErrors = { email: "", password: "" };
+
+    if (!email.trim()) {
+      newErrors.email = "University email is required";
+      valid = false;
+    } else {
+      const eduRegex = /^[^\s@]+@(diu\.edu\.bd|daffodilvarsity\.edu\.bd)$/;
+      if (!eduRegex.test(email)) {
+        newErrors.email = "Use your university email";
+        valid = false;
+      }
+    }
+
+    // ✅ Password validation
+    if (!password.trim()) {
+      newErrors.password = "Password is required";
+      valid = false;
+    } else if (password.length < 6) {
+      newErrors.password = "Password must be at least 6 characters";
+      valid = false;
+    }
+
+    setErrors(newErrors);
+    if (!valid) return;
+
     try {
       const result = await login({ email, password }).unwrap();
-
       const { accessToken, user } = result;
 
       await AsyncStorage.setItem(ASYNC_STORAGE_KEYS.AUTH_TOKEN, accessToken);
-      await AsyncStorage.setItem(ASYNC_STORAGE_KEYS.CURRENT_ROUTE, JSON.stringify(user.routeId));
+      await AsyncStorage.setItem(ASYNC_STORAGE_KEYS.CURRENT_ROUTE, String(user.routeId));
 
       dispatch(setCredentials({ user, route: user.routeId, accessToken }));
       ToastUtil.success(`Welcome, ${user.name}!`);
 
       switch (user.role) {
         case USER_ROLES.EMPLOYEE:
-          router.replace("/(passenger)");
-          break;
         case USER_ROLES.STUDENT:
           router.replace("/(passenger)");
           break;
@@ -48,24 +72,25 @@ const Login = () => {
           router.replace("/(auth)/login");
       }
     } catch (err) {
-      // console.log("🟥 Login Error", JSON.stringify(err, null, 2));
-      ToastUtil.error(err?.response?.data.errorMessages[0].message || "Login error");
+      // ✅ Show API/server error gracefully
+      const errorMsg = err?.data?.errorMessages?.[0]?.message || err?.error || "Login failed. Please try again.";
+      ToastUtil.error(errorMsg);
     }
   };
 
   return (
     <SafeAreaView className="flex-1 bg-white">
       <View className="flex-1 justify-end px-10 mb-10">
-        {/* Title and Caption (original version) */}
-        <View className="">
+        {/* Title and Caption */}
+        <View>
           <Text className="text-title-2 font-semibold text-center mb-4">Track Your Campus Buses</Text>
           <Text className="text-body text-center text-muted-500 mb-10">
             Login to view real-time bus locations and schedules
           </Text>
         </View>
 
-        {/* Form aligned to bottom */}
-        <View className="">
+        {/* Form */}
+        <View>
           {/* Email Input */}
           <View className="my-5">
             <View className="flex-row items-center gap-2 my-1">
@@ -74,24 +99,35 @@ const Login = () => {
             </View>
             <TextInput
               value={email}
-              onChangeText={setEmail}
+              onChangeText={(text) => {
+                setEmail(text);
+                setErrors((prev) => ({ ...prev, email: "" }));
+              }}
               placeholder="Enter your university mail"
               keyboardType="email-address"
               autoCapitalize="none"
-              className="border border-muted-300 rounded-xl px-4 py-4"
+              className={`border rounded-xl px-4 py-4 ${errors.email ? "border-red-500" : "border-muted-300"}`}
             />
+            {errors.email ? <Text className="text-red-500 mt-1">{errors.email}</Text> : null}
           </View>
 
-          {/* Password Input with toggle */}
+          {/* Password Input */}
           <View className="my-3">
             <View className="flex-row items-center gap-2 my-1">
               <MaterialIcons name="password" size={20} color={colors.muted[700]} />
-              <Text className="text-lg text-muted-700">Password</Text>
+              <Text className="text-lg text-muted-700">Password (min 6 characters)</Text>
             </View>
-            <View className="flex-row items-center border border-muted-300 rounded-xl px-4 py-4">
+            <View
+              className={`flex-row items-center border rounded-xl px-4 py-4 ${
+                errors.password ? "border-red-500" : "border-muted-300"
+              }`}
+            >
               <TextInput
                 value={password}
-                onChangeText={setPassword}
+                onChangeText={(text) => {
+                  setPassword(text);
+                  setErrors((prev) => ({ ...prev, password: "" }));
+                }}
                 placeholder="Enter your password"
                 secureTextEntry={!showPassword}
                 className="flex-1"
@@ -100,6 +136,7 @@ const Login = () => {
                 <Ionicons name={showPassword ? "eye-off" : "eye"} size={20} color="gray" />
               </TouchableOpacity>
             </View>
+            {errors.password ? <Text className="text-red-500 mt-1">{errors.password}</Text> : null}
           </View>
 
           {/* Login Button */}
