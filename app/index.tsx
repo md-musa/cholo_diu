@@ -24,23 +24,14 @@ const Index = () => {
   const dispatch = useAppDispatch();
   const router = useRouter();
   const [appReady, setAppReady] = useState(false);
-  // const checkPermissions = async () => {
-  //   const fg = await Location.getForegroundPermissionsAsync();
-  //   const bg = await Location.getBackgroundPermissionsAsync();
-
-  //   console.log("Foreground:", fg.status); // granted / denied
-  //   console.log("Background:", bg.status); // granted / denied
-  // };
-  // checkPermissions();
 
   useEffect(() => {
     const initialize = async () => {
       try {
         const token = await AsyncStorage.getItem(ASYNC_STORAGE_KEYS.AUTH_TOKEN);
         const routeStr = await AsyncStorage.getItem(ASYNC_STORAGE_KEYS.CURRENT_ROUTE);
-        console.log(routeStr);
         const route = routeStr ? JSON.parse(routeStr) : null;
-        // console.log("token:", token);
+
         if (!token) {
           dispatch(clearCredentials());
           return;
@@ -53,10 +44,8 @@ const Index = () => {
           role: decoded.role,
           email: decoded.email,
         };
-        console.log("User:", user);
 
         dispatch(setCredentials({ user, route, accessToken: token }));
-        console.log("Decoded Token:", decoded);
         switch (decoded.role) {
           case USER_ROLES.EMPLOYEE:
             router.replace("/(passenger)");
@@ -71,8 +60,7 @@ const Index = () => {
             router.replace("/(auth)/login");
         }
       } catch (err) {
-        // console.log("error");
-        // console.error("Initialization error:", err);
+        console.log("error", err);
         dispatch(clearCredentials());
       } finally {
         setAppReady(true);

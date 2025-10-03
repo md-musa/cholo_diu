@@ -89,7 +89,7 @@ function LiveMapLocation() {
           {/* Info Text */}
           <View className="flex-[0.65]">
             <Text className="text-sm text-muted-700">
-              Sharing <Text className="font-bold capitalize">{activeTrip?.busName}</Text>'s location for the
+              Sharing <Text className="font-bold capitalize">{activeTrip?.bus.name}</Text>'s location for the
               <Text className="font-bold"> {route?.routeName}</Text> route
             </Text>
           </View>

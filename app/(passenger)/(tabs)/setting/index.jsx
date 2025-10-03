@@ -32,8 +32,9 @@ export default function Settings() {
 
   const handleLogout = async () => {
     try {
-      await AsyncStorage.removeItem(ASYNC_STORAGE_KEYS.USER_TOKEN);
+      await AsyncStorage.removeItem(ASYNC_STORAGE_KEYS.AUTH_TOKEN);
       await AsyncStorage.removeItem(ASYNC_STORAGE_KEYS.CURRENT_ROUTE);
+      await AsyncStorage.clear();
 
       dispatch(clearCredentials());
 

@@ -53,12 +53,11 @@ const Login = () => {
     try {
       const result = await login({ email, password }).unwrap();
       const { accessToken, user } = result;
-
+   
       await AsyncStorage.setItem(ASYNC_STORAGE_KEYS.AUTH_TOKEN, accessToken);
-      await AsyncStorage.setItem(ASYNC_STORAGE_KEYS.CURRENT_ROUTE, String(user.routeId));
+      await AsyncStorage.setItem(ASYNC_STORAGE_KEYS.CURRENT_ROUTE, JSON.stringify(user.routeId));
 
       dispatch(setCredentials({ user, route: user.routeId, accessToken }));
-      ToastUtil.success(`Welcome, ${user.name}!`);
 
       switch (user.role) {
         case USER_ROLES.EMPLOYEE:
@@ -72,7 +71,6 @@ const Login = () => {
           router.replace("/(auth)/login");
       }
     } catch (err) {
-      // ✅ Show API/server error gracefully
       const errorMsg = err?.data?.errorMessages?.[0]?.message || err?.error || "Login failed. Please try again.";
       ToastUtil.error(errorMsg);
     }

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Text, TouchableOpacity, View, Alert } from "react-native";
 import { MaterialIcons, MaterialCommunityIcons } from "@expo/vector-icons";
 import * as Location from "expo-location";
@@ -6,12 +6,16 @@ import { calculateDistanceAndTime } from "@/utils/distanceUtil";
 import { getWaylineCoords } from "@/assets/routes";
 import { useAppSelector } from "@/store/storeConfig";
 
+// External cache for previous distance data
+const distanceCache: Record<string, { distanceKm: number, estimatedTimeMin: number }> = {};
+
 export default function AvailableBusListCard({ item, highlightBus }) {
   const [distanceData, setDistanceData] = useState(null);
-  const prevDistanceData = useRef(null); // cache previous distance
   const { routeNo } = useAppSelector((state) => state.auth.route);
 
   useEffect(() => {
+    if (!item) return;
+
     let isActive = true;
 
     const fetchDistance = async () => {
@@ -23,7 +27,7 @@ export default function AvailableBusListCard({ item, highlightBus }) {
         }
 
         const location = await Location.getCurrentPositionAsync({
-          accuracy: Location.Accuracy.BestForNavigation,
+          accuracy: Location.Accuracy.High,
           maximumAge: 1000,
           timeout: 10000,
         });
@@ -37,7 +41,8 @@ export default function AvailableBusListCard({ item, highlightBus }) {
         const result = calculateDistanceAndTime(userCoords, busCoords, routeWaylineCoords, speedInKmh);
 
         if (isActive && result) {
-          prevDistanceData.current = distanceData || result; // store old value
+          // Update external cache
+          distanceCache[item.busId] = result;
           setDistanceData(result);
         }
       } catch (error) {
@@ -46,7 +51,7 @@ export default function AvailableBusListCard({ item, highlightBus }) {
       }
     };
 
-    if (item) fetchDistance();
+    fetchDistance();
 
     return () => {
       isActive = false;
@@ -55,7 +60,9 @@ export default function AvailableBusListCard({ item, highlightBus }) {
 
   if (!item) return <Text className="text-center text-gray-500">Not available</Text>;
 
-  const { busName, userType, longitude, latitude } = item;
+  const { busName, userType, longitude, latitude, busId } = item;
+
+  const dataToShow = distanceData || distanceCache[busId];
 
   return (
     <View className="flex-row justify-between items-center px-4 py-2 rounded-2xl mb-4 border border-gray-200 bg-white shadow-md">
@@ -77,12 +84,7 @@ export default function AvailableBusListCard({ item, highlightBus }) {
         {/* Distance & ETA */}
         <View className="flex-row items-center justify-between mt-1">
           <Text className="ml-1 text-lg">
-            {distanceData || prevDistanceData.current
-              ? formatDistanceAndTime(
-                  (distanceData || prevDistanceData.current).distanceKm,
-                  (distanceData || prevDistanceData.current).estimatedTimeMin
-                )
-              : "Calculating..."}
+            {dataToShow ? formatDistanceAndTime(dataToShow.distanceKm, dataToShow.estimatedTimeMin) : "Calculating..."}
           </Text>
 
           <TouchableOpacity

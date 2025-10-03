@@ -39,8 +39,8 @@ const startBackgroundLocationTask = async (taskData: LocationTaskData) => {
       const watcher = await Location.watchPositionAsync(
         {
           accuracy: Location.Accuracy.BestForNavigation,
-          timeInterval: 5000,
-          distanceInterval: 5,
+          timeInterval: 2000,
+          distanceInterval: 2,
         },
         (location) => {
           if (!socket.connected) {

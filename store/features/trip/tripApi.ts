@@ -18,7 +18,7 @@ export const tripApi = createApi({
     // Update a trip
     createTrip: builder.mutation({
       query: ({payload}) => {
-        console.log("Creating trip with payload in tripApi:", payload);
+       
         return {
           url: `/trips`,
           method: "POST",
@@ -30,7 +30,6 @@ export const tripApi = createApi({
 
     createTripByUser: builder.mutation({
       query: (payload) => {
-        console.log("Creating trip with payload in tripApi:", payload);
         return {
           url: `/trips/userTrip`,
           method: "POST",

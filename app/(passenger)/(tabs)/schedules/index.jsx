@@ -40,9 +40,6 @@ const BusSchedule = () => {
     operatingDays: selectedDay,
   });
 
-  console.log(scheduleError);
-  console.log("---------", JSON.stringify(scheduleResult, null, 2));
-
   const [refreshing, setRefreshing] = useState(false);
 
   const onRefresh = async () => {
@@ -56,7 +53,6 @@ const BusSchedule = () => {
     }
   };
 
-  // console.log(JSON.stringify(scheduleResult, null, 2));
   useEffect(() => {
     if (scheduleResult) setSelectedType(scheduleResult.scheduleMode);
   }, [scheduleResult]);

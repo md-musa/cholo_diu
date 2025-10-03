@@ -11,16 +11,14 @@ export default function BroadcastManager() {
   const router = useRouter();
   const pathname = usePathname();
   const { isBroadcasting, activeTrip } = useAppSelector((state) => state.broadcast);
+  const excludedPaths = ["/broadcast", , "/watchBusLocation"];
 
-  const excludedPaths = ["/(passenger)/broadcast/liveLocationSharing", "/(passenger)/broadcast", "/(passenger)/watchBusLocation"];
-
-  //console.log("[BroadcastManager]");
   const shouldShowBroadcastManager = excludedPaths.includes(pathname);
   if (!isBroadcasting || shouldShowBroadcastManager) return null;
 
   return (
-    <TouchableOpacity onPress={() => router.push("/(passenger)/broadcast")} className="z-50">
-      <View className="flex-row items-center justify-center p-1 bg-red-600">
+    <TouchableOpacity onPress={() => router.push("/broadcast")} className="z-50">
+      <View className="flex-row items-center justify-center p-1 bg-red-700">
         <Image
           source={broadcastGifImage}
           style={{ width: 22, height: 22 }}
@@ -28,11 +26,11 @@ export default function BroadcastManager() {
           className="rounded-2xl"
         />
 
-        <Text className="text-white font-bold mx-2">
-          Sharing location for <Text className="capitalize">{activeTrip?.busName}</Text>
+        <Text className="text-white text-sm mx-2">
+          You're sharing location of <Text className="capitalize">{activeTrip?.bus.name}</Text>
         </Text>
 
-        <Text className="border border-muted-200 bg-red-600/70 text-white font-semibold px-3 rounded-lg">Stop</Text>
+        <Text className="border border-muted-200 bg-red-600/70 text-sm text-white px-3 rounded-lg">Stop</Text>
       </View>
     </TouchableOpacity>
   );

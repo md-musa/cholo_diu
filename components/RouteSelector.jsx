@@ -30,7 +30,6 @@ const RouteSelector = () => {
     isFetching: isScheduleFetching,
   } = useGetScheduleByRouteQuery({ routeId: route?._id, operatingDays: selectedDay }, { skip: !route?._id });
   
-  console.log("Schedule Result[home]:", scheduleResult);
   const [refreshing, setRefreshing] = useState(false);
 
   const handleRefresh = async () => {

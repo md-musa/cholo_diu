@@ -13,7 +13,7 @@ const SERVER_URL =
   process.env.NODE_ENV === "development"
     ? Constants.expoConfig?.extra?.DVELOPMENT_SERVER_URL
     : Constants.expoConfig?.extra?.PRODUCTION_SERVER_URL;
-console.log(SERVER_URL)
+// console.log(SERVER_URL)
 // 🔁 Refresh token helper
 const refreshAccessToken = async () => {
   try {

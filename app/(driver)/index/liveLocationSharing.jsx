@@ -13,7 +13,6 @@ import { MapUtils } from "@/utils/mapUtils";
 import broadcastGifImage from "@/assets/images/broadcast.gif";
 
 function LiveLocationSharing() {
-  console.log("LiveLocationSharing rendered");
   const router = useRouter();
   const dispatch = useAppDispatch();
   const { location } = useLocation();
@@ -25,7 +24,6 @@ function LiveLocationSharing() {
   const cameraRef = useRef(null);
   const mapRef = useRef(null);
 
-  console.log(activeTrip, route, location);
 
   useEffect(() => {
     if (location) {
