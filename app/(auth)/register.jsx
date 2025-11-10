@@ -15,6 +15,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { ToastUtil } from "@/utils/toastUtil";
 import { colors } from "@/config/colors";
 import LoadingIndicator from "@/components/UI/LoadingIndicator";
+import LigalLinks from "../../components/LegalLinks";
 
 const Register = () => {
   const router = useRouter();
@@ -111,16 +112,9 @@ const Register = () => {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-white">
+    <SafeAreaView className="flex-1 bg-white my-2">
       <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
         <View className="flex-1 justify-end px-10 mb-10">
-          <View>
-            <Text className="text-title-2 font-semibold text-center mb-4">Track Your Campus Buses</Text>
-            <Text className="text-body text-center text-muted-500 mb-10">
-              Register to view real-time bus locations and schedules
-            </Text>
-          </View>
-
           {/* Full Name */}
           <View className="my-3">
             <View className="flex-row items-center gap-2 mb-2">
@@ -247,6 +241,7 @@ const Register = () => {
             </View>
           </View>
         </View>
+        <LigalLinks />
       </ScrollView>
       <Toast />
     </SafeAreaView>

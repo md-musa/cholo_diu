@@ -47,7 +47,7 @@ const BusSchedule = () => {
     try {
       await Promise.all([refetchRoutes(), refetchSchedule()]);
     } catch (err) {
-      console.error("Refresh error:", err);
+      //console.error("Refresh error:", err);
     } finally {
       setRefreshing(false);
     }

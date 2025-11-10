@@ -74,7 +74,7 @@ const Waypoints = () => {
                 <View className="flex-1 pr-2">
                   <Text className="text-lg font-semibold text-muted-800">{item.location}</Text>
 
-                  <View className="flex-row items-center justify-start py-1">
+                  {/* <View className="flex-row items-center justify-start py-1">
                     {item.estimatedTime && (
                       <View className="flex-row items-center bg-primary-200 rounded-full px-2">
                         <MaterialIcons name="access-time" size={14} color="#6b7280" />
@@ -92,13 +92,13 @@ const Waypoints = () => {
                         </View>
                       </View>
                     )}
-                  </View>
+                  </View> */}
                 </View>
 
                 {/* Location Pin */}
-                <TouchableOpacity className="p-1" onPress={() => console.log("Navigate to", item.location)}>
+                {/* <TouchableOpacity className="p-1" onPress={() => console.log("Navigate to", item.location)}>
                   <Entypo name="location-pin" size={26} color="#818cf8" />
-                </TouchableOpacity>
+                </TouchableOpacity> */}
               </View>
             </View>
           </View>

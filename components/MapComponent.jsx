@@ -111,7 +111,7 @@ const MapComponent = ({ mapRef, zoom, setZoom, cameraRef, currentCenter, setCurr
               },
               properties: {
                 icon: "UniIcon", // matches the key in MapLibreGL.Images
-                title: "DIU Campus",
+                title: "Campus",
               },
             },
             {

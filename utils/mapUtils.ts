@@ -39,7 +39,7 @@ const handleRegionDidChange = async (
     setCurrentCenter(trimmedCenter);
     setZoom(trimmedZoom);
   } catch (error) {
-    console.warn("Map region change error:", error);
+    //console.warn("Map region change error:", error);
   }
 };
 

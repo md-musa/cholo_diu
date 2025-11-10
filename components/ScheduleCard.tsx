@@ -160,7 +160,7 @@ const AssignedBusList: React.FC<{ assignedBuses: AssignedBus[] }> = ({ assignedB
 
   return (
     <View className="flex-col py-2">
-      {assignedBuses.map((bus) => {
+      {assignedBuses.map((bus, index) => {
         const isActive = bus.busId.name && activeBuses[bus.busId.name];
 
         const handleBusPress = () => {
@@ -175,7 +175,7 @@ const AssignedBusList: React.FC<{ assignedBuses: AssignedBus[] }> = ({ assignedB
           }
         };
 
-        return <AssignedBusItem key={bus._id} bus={bus} isActive={isActive} onPress={handleBusPress} />;
+        return <AssignedBusItem key={index} bus={bus} isActive={isActive} onPress={handleBusPress} />;
       })}
     </View>
   );
@@ -198,7 +198,7 @@ const ScheduleCard: React.FC<ScheduleCardProps> = ({ schedule }) => {
       <ScheduleHeader status={status} formattedTime={formattedTime} note={note} />
       <View className="px-3">
         <Text className="text-md text-muted-700 text-center">Assigned Buses</Text>
-        <AssignedBusList assignedBuses={assignedBuses} />
+        <AssignedBusList key={Math.random()} assignedBuses={assignedBuses} />
       </View>
     </View>
   );

@@ -39,7 +39,7 @@ const RouteSelector = () => {
     try {
       await Promise.all([refetchRoutes(), refetchSchedule()]);
     } catch (err) {
-      console.error("Refresh failed", err);
+     // console.error("Refresh failed", err);
     } finally {
       setRefreshing(false);
     }

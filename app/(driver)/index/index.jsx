@@ -66,7 +66,7 @@ const DriverSchedule = () => {
     try {
       await refetch();
     } catch (err) {
-      console.error("Refresh error:", err);
+      //console.error("Refresh error:", err);
     } finally {
       setRefreshing(false);
     }

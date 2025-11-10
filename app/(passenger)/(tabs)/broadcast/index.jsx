@@ -151,7 +151,7 @@ const Index = () => {
               await AsyncStorage.setItem("tripId", data._id);
             } catch (error) {
               ToastUtil.error("Failed to start sharing. Please try again.");
-              console.error(error);
+              //console.error(error);
             }
           },
         },

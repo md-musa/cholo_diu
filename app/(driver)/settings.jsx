@@ -7,7 +7,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
 import { Ionicons, FontAwesome, MaterialIcons } from "@expo/vector-icons";
 import axiosInstance from "@/config/axiosInstance";
-import musaImg from "@/assets/images/musa2.jpg";
+// import musaImg from "@/assets/images/musa2.jpg";
 import NavbarDriver from "../../components/NavbarDriver";
 
 export default function Settings() {
@@ -24,7 +24,7 @@ export default function Settings() {
         });
         setUserData(data);
       } catch (error) {
-        console.log("Failed to fetch user data:", error.message);
+        // console.log("Failed to fetch user data:", error.message);
       }
     };
     getUserData();
@@ -37,7 +37,7 @@ export default function Settings() {
       router.replace("/(auth)/login");
       dispatch(clearCredentials());
     } catch (err) {
-      console.log("Logout failed:", err.message);
+      //console.log("Logout failed:", err.message);
     }
   };
 

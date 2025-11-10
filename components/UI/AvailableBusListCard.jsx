@@ -46,7 +46,7 @@ export default function AvailableBusListCard({ item, highlightBus }) {
           setDistanceData(result);
         }
       } catch (error) {
-        console.error("Location error:", error);
+        //console.error("Location error:", error);
         Alert.alert("Location Error", "Failed to get location.");
       }
     };

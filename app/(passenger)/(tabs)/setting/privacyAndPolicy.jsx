@@ -8,8 +8,15 @@ const PrivacyPolicyScreen = () => {
       <ScrollView contentContainerStyle={{ padding: 20 }}>
         <Text style={{ fontSize: 24, fontWeight: "bold", marginBottom: 10 }}>🛡️ Privacy Policy</Text>
 
-        <Text style={{ color: "gray", fontSize: 12, marginBottom: 20 }}>Effective Date: [Insert Date]</Text>
+        <Text style={{ color: "gray", fontSize: 12, marginBottom: 20 }}>Effective Date: Oct 28, 2025</Text>
 
+        <Text style={styles.text}>
+          Welcome to <Text style={{ fontWeight: "bold" }}>Cholo</Text>! This Privacy Policy explains how we collect,
+          use, and protect your information while using our app. We are committed to ensuring your privacy and data
+          security.
+        </Text>
+
+        {/* Location Data */}
         <Text style={styles.heading}>📍 Location Data</Text>
 
         <Text style={styles.subheading}>1. Foreground Location Access</Text>
@@ -38,21 +45,76 @@ const PrivacyPolicyScreen = () => {
           may limit certain features.
         </Text>
 
-        <Text style={styles.heading}>🔐 Data Usage</Text>
+        {/* Data Collection */}
+        <Text style={styles.heading}>📦 Information We Collect</Text>
         <BulletList
           items={[
-            "We do not store personal location data unless required for active tracking.",
-            "Data is used only for display and real-time updates.",
-            "We do not share your location with third parties.",
+            "Location data — used only for real-time tracking features.",
+            "Account information (name, email) when you register or log in.",
+            "Device and usage data (app version, device type) for performance and analytics.",
           ]}
         />
 
-        <Text style={styles.heading}>🔄 Policy Updates</Text>
-        <Text style={styles.text}>We may occasionally update this policy. Changes will be notified in the app.</Text>
+        {/* Data Usage */}
+        <Text style={styles.heading}>🔐 How We Use Your Data</Text>
+        <BulletList
+          items={[
+            "To provide real-time tracking and improve app performance.",
+            "To personalize your experience and route information.",
+            "To maintain security and prevent misuse of the app.",
+            "We do not share or sell your personal or location data to any third party.",
+          ]}
+        />
 
+        {/* Data Protection */}
+        <Text style={styles.heading}>🧱 Data Security</Text>
+        <Text style={styles.text}>
+          We take appropriate technical and organizational measures to safeguard your information. All communication is
+          secured using encryption standards to prevent unauthorized access or misuse.
+        </Text>
+
+        {/* Data Storage */}
+        <Text style={styles.heading}>💾 Data Retention</Text>
+        <Text style={styles.text}>
+          We retain your data only as long as necessary to provide our services. Once data is no longer needed, it is
+          securely deleted from our systems.
+        </Text>
+
+        {/* Third Parties */}
+        <Text style={styles.heading}>🤝 Third-Party Services</Text>
+        <Text style={styles.text}>
+          Our app may use third-party tools (like Google Maps or Expo Services) that have their own privacy policies. We
+          encourage you to review their policies to understand how they handle your information.
+        </Text>
+
+        {/* User Control */}
+        <Text style={styles.heading}>⚙️ Your Rights and Control</Text>
+        <BulletList
+          items={[
+            "You can review, edit, or delete your account information at any time.",
+            "You can manage location permissions in your device settings.",
+            "You may request data deletion or account removal by contacting us.",
+          ]}
+        />
+
+        {/* Children Policy */}
+        <Text style={styles.heading}>👶 Children’s Privacy</Text>
+        <Text style={styles.text}>
+          Our app is designed for university students and is not intended for children under 13. We do not knowingly
+          collect personal data from minors.
+        </Text>
+
+        {/* Policy Updates */}
+        <Text style={styles.heading}>🔄 Policy Updates</Text>
+        <Text style={styles.text}>
+          We may occasionally update this Privacy Policy. Any changes will be reflected in the app, and continued use
+          after updates means you agree to the revised terms.
+        </Text>
+
+        {/* Contact */}
         <Text style={styles.heading}>📞 Contact Us</Text>
-        <Text style={styles.text}>For any questions, reach us at:</Text>
-        <Text style={styles.text}>Email: your-support-email@example.com</Text>
+        <Text style={styles.text}>If you have any questions, reach us at:</Text>
+        <Text style={styles.text}>Email: mohammad.musa.dev@gmail.com</Text>
 
         <Text style={{ marginTop: 20, fontWeight: "bold" }}>
           By using this app, you agree to the terms of this Privacy Policy.

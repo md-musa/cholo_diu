@@ -12,6 +12,7 @@ import { ASYNC_STORAGE_KEYS, USER_ROLES } from "@/constants";
 import { useAppDispatch } from "@/store/storeConfig";
 import { setCredentials } from "@/store/features/auth/authSlice";
 import { colors } from "@/config/colors";
+import LigalLinks from "../../components/LegalLinks";
 
 const Login = () => {
   const dispatch = useAppDispatch();
@@ -53,7 +54,7 @@ const Login = () => {
     try {
       const result = await login({ email, password }).unwrap();
       const { accessToken, user } = result;
-   
+
       await AsyncStorage.setItem(ASYNC_STORAGE_KEYS.AUTH_TOKEN, accessToken);
       await AsyncStorage.setItem(ASYNC_STORAGE_KEYS.CURRENT_ROUTE, JSON.stringify(user.routeId));
 
@@ -154,9 +155,9 @@ const Login = () => {
 
           {/* Forgot Password and Sign Up Links */}
           <View className="mt-4 items-center">
-            <TouchableOpacity className="mb-4">
+            {/* <TouchableOpacity className="mb-4">
               <Text className="text-secondary-700">Forgot Password?</Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
             <View className="flex-row">
               <Text className="text-muted-600">Don't have an account? </Text>
               <Link href="/register" className="text-secondary-700">
@@ -165,6 +166,8 @@ const Login = () => {
             </View>
           </View>
         </View>
+
+        <LigalLinks />
       </View>
       <Toast />
     </SafeAreaView>

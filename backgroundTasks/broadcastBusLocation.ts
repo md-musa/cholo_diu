@@ -39,8 +39,8 @@ const startBackgroundLocationTask = async (taskData: LocationTaskData) => {
       const watcher = await Location.watchPositionAsync(
         {
           accuracy: Location.Accuracy.BestForNavigation,
-          timeInterval: 2000,
-          distanceInterval: 2,
+          timeInterval: 5000,
+          distanceInterval: 5,
         },
         (location) => {
           if (!socket.connected) {
@@ -70,7 +70,7 @@ const startBackgroundLocationTask = async (taskData: LocationTaskData) => {
     }, options);
   } catch (error) {
     // console.log("[Background Task Error]: ", error);
-    console.error("Failed to start background task:", JSON.stringify(error, null, 2));
+   // console.error("Failed to start background task:", JSON.stringify(error, null, 2));
     throw error;
   }
 };

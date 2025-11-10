@@ -7,7 +7,6 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
 import { Ionicons, FontAwesome, MaterialIcons } from "@expo/vector-icons";
 import axiosInstance from "@/config/axiosInstance";
-import musaImg from "@/assets/images/musa2.jpg";
 import { ASYNC_STORAGE_KEYS } from "@/constants";
 
 export default function Settings() {
@@ -24,7 +23,7 @@ export default function Settings() {
         });
         setUserData(data);
       } catch (error) {
-        console.log("Failed to fetch user data:", error.message);
+        //console.log("Failed to fetch user data:", error.message);
       }
     };
     getUserData();
@@ -40,7 +39,7 @@ export default function Settings() {
 
       router.replace("/(auth)/login");
     } catch (err) {
-      console.log("Logout failed:", err.message);
+      //console.log("Logout failed:", err.message);
     }
   };
 
@@ -74,12 +73,23 @@ export default function Settings() {
           <SettingOption
             icon="mail-outline"
             text="Contact Support"
-            onPress={() => Linking.openURL("mailto:mohammad.musa706@gmail.com")}
+            onPress={() => Linking.openURL("mailto:mohammad.musa.dev@gmail.com")}
           />
           <SettingOption
             icon="shield-checkmark-outline"
             text="Privacy Policy"
             onPress={() => router.push("/(passenger)/setting/privacyAndPolicy")}
+          />
+          {/* <SettingOption
+            icon="document-text-outline"
+            text="Terms of Service"
+            onPress={() => router.push("/(passenger)/setting/termsAndCondition")}
+          /> */}
+
+          <SettingOption
+            icon="remove-circle-outline"
+            text="Delete Account & Data"
+            onPress={() => router.push("/(passenger)/setting/deleteAccount")}
           />
         </SectionCard>
 

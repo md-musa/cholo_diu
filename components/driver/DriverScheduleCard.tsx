@@ -102,7 +102,7 @@ const DriverScheduleCard = ({ data, refetchSchedule, isNextTrip = false }: any) 
       }
       refetchSchedule();
     } catch (err) {
-      console.error("Failed to update/create trip:", err);
+      //console.error("Failed to update/create trip:", err);
     }
   };
 

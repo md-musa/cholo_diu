@@ -18,47 +18,47 @@ export const ensureBackgroundLocationPermission = async (): Promise<boolean> => 
     return new Promise<boolean>((resolve) => {
       Alert.alert(
         "Background Location Needed",
-        "To share your bus location in the background, please enable **Allow all the time** for location access.",
+        "To share your bus location in real-time, please enable 'Allow all the time' for location access. Location is only shared while broadcasting is active.",
         [
           {
-        text: "Cancel",
-        style: "cancel",
-        onPress: () => resolve(false),
+            text: "Cancel",
+            style: "cancel",
+            onPress: () => resolve(false),
           },
           {
-        text: "OK",
-        onPress: async () => {
-          try {
-            const { status: newBgStatus } = await Location.requestBackgroundPermissionsAsync();
-            if (newBgStatus === "granted") {
-          return resolve(true);
-            } else {
-          Alert.alert(
-            "Permission Not Granted",
-            "To share your bus location in the background, please enable **Allow all the time** for location access.",
-            [
-              {
-            text: "Open Settings",
-            onPress: () => {
-              Linking.openSettings();
-              resolve(false);
+            text: "OK",
+            onPress: async () => {
+              try {
+                const { status: newBgStatus } = await Location.requestBackgroundPermissionsAsync();
+                if (newBgStatus === "granted") {
+                  return resolve(true);
+                } else {
+                  Alert.alert(
+                    "Permission Not Granted",
+                    "To share your bus location in real-time, please enable 'Allow all the time' for location access. Location is only shared while broadcasting is active.",
+                    [
+                      {
+                        text: "Open Settings",
+                        onPress: () => {
+                          Linking.openSettings();
+                          resolve(false);
+                        },
+                      },
+                      { text: "Cancel", style: "cancel", onPress: () => resolve(false) },
+                    ]
+                  );
+                }
+              } catch (error) {
+                // console.error("Error requesting permissions:", error);
+                resolve(false);
+              }
             },
-              },
-              { text: "Cancel", style: "cancel", onPress: () => resolve(false) },
-            ]
-          );
-            }
-          } catch (error) {
-            console.error("Error requesting permissions:", error);
-            resolve(false);
-          }
-        },
           },
         ]
       );
     });
   } catch (error) {
-    console.error("Error checking background location permission:", error);
+    //console.error("Error checking background location permission:", error);
     return false;
   }
 };
