@@ -20,11 +20,15 @@ const HomeMapSection = () => {
 
   const [currentCenter, setCurrentCenter] = useState([90.320463, 23.879]);
 
-  useEffect(() => {
+  const centerToRouteCenter = () => {
     const routeCenter = getCurrentRouteCenterCords(route?.routeNo);
     if (routeCenter) {
       MapUtils.changeMapCenter(routeCenter, setCurrentCenter, setZoom, 11);
     }
+  };
+
+  useEffect(() => {
+    centerToRouteCenter();
   }, [route]);
 
   return (
@@ -44,6 +48,16 @@ const HomeMapSection = () => {
         <Text className="text-sm capitalize color-[#2c2c2c]"> {route?.routeName}</Text>
       </TouchableOpacity>
 
+      {/* --- Route Center --- */}
+      <TouchableOpacity
+        className="absolute bottom-36 right-3 bg-white  border border-muted-300 rounded-full shadow flex-row p-3 items-center justify-center"
+        onPress={centerToRouteCenter}
+        disabled={!location}
+        style={{ opacity: location ? 1 : 0.5 }}
+      >
+        <MaterialIcons name="route" size={24} color="black" />
+      </TouchableOpacity>
+
       <TouchableOpacity
         className="absolute bottom-20 right-3 bg-white  border border-muted-300 rounded-full shadow flex-row p-3 items-center justify-center"
         onPress={() => MapUtils.centerToUserLocation(cameraRef, location, setZoom, setCurrentCenter, 15)}
@@ -55,7 +69,7 @@ const HomeMapSection = () => {
       </TouchableOpacity>
 
       <TouchableOpacity
-        className="absolute bottom-6 right-3 bg-white border border-muted-300 rounded-full shadow-lg flex-row p-2 items-center justify-center"
+        className="absolute bottom-6 pr-3 right-3 bg-white border border-muted-300 rounded-full shadow-lg flex-row p-2 items-center justify-center"
         onPress={() => router.push("/(passenger)/watchBusLocation")}
       >
         <Text className="text-black text-base mx-2">Full Screen</Text>

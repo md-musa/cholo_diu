@@ -55,7 +55,7 @@ export const getCurrentRouteCenterCords = (routeNo: RouteKey) => {
   if (!Array.isArray(wayline) || wayline.length === 0) {
     return null;
   }
-  const index = Math.floor(wayline.length / 2);
+  const index = Math.floor(wayline.length * 0.6);
   return wayline[index];
 };
 
@@ -79,5 +79,5 @@ export const RouteAndWaypointsService = {
   getWaypoints,
   getCurrentRouteCenterCords,
   getRouteBoundaries,
-  getWaylineCoords
+  getWaylineCoords,
 };

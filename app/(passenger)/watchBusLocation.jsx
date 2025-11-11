@@ -4,7 +4,7 @@ import useLocation from "@/hook/useLocation";
 import MapComponent from "@/components/MapComponent";
 import StatusOverlayComponent from "@/components/UI/StatusOverlayComponent";
 import BottomSheetComponent from "@/components/UI/BottomSheetComponent";
-import { Ionicons } from "@expo/vector-icons";
+import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useAppSelector } from "@/store/storeConfig";
 import { getCurrentRouteCenterCords } from "@/assets/routes";
@@ -23,13 +23,18 @@ const WatchBusLocation = () => {
   const cameraRef = useRef(null);
   const mapRef = useRef(null);
 
-  const [currentCenter, setCurrentCenter] = useState(() => {
-    if (route && route.routeNo) {
-      const routeCenter = getCurrentRouteCenterCords(route.routeNo);
-      if (routeCenter) return routeCenter;
+  const [currentCenter, setCurrentCenter] = useState([90.320463, 23.879]);
+
+  const centerToRouteCenter = () => {
+    const routeCenter = getCurrentRouteCenterCords(route?.routeNo);
+    if (routeCenter) {
+      MapUtils.changeMapCenter(routeCenter, setCurrentCenter, setZoom, 11);
     }
-    return [90.320463, 23.879];
-  });
+  };
+
+  useEffect(() => {
+    centerToRouteCenter();
+  }, [route]);
 
   useEffect(() => {
     if (paramsData.longitude && paramsData.latitude) {
@@ -53,6 +58,16 @@ const WatchBusLocation = () => {
           setCurrentCenter={setCurrentCenter}
         />
         <StatusOverlayComponent />
+
+        {/* --- Route Center --- */}
+        <TouchableOpacity
+          className="absolute bottom-[25rem] right-5 bg-white  border border-muted-300 rounded-full shadow flex-row p-3 items-center justify-center"
+          onPress={centerToRouteCenter}
+          disabled={!location}
+          style={{ opacity: location ? 1 : 0.5 }}
+        >
+          <MaterialIcons name="route" size={24} color="black" />
+        </TouchableOpacity>
 
         <TouchableOpacity
           className="absolute bottom-80 right-5 bg-white border border-muted-300 rounded-full shadow flex-row p-3 items-center justify-center"

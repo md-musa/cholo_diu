@@ -1,14 +1,5 @@
 import React, { useEffect, useState, useMemo } from "react";
-import {
-  View,
-  Text,
-  TextInput,
-  ScrollView,
-  TouchableOpacity,
-  KeyboardAvoidingView,
-  Platform,
-  Alert,
-} from "react-native";
+import { View, Text, TextInput, ScrollView, TouchableOpacity, KeyboardAvoidingView, Platform } from "react-native";
 import { Ionicons, MaterialIcons, FontAwesome5, MaterialCommunityIcons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import LoadingScreen from "@/components/UI/LoadingScreen";
@@ -70,11 +61,12 @@ const BusSearch = ({ buses, selectedBus, setSelectedBus, searchQuery, setSearchQ
               onPress={() => setSelectedBus(bus)}
             >
               <View className="flex-row items-center">
-                <Ionicons
+                <MaterialCommunityIcons
                   name="bus"
                   size={18}
                   color={selectedBus?._id === bus._id ? colors.secondary[500] : colors.muted[500]}
                 />
+
                 <Text className="flex-1 text-md text-muted-900 ml-3 capitalize">{bus.name}</Text>
                 {selectedBus?._id === bus._id && (
                   <Ionicons name="checkmark-circle" size={20} color={colors.secondary[500]} />
@@ -121,42 +113,29 @@ const Index = () => {
     const hasBgPermission = await ensureBackgroundLocationPermission();
     if (!hasBgPermission) return;
 
-    Alert.alert(
-      "Confirm Sharing",
-      `Start sharing location of ${tripData.selectedBus.name} (${tripData.busType}, ${tripData.direction})?`,
-      [
-        { text: "Cancel", style: "cancel" },
-        {
-          text: "Confirm",
-          onPress: async () => {
-            try {
-              const { data } = await createTripByUser({
-                routeId: route._id,
-                hostId: user._id,
-                busName: tripData.selectedBus.name,
-                busType: tripData.busType,
-                direction: tripData.direction,
-                note: tripData.note,
-              });
+    try {
+      const { data } = await createTripByUser({
+        routeId: route._id,
+        hostId: user._id,
+        busName: tripData.selectedBus.name,
+        busType: tripData.busType,
+        direction: tripData.direction,
+        note: tripData.note,
+      });
 
-              dispatch(
-                startBroadcasting({
-                  bus: tripData.selectedBus,
-                  tripId: data._id,
-                  busType: tripData.busType,
-                  note: tripData.note,
-                })
-              );
-             
-              await AsyncStorage.setItem("tripId", data._id);
-            } catch (error) {
-              ToastUtil.error("Failed to start sharing. Please try again.");
-              //console.error(error);
-            }
-          },
-        },
-      ]
-    );
+      dispatch(
+        startBroadcasting({
+          bus: tripData.selectedBus,
+          tripId: data._id,
+          busType: tripData.busType,
+          note: tripData.note,
+        })
+      );
+
+      await AsyncStorage.setItem("tripId", data._id);
+    } catch (error) {
+      ToastUtil.error("Failed to start sharing. Please try again.");
+    }
   };
 
   if (isBusesLoading) return <LoadingScreen />;

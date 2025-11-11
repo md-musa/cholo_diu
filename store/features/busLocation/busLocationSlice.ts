@@ -31,13 +31,18 @@ const busLocationSlice = createSlice({
   reducers: {
     updateBusLocation: (state, action: PayloadAction<BusLocationData>) => {
       const data = action.payload;
-      if (!data.busName) return;
+      console.log("🚌 Bus location update received:", JSON.stringify(data, null, 2));
 
-      // const { isBroadcasting, activeTrip } = store.getState().broadcast;
-      // if (isBroadcasting && data.trip.busName === activeTrip?.bus.name) return;
-      // console.log("[🚍]", JSON.stringify(data, null, 2));
-      state.activeBuses[data.busName] = data;
-      state.currentlyConnectedUserCount = data.currUserCnt;
+      if (Array.isArray(data)) {
+        data.forEach((busData) => {
+          if (!busData.busName) return;
+          state.activeBuses[busData.busName] = busData;
+        });
+      } else {
+        if (!data.busName) return;
+        state.activeBuses[data.busName] = data;
+        state.currentlyConnectedUserCount = data.currUserCnt;
+      }
     },
 
     clearBuses: (state) => {
@@ -50,7 +55,7 @@ const busLocationSlice = createSlice({
 
       Object.entries(state.activeBuses).forEach(([busName, data]) => {
         const timeDiff = now - new Date(data.timestamp).getTime();
-        if (timeDiff < 180000) {
+        if (timeDiff < 150000) {
           filtered[busName] = data;
         }
       });

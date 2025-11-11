@@ -2,7 +2,6 @@ import { View, TouchableOpacity, Image } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
 import { Text } from "react-native";
-import busImage from "@/assets/images/icon.png";
 import { useRouter } from "expo-router";
 
 const Navbar = () => {
@@ -13,7 +12,7 @@ const Navbar = () => {
       {/* Logo on the left */}
       <View className="flex-row items-center">
         {/* <Image source={busImage} className="rounded-full" resizeMode="contain" style={{ width: 35, height: 35 }} /> */}
-        <Text className="text-black text-2xl font-semibold">Cholo</Text>
+        <Text className="text-black text-2xl font-semibold">Cholo </Text>
       </View>
 
       {/* Settings icon on the right */}

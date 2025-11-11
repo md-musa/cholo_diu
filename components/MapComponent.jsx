@@ -25,6 +25,7 @@ const MapComponent = ({ mapRef, zoom, setZoom, cameraRef, currentCenter, setCurr
   const waypoints = getWaypoints(route?.routeNo);
 
   const [loaded, setLoaded] = useState(false);
+  // console.log("Active Buses in MapComponent:", JSON.stringify(activeTrip, null, 2));
 
   useEffect(() => {
     setTimeout(() => {
@@ -70,7 +71,7 @@ const MapComponent = ({ mapRef, zoom, setZoom, cameraRef, currentCenter, setCurr
       <MapLibreGL.ShapeSource id="routeSource" shape={getWayline(route?.routeNo)}>
         <MapLibreGL.LineLayer
           id="routeLayer"
-          style={{ lineColor: "#2e2e2e", lineWidth: 2, lineCap: "round", lineJoin: "round" }}
+          style={{ lineColor: "#2e2e2e", lineWidth: 2.5, lineCap: "round", lineJoin: "round" }}
         />
       </MapLibreGL.ShapeSource>
       {/* ---- Image Load ------ */}
@@ -223,7 +224,7 @@ const MapComponent = ({ mapRef, zoom, setZoom, cameraRef, currentCenter, setCurr
                   coordinates: [location.longitude, location.latitude],
                 },
                 properties: {
-                  title: `You\n${cpfl(activeTrip.busName)}\n${cpfl(activeTrip.busType)} bus`,
+                  title: `You\n${cpfl(activeTrip.bus.name)}`,
                   heading: location.heading,
                 },
               },
@@ -292,7 +293,7 @@ const styles = StyleSheet.create({
     textSize: 11,
     textColor: "black",
     textAnchor: "bottom",
-    textOffset: [0, 2.8],
+    textOffset: [0, 3.7],
     textHaloColor: "black",
     textHaloWidth: 0.1,
     textRotate: ["get", "heading"], // This will rotate the label with the marker heading
@@ -321,10 +322,10 @@ const styles = StyleSheet.create({
     textSize: 11,
     textColor: "black",
     textAnchor: "bottom",
-    textOffset: [0, 5.25],
+    textOffset: [0, 4],
     textHaloColor: "black",
     textHaloWidth: 0.1,
-    textRotate: ["get", "heading"], // This will rotate the label with the marker heading
+    textRotate: ["get", "heading"],
   },
   userShadow: {
     circleRadius: 20,
@@ -339,18 +340,18 @@ const styles = StyleSheet.create({
   },
 
   stopageDot: {
-    circleRadius: 3,
+    circleRadius: 3.5,
     circleColor: "black",
     circleStrokeColor: "white",
     circleStrokeWidth: 1,
   },
   stopageInfo: {
     textField: ["get", "title"],
-    textSize: 8,
+    textSize: 10,
     textColor: "black",
     textAnchor: "right",
     textHaloColor: "black",
-    textHaloWidth: 0.1,
+    textHaloWidth: 0.2,
     textOffset: [-0.8, 0.2],
   },
   pointMarker: {

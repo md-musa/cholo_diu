@@ -6,6 +6,7 @@ import { useRouter } from "expo-router";
 import { colors } from "@/config/colors";
 import { SCHEDULE_STATUS } from "@/constants";
 import moment from "moment";
+import { getTimeLeft } from "@/utils/time";
 
 // Interfaces
 interface AssignedBus {
@@ -38,30 +39,21 @@ const ScheduleHeader: React.FC<{ status: string; formattedTime: string; note?: s
   formattedTime,
   note,
 }) => {
+  const timeLeft = getTimeLeft(formattedTime);
   return (
-    <View className="border-b border-muted-200 px-3 py-2">
+    <View className="border-b border-muted-200 px-3 py-3">
       <View className="flex-row justify-center items-center">
-        {/* Time */}
+        {/* ----- Time ----- */}
         <View className="flex-1 pb-1 flex-row items-center">
           <FontAwesome5
             name="clock"
             size={16}
-            color={
-              status === SCHEDULE_STATUS.ACTIVE
-                ? "#ec4899"
-                : status === SCHEDULE_STATUS.NEXT
-                ? colors.secondary[500]
-                : colors.muted[500]
-            }
+            color={status === SCHEDULE_STATUS.NEXT ? colors.secondary[500] : colors.muted[500]}
             style={{ marginRight: 8 }}
           />
           <Text
             className={`text-lg ${
-              status === SCHEDULE_STATUS.ACTIVE
-                ? "font-semibold text-pink-500"
-                : status === SCHEDULE_STATUS.NEXT
-                ? "font-semibold text-secondary-600"
-                : "text-muted-800"
+              status === SCHEDULE_STATUS.NEXT ? "font-semibold text-secondary-600" : "text-muted-800"
             }`}
           >
             {formattedTime}
@@ -69,16 +61,26 @@ const ScheduleHeader: React.FC<{ status: string; formattedTime: string; note?: s
         </View>
 
         {/* Status */}
-        {status && (
-          <View className="flex-row items-center">
+        {status && status !== SCHEDULE_STATUS.ACTIVE && (
+          <View className="flex-row items-center ml-2">
             <Text
-              className={`text-sm ${
-                status === SCHEDULE_STATUS.ACTIVE
-                  ? "text-pink-500 bg-pink-50 border border-pink-400"
-                  : "text-secondary-700 bg-secondary-100 border border-secondary-400"
-              } px-4 py-0.5 rounded-full font-semibold capitalize`}
+              className={`text-sm text-secondary-700 bg-secondary-100 border border-secondary-400 px-4 py-0.5 rounded-full font-semibold capitalize`}
             >
               {status}
+            </Text>
+          </View>
+        )}
+
+        {timeLeft && (
+          <View className="flex-row items-center ml-2">
+            <Text
+              className={`text-sm ${
+                status === SCHEDULE_STATUS.NEXT
+                  ? "text-secondary-700 bg-secondary-100 border border-secondary-400"
+                  : "text-primary-700 bg-primary-50 border border-primary-300"
+              } px-4 py-0.5 rounded-full font-semibold capitalize`}
+            >
+              {timeLeft} left
             </Text>
           </View>
         )}
@@ -125,10 +127,9 @@ const AssignedBusItem: React.FC<{ bus: AssignedBus; isActive: any; onPress: () =
   }
 
   return (
-    <TouchableOpacity
-      onPress={onPress}
+    <View
       key={bus._id}
-      className="flex-row items-center px-3 py-2 rounded-2xl border border-gray-300 bg-gray-50 my-1"
+      className="flex-row items-center px-3 py-2 rounded-2xl border border-gray-300 bg-gray-50 my-1.5"
     >
       {/* 1st Column: Bus */}
       <View className="flex-1 flex-row items-center">
@@ -140,7 +141,7 @@ const AssignedBusItem: React.FC<{ bus: AssignedBus; isActive: any; onPress: () =
       <View className="flex-1 flex-row items-center justify-end">
         <Text className={`px-3 py-1 rounded-full text-xs font-medium capitalize ${statusColor}`}>{statusText}</Text>
       </View>
-    </TouchableOpacity>
+    </View>
   );
 };
 
@@ -187,17 +188,14 @@ const ScheduleCard: React.FC<ScheduleCardProps> = ({ schedule }) => {
 
   return (
     <View
-      className={`rounded-lg my-2 border ${
-        status === SCHEDULE_STATUS.NEXT
-          ? "bg-secondary-50 border-secondary-400"
-          : status === SCHEDULE_STATUS.ACTIVE
-          ? "border-pink-400 bg-pink-50 shadow-md"
-          : "border-muted-400 bg-white shadow-md"
+      className={`rounded-lg my-2.5 border ${
+        status === SCHEDULE_STATUS.NEXT ? "bg-secondary-50 border-secondary-400" : "border-muted-400 bg-white shadow-md"
       }`}
     >
       <ScheduleHeader status={status} formattedTime={formattedTime} note={note} />
+
       <View className="px-3">
-        <Text className="text-md text-muted-700 text-center">Assigned Buses</Text>
+        <Text className="text-md text-muted-700 text-center mt-2 mb-1">Assigned Buses</Text>
         <AssignedBusList key={Math.random()} assignedBuses={assignedBuses} />
       </View>
     </View>

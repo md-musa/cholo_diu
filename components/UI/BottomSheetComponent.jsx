@@ -1,28 +1,58 @@
-import React from "react";
-import { View, Text, FlatList } from "react-native";
+import React, { useState, useMemo } from "react";
+import { View, Text, FlatList, TouchableOpacity } from "react-native";
 import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
 import AvailableBusListCard from "./AvailableBusListCard";
-import { MaterialIcons } from "@expo/vector-icons"; // or use any icon library you prefer
+import { MaterialIcons } from "@expo/vector-icons";
+import { colors } from "@/config/colors"; // optional if you have a color config
 
 const BottomSheetComponent = ({ bottomSheetRef, activeBuses, closeBottomSheet, highlightBus }) => {
-  // console.log('🔴', activeBuses);
+  const [filter, setFilter] = useState("All"); // All | To Campus | From Campus
+
+  // Filter buses based on selected filter
+  const filteredBuses = useMemo(() => {
+    if (!activeBuses) return [];
+    const buses = Object.values(activeBuses);
+
+    if (filter === "All") return buses;
+    if (filter === "To Campus") return buses.filter((b) => b.direction === "to_campus");
+    if (filter === "From Campus") return buses.filter((b) => b.direction === "from_campus");
+
+    return buses;
+  }, [filter, activeBuses]);
 
   return (
-    <BottomSheet ref={bottomSheetRef} snapPoints={["30%", "50%", "60%", "75%", "90%"]} index={1}>
+    <BottomSheet ref={bottomSheetRef} snapPoints={["20", "30%", "50%", "60%", "75%", "90%"]} index={2}>
       <BottomSheetView className="px-5">
-        <Text className="text-xl font-bold text-center my-2">Available Buses</Text>
+        <Text className="text-xl font-semibold text-center mb-4">Available Buses</Text>
 
-        {activeBuses && Object.keys(activeBuses).length > 0 ? (
+        {/* Filter Buttons */}
+        <View className="flex-row mb-5">
+          {["All", "To Campus", "From Campus"].map((btn) => (
+            <TouchableOpacity
+              key={btn}
+              onPress={() => setFilter(btn)}
+              className={`px-4 py-1.5 rounded-2xl mx-1.5 border ${
+                filter === btn ? "border-secondary-700 bg-secondary-100" : "border-muted-300 bg-white"
+              }`}
+            >
+              <Text className={`text-sm font-medium ${filter === btn ? "text-secondary-900" : "text-muted-700"}`}>
+                {btn}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+
+        {filteredBuses.length > 0 ? (
           <FlatList
-            data={Object.values(activeBuses)}
+            data={filteredBuses}
             renderItem={({ item }) => <AvailableBusListCard item={item} highlightBus={highlightBus} />}
             keyExtractor={(item) => item.trip?.busName ?? item.trip?.id ?? Math.random().toString()}
             className="w-full"
           />
         ) : (
-          <View className="flex items-center justify-center my-8">
-            <MaterialIcons name="directions-bus" size={48} color="#888" />
-            <Text className="text-center mt-2 text-muted-500">Nobody sharing bus location</Text>
+          <View className="flex items-center justify-center">
+            <MaterialIcons name="directions-bus" size={40} color="#888" />
+            <Text className="text-center mt-2 text-muted-500">Currently none sharing bus location.</Text>
           </View>
         )}
       </BottomSheetView>

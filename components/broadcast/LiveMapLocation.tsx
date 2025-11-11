@@ -20,7 +20,7 @@ function LiveMapLocation() {
   const { route } = useAppSelector((state) => state.auth);
 
   const [currentCenter, setCurrentCenter] = useState([90.320463, 23.879]);
-  const [zoom, setZoom] = useState(18);
+  const [zoom, setZoom] = useState(15);
   const cameraRef = useRef(null);
   const mapRef = useRef(null);
 
@@ -89,7 +89,7 @@ function LiveMapLocation() {
           {/* Info Text */}
           <View className="flex-[0.65]">
             <Text className="text-sm text-muted-700">
-              Sharing <Text className="font-bold capitalize">{activeTrip?.bus.name}</Text>'s location for the
+              You're sharing location of <Text className="font-bold capitalize">{activeTrip.bus.name}</Text> for
               <Text className="font-bold"> {route?.routeName}</Text> route
             </Text>
           </View>

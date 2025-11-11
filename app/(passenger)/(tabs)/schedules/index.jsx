@@ -13,6 +13,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { ASYNC_STORAGE_KEYS } from "@/constants";
 import LoadingScreen from "@/components/UI/LoadingScreen";
 import { colors } from "@/config/colors";
+import { DirectionTitleDown, DirectionTitleUp } from "@/components/schedule/DirectionTitle";
 
 const BusSchedule = () => {
   const scheduleTypes = ["regular", "mid-term", "final", "ramadan"];
@@ -111,13 +112,13 @@ const BusSchedule = () => {
 
       <TouchableOpacity
         onPress={() => router.push("/(passenger)/schedules/waypoints")}
-        className="py-2 mt-2 mb-1 bg-white border border-muted-300 rounded-full flex-row items-center justify-center"
+        className="py-1.5 mt-2 mb-1 bg-white border border-muted-300 rounded-full flex-row items-center justify-center"
       >
         <MaterialCommunityIcons name="map-marker-path" size={18} color="black" style={{ marginRight: 8 }} />
         <Text className="text-center text-black text-mg">View Stoppages</Text>
       </TouchableOpacity>
 
-      <View className="bg-tertiary-900 rounded-t-3xl rounded-b-xl my-3 p-1">
+      <View className="bg-tertiary-900 rounded-t-3xl mt-2.5 px-0.5">
         <View className="mt-2 flex-row justify-between items-center px-4">
           <View className="flex-row items-center flex-[0.6]">
             <Feather name="calendar" size={20} color="white" style={{ marginRight: 8 }} />
@@ -165,7 +166,7 @@ const BusSchedule = () => {
           </View>
         </View>
 
-        <View className="bg-white p-4 my-3 rounded-xl">
+        <View className="bg-white p-4 my-3">
           <View className="flex-row justify-around rounded-md">
             {/* Student Button  */}
             <TouchableOpacity
@@ -214,11 +215,7 @@ const BusSchedule = () => {
             {selectedFilter == "student" ? (
               <>
                 <View className="">
-                  <View className="flex-row items-center justify-center px-4 py-1 rounded-2xl my-1  border-muted-300">
-                    <Text className="text-muted-600 font-semibold text-lg">{route?.routeName}</Text>
-                    <Feather name="arrow-right-circle" size={20} color={colors.secondary[500]} className="mx-2" />
-                    <Text className="text-muted-600 font-semibold text-lg">Campus</Text>
-                  </View>
+                  <DirectionTitleUp routeName={route?.routeName} />
 
                   {toCampusStudent?.length > 0 ? (
                     toCampusStudent?.map((schedule) => <ScheduleCard key={schedule?._id} schedule={schedule} />)
@@ -226,12 +223,8 @@ const BusSchedule = () => {
                     <NoSchedule message="No bus schedule found for students going to campus." />
                   )}
                 </View>
-                <View className="">
-                  <View className="flex-row items-center justify-center bg-white px-4 py-1 rounded-2xl my-2 mt-5  border-muted-300">
-                    <Text className="text-muted-600 font-semibold text-lg">Campus</Text>
-                    <Feather name="arrow-right-circle" size={20} color={colors.secondary[500]} className="mx-2" />
-                    <Text className="text-muted-600 font-semibold text-lg">{route?.routeName}</Text>
-                  </View>
+                <View className="mt-4">
+                  <DirectionTitleDown routeName={route?.routeName} />
 
                   {fromCampusStudent?.length > 0 ? (
                     fromCampusStudent?.map((schedule) => <ScheduleCard key={schedule?._id} schedule={schedule} />)
@@ -243,11 +236,7 @@ const BusSchedule = () => {
             ) : (
               <>
                 <View className="">
-                  <View className="flex-row items-center justify-center bg-white px-4 py-1 rounded-2xl my-1  border-muted-300">
-                    <Text className="text-muted-600 font-semibold text-lg">{route?.routeName}</Text>
-                    <Feather name="arrow-right-circle" size={20} color={colors.secondary[500]} className="mx-2" />
-                    <Text className="text-muted-600 font-semibold text-lg">Campus</Text>
-                  </View>
+                  <DirectionTitleUp routeName={route?.routeName} />
 
                   {toCampusEmployee?.length > 0 ? (
                     toCampusEmployee?.map((schedule) => <ScheduleCard key={schedule?._id} schedule={schedule} />)
@@ -255,12 +244,8 @@ const BusSchedule = () => {
                     <NoSchedule message="No bus schedule found for employees going to campus." />
                   )}
                 </View>
-                <View className="">
-                  <View className="flex-row items-center justify-center bg-white px-4 py-1 rounded-2xl my-2 mt-5  border-muted-300">
-                    <Text className="text-muted-600 font-semibold text-lg">Campus</Text>
-                    <Feather name="arrow-right-circle" size={20} color={colors.secondary[500]} className="mx-2" />
-                    <Text className="text-muted-600 font-semibold text-lg">{route?.routeName}</Text>
-                  </View>
+                <View className="mt-4">
+                  <DirectionTitleDown routeName={route?.routeName} />
 
                   {fromCampusEmployee?.length > 0 ? (
                     fromCampusEmployee?.map((schedule) => <ScheduleCard key={schedule?._id} schedule={schedule} />)

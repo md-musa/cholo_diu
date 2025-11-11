@@ -1,6 +1,6 @@
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { useAppSelector } from "@/store/storeConfig";
 
 export default StatusOverlayComponent = () => {
@@ -13,7 +13,10 @@ export default StatusOverlayComponent = () => {
       </View>
 
       <View className="flex flex-row items-center">
-        <Ionicons name="bus" size={15} color="#2196F3" style={{ marginRight: 6 }} />
+        {/* <Ionicons name="bus" size={15} color="#2196F3" style={{ marginRight: 6 }} /> */}
+
+        <MaterialCommunityIcons name="bus" size={16} color="#2196F3" style={{ marginRight: 6 }} />
+
         <Text className="text-blue-600 text-md font-bold">{Object.keys(activeBuses).length}</Text>
       </View>
     </View>

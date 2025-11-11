@@ -20,7 +20,7 @@ function LiveLocationSharing() {
   const { route } = useAppSelector((state) => state.auth);
 
   const [currentCenter, setCurrentCenter] = useState([90.320463, 23.879]);
-  const [zoom, setZoom] = useState(18);
+  const [zoom, setZoom] = useState(16);
   const cameraRef = useRef(null);
   const mapRef = useRef(null);
 
@@ -33,7 +33,7 @@ function LiveLocationSharing() {
   const handleStopSharing = () => {
     Alert.alert(
       "Stop Sharing Live Location?",
-      "Campus community members will no longer see this bus's live position",
+      "Campus community members will no longer see this bus's live position.",
       [
         {
           text: "Stay",
@@ -96,7 +96,7 @@ function LiveLocationSharing() {
           {/* Info Text */}
           <View className="flex-[0.65]">
             <Text className="text-sm text-muted-700">
-              Sharing <Text className="font-bold capitalize">{activeTrip.bus.name}</Text>'s location for the
+              You're sharing location of <Text className="font-bold capitalize">{activeTrip.bus.name}</Text> for
               <Text className="font-bold"> {route?.routeName}</Text> route
             </Text>
           </View>

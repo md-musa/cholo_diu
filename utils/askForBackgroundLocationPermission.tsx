@@ -1,11 +1,6 @@
 import * as Location from "expo-location";
-import { Alert, Linking, Platform } from "react-native";
+import { Alert, Linking } from "react-native";
 
-/**
- * Checks for and requests foreground and background location permissions.
- * If permission is not granted, prompts the user with an alert and then opens the app settings.
- * @returns Promise<boolean> - true if permission is granted, false otherwise.
- */
 export const ensureBackgroundLocationPermission = async (): Promise<boolean> => {
   try {
     // 1. Check current background permission
@@ -18,12 +13,31 @@ export const ensureBackgroundLocationPermission = async (): Promise<boolean> => 
     return new Promise<boolean>((resolve) => {
       Alert.alert(
         "Background Location Needed",
-        "To share your bus location in real-time, please enable 'Allow all the time' for location access. Location is only shared while broadcasting is active.",
+        "To share your bus location in real time, please select 'Allow all the time' for location access. If you skip this, your location will only be shared while you're using the app.",
         [
           {
             text: "Cancel",
-            style: "cancel",
-            onPress: () => resolve(false),
+            onPress: async () => {
+              const { status: fgStatus } = await Location.requestForegroundPermissionsAsync();
+              if (fgStatus === "granted") {
+                resolve(true);
+              } else {
+                Alert.alert(
+                  "Permission Needed",
+                  "Please enable location access in your device settings to use this feature.",
+                  [
+                    {
+                      text: "Open Settings",
+                      onPress: () => {
+                        Linking.openSettings();
+                        resolve(false);
+                      },
+                    },
+                    { text: "Cancel", style: "cancel", onPress: () => resolve(false) },
+                  ]
+                );
+              }
+            },
           },
           {
             text: "OK",
@@ -35,7 +49,7 @@ export const ensureBackgroundLocationPermission = async (): Promise<boolean> => 
                 } else {
                   Alert.alert(
                     "Permission Not Granted",
-                    "To share your bus location in real-time, please enable 'Allow all the time' for location access. Location is only shared while broadcasting is active.",
+                    "Please enable ‘Always allow’ in settings to share your bus location even when the app isn’t open.",
                     [
                       {
                         text: "Open Settings",
@@ -49,7 +63,6 @@ export const ensureBackgroundLocationPermission = async (): Promise<boolean> => 
                   );
                 }
               } catch (error) {
-                // console.error("Error requesting permissions:", error);
                 resolve(false);
               }
             },
@@ -58,7 +71,6 @@ export const ensureBackgroundLocationPermission = async (): Promise<boolean> => 
       );
     });
   } catch (error) {
-    //console.error("Error checking background location permission:", error);
     return false;
   }
 };
