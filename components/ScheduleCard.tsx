@@ -73,13 +73,7 @@ const ScheduleHeader: React.FC<{ status: string; formattedTime: string; note?: s
 
         {timeLeft && (
           <View className="flex-row items-center ml-2">
-            <Text
-              className={`text-sm ${
-                status === SCHEDULE_STATUS.NEXT
-                  ? "text-secondary-700 bg-secondary-100 border border-secondary-400"
-                  : "text-primary-700 bg-primary-50 border border-primary-300"
-              } px-4 py-0.5 rounded-full font-semibold capitalize`}
-            >
+            <Text className="text-sm text-secondary-700 bg-secondary-100 border border-secondary-400 px-4 py-0.5 rounded-full font-semibold">
               {timeLeft} left
             </Text>
           </View>

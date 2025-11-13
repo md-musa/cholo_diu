@@ -1,26 +1,26 @@
 import * as Location from "expo-location";
 import { Alert, Linking } from "react-native";
 
-export const ensureBackgroundLocationPermission = async (): Promise<boolean> => {
+export const askForLocationPermission = async (): Promise<"background" | "foreground" | "none"> => {
   try {
     // 1. Check current background permission
     const { status: bgStatus } = await Location.getBackgroundPermissionsAsync();
-    if (bgStatus === "granted") {
-      return true;
-    }
+    if (bgStatus === "granted") return "background";
 
     // 2. Not granted: show alert to user
-    return new Promise<boolean>((resolve) => {
+    return new Promise<"background" | "foreground" | "none">((resolve) => {
       Alert.alert(
-        "Background Location Needed",
-        "To share your bus location in real time, please select 'Allow all the time' for location access. If you skip this, your location will only be shared while you're using the app.",
+        "Choose Location Sharing Mode",
+        "Choose one:\n\n" +
+          "⚫ In App: Location shared only while app is open.\n\n" +
+          "⚫ In Background: Location shared even if app is minimized or closed. You must select the permission “Allow all the time” in your device settings.",
         [
           {
-            text: "Cancel",
+            text: "Share Only in App",
             onPress: async () => {
               const { status: fgStatus } = await Location.requestForegroundPermissionsAsync();
               if (fgStatus === "granted") {
-                resolve(true);
+                resolve("foreground");
               } else {
                 Alert.alert(
                   "Permission Needed",
@@ -30,22 +30,22 @@ export const ensureBackgroundLocationPermission = async (): Promise<boolean> => 
                       text: "Open Settings",
                       onPress: () => {
                         Linking.openSettings();
-                        resolve(false);
+                        resolve("none");
                       },
                     },
-                    { text: "Cancel", style: "cancel", onPress: () => resolve(false) },
+                    { text: "Cancel", style: "cancel", onPress: () => resolve("none") },
                   ]
                 );
               }
             },
           },
           {
-            text: "OK",
+            text: "Share in Background",
             onPress: async () => {
               try {
                 const { status: newBgStatus } = await Location.requestBackgroundPermissionsAsync();
                 if (newBgStatus === "granted") {
-                  return resolve(true);
+                  return resolve("background");
                 } else {
                   Alert.alert(
                     "Permission Not Granted",
@@ -55,15 +55,15 @@ export const ensureBackgroundLocationPermission = async (): Promise<boolean> => 
                         text: "Open Settings",
                         onPress: () => {
                           Linking.openSettings();
-                          resolve(false);
+                          resolve("none");
                         },
                       },
-                      { text: "Cancel", style: "cancel", onPress: () => resolve(false) },
+                      { text: "Cancel", style: "cancel", onPress: () => resolve("none") },
                     ]
                   );
                 }
               } catch (error) {
-                resolve(false);
+                resolve("none");
               }
             },
           },
@@ -71,6 +71,6 @@ export const ensureBackgroundLocationPermission = async (): Promise<boolean> => 
       );
     });
   } catch (error) {
-    return false;
+    return "none";
   }
 };

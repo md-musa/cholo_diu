@@ -9,7 +9,7 @@ import { useAppSelector } from "@/store/storeConfig";
 // External cache for previous distance data
 const distanceCache: Record<string, { distanceKm: number, estimatedTimeMin: number }> = {};
 
-export default function AvailableBusListCard({ item, highlightBus }) {
+export default function AvailableBusListCard({ item, highlightBus, closeBottomSheet }) {
   const [distanceData, setDistanceData] = useState(null);
   const { routeNo } = useAppSelector((state) => state.auth.route);
 
@@ -88,7 +88,10 @@ export default function AvailableBusListCard({ item, highlightBus }) {
           </Text>
 
           <TouchableOpacity
-            onPress={() => highlightBus([longitude, latitude])}
+            onPress={() => {
+              highlightBus([longitude, latitude]);
+              closeBottomSheet();
+            }}
             className="bg-secondary-600 px-6 py-2 rounded-full self-end"
           >
             <MaterialIcons name="location-on" size={18} color="white" />

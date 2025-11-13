@@ -1,4 +1,4 @@
-import { useBusLocation } from "@/hook/useBusLocation";
+import { useBusLocation } from "@/hook/useBusLocationTracking";
 import React, { useEffect, useState } from "react";
 import { Text, View } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";

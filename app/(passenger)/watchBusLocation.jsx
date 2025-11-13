@@ -77,6 +77,15 @@ const WatchBusLocation = () => {
           <Ionicons name="locate" size={28} color="black" />
         </TouchableOpacity>
 
+        {/* ----Expan bottom sheet---- */}
+        <TouchableOpacity
+          className="absolute bottom-20 left-1/2 -translate-x-1/2  bg-white border border-muted-300 rounded-full  flex-row p-2 items-center justify-center"
+          onPress={() => bottomSheetRef.current?.expand()}
+          disabled={!location}
+        >
+          <MaterialIcons name="keyboard-double-arrow-up" size={35} color="black" />
+        </TouchableOpacity>
+
         <TouchableOpacity
           className="absolute top-10 left-5 bg-white border border-muted-300 rounded-full shadow flex-row p-2 items-center justify-center"
           onPress={() => router.back()}
@@ -91,6 +100,7 @@ const WatchBusLocation = () => {
           MapUtils.highlightBus(cameraRef, setZoom, setCurrentCenter, [long, lat]);
         }}
         closeBottomSheet={() => bottomSheetRef.current?.close()}
+        openBottomSheet={() => bottomSheetRef.current?.expand()}
         activeBuses={activeBuses}
       />
     </View>

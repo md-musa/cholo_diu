@@ -7,12 +7,16 @@ import { useGetBusesQuery } from "@/store/features/bus/busApi";
 import { useAppDispatch, useAppSelector } from "@/store/storeConfig";
 import { useCreateTripByUserMutation } from "@/store/features/trip/tripApi";
 import { TripUtil } from "@/utils/tripUtil";
-import { startBroadcasting } from "@/store/features/broadcast/broadcastSlice";
+import {
+  startBackgroundService,
+  startBroadcasting,
+  startForegroundService,
+} from "@/store/features/broadcast/broadcastSlice";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { USER_ROLES } from "@/constants";
 import { colors } from "@/config/colors";
 import LoadingIndicator from "@/components/UI/LoadingIndicator";
-import { ensureBackgroundLocationPermission } from "@/utils/askForBackgroundLocationPermission";
+import { askForLocationPermission } from "@/utils/askForLocationPermission";
 import { ToastUtil } from "@/utils/toastUtil";
 import LiveMapLocation from "@/components/broadcast/LiveMapLocation";
 
@@ -89,7 +93,11 @@ const Index = () => {
   const router = useRouter();
   const dispatch = useAppDispatch();
   const { user, route } = useAppSelector((state) => state.auth);
-  const { isBroadcasting } = useAppSelector((state) => state.broadcast);
+  const { isBroadcasting, isForegroundServiceRunning, isBackgroundServiceRunning } = useAppSelector(
+    (state) => state.broadcast
+  );
+
+  console.log({isForegroundServiceRunning, isBackgroundServiceRunning});
 
   const { data: buses, isLoading: isBusesLoading, error: busesError } = useGetBusesQuery();
   const [createTripByUser, { isLoading: isCreatingTrip }] = useCreateTripByUserMutation();
@@ -110,8 +118,21 @@ const Index = () => {
   const handleStartSharing = async () => {
     if (!isValid) return ToastUtil.error("Please select a bus, bus type, and direction.");
 
-    const hasBgPermission = await ensureBackgroundLocationPermission();
-    if (!hasBgPermission) return;
+    const permissionType = await askForLocationPermission();
+    console.log("Location permission granted:", permissionType);
+
+    if (permissionType === "foreground") dispatch(startForegroundService());
+    else if (permissionType === "background") dispatch(startBackgroundService());
+    else return ToastUtil.error("Location permission is required to start sharing.");
+
+    console.log("Creating trip with data:", {
+      routeId: route._id,
+      hostId: user._id,
+      busName: tripData.selectedBus.name,
+      busType: tripData.busType,
+      direction: tripData.direction,
+      note: tripData.note,
+    });
 
     try {
       const { data } = await createTripByUser({
@@ -122,6 +143,7 @@ const Index = () => {
         direction: tripData.direction,
         note: tripData.note,
       });
+      console.log("Trip created:", data);
 
       dispatch(
         startBroadcasting({
@@ -138,6 +160,7 @@ const Index = () => {
     }
   };
 
+  console.log("Broadcasting status:", isBroadcasting, isForegroundServiceRunning, isBackgroundServiceRunning);
   if (isBusesLoading) return <LoadingScreen />;
   if (isBroadcasting) return <LiveMapLocation />;
 

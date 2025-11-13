@@ -1,13 +1,15 @@
 // components/BroadcastManager.tsx
-import { useBusLocationBroadcast } from "@/hook/useBusLocationBroadcast";
+import { useBackgroundLocationBroadcast } from "@/hook/useBackgroundLocationBroadcast";
 import { useAppSelector } from "@/store/storeConfig";
 import { usePathname, useRouter } from "expo-router";
 import { Image } from "react-native";
 import { Text, TouchableOpacity, View } from "react-native";
 import broadcastGifImage from "@/assets/images/broadcast.gif";
+import { useForegroundLocationBroadcast } from "@/hook/useForegroundLocationBroadcast";
 
 export default function BroadcastManager() {
-  useBusLocationBroadcast();
+  useBackgroundLocationBroadcast();
+  useForegroundLocationBroadcast();
   const router = useRouter();
   const pathname = usePathname();
   const { isBroadcasting, activeTrip } = useAppSelector((state) => state.broadcast);

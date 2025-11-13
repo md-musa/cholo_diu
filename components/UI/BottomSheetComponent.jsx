@@ -2,7 +2,7 @@ import React, { useState, useMemo } from "react";
 import { View, Text, FlatList, TouchableOpacity } from "react-native";
 import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
 import AvailableBusListCard from "./AvailableBusListCard";
-import { MaterialIcons } from "@expo/vector-icons";
+import { AntDesign, MaterialIcons } from "@expo/vector-icons";
 import { colors } from "@/config/colors"; // optional if you have a color config
 
 const BottomSheetComponent = ({ bottomSheetRef, activeBuses, closeBottomSheet, highlightBus }) => {
@@ -21,9 +21,21 @@ const BottomSheetComponent = ({ bottomSheetRef, activeBuses, closeBottomSheet, h
   }, [filter, activeBuses]);
 
   return (
-    <BottomSheet ref={bottomSheetRef} snapPoints={["20", "30%", "50%", "60%", "75%", "90%"]} index={2}>
+    <BottomSheet
+      ref={bottomSheetRef}
+      snapPoints={["20", "30%", "50%", "60%", "75%", "90%"]}
+      index={2}
+      enablePanDownToClose={true}
+    >
       <BottomSheetView className="px-5">
         <Text className="text-xl font-semibold text-center mb-4">Available Buses</Text>
+
+        {/* <TouchableOpacity
+          className="absolute top-0 right-4  bg-white border border-muted-200 rounded-full p-0.5 flex-row items-center justify-center"
+          onPress={() => closeBottomSheet()}
+        >
+          <AntDesign name="close" size={22} color="black" />
+        </TouchableOpacity> */}
 
         {/* Filter Buttons */}
         <View className="flex-row mb-5">
@@ -45,7 +57,9 @@ const BottomSheetComponent = ({ bottomSheetRef, activeBuses, closeBottomSheet, h
         {filteredBuses.length > 0 ? (
           <FlatList
             data={filteredBuses}
-            renderItem={({ item }) => <AvailableBusListCard item={item} highlightBus={highlightBus} />}
+            renderItem={({ item }) => (
+              <AvailableBusListCard item={item} highlightBus={highlightBus} closeBottomSheet={closeBottomSheet} />
+            )}
             keyExtractor={(item) => item.trip?.busName ?? item.trip?.id ?? Math.random().toString()}
             className="w-full"
           />

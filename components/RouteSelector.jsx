@@ -29,7 +29,7 @@ const RouteSelector = () => {
     refetch: refetchSchedule,
     isFetching: isScheduleFetching,
   } = useGetScheduleByRouteQuery({ routeId: route?._id, operatingDays: selectedDay }, { skip: !route?._id });
-  
+
   const [refreshing, setRefreshing] = useState(false);
 
   const handleRefresh = async () => {
@@ -39,7 +39,7 @@ const RouteSelector = () => {
     try {
       await Promise.all([refetchRoutes(), refetchSchedule()]);
     } catch (err) {
-     // console.error("Refresh failed", err);
+      // console.error("Refresh failed", err);
     } finally {
       setRefreshing(false);
     }
@@ -75,7 +75,7 @@ const RouteSelector = () => {
             color: "black",
           }}
           dropdownIconColor="black"
-          mode="dropdown"
+          mode="dialog"
         >
           {/* <Picker.Item
             label="Select a route"
@@ -100,7 +100,7 @@ const RouteSelector = () => {
             routes?.map((route) => (
               <Picker.Item
                 key={route?._id}
-                label={`${route.routeName}`}
+                label={`${route.routeNo}: ${route.routeName}`}
                 value={route._id}
                 style={{
                   fontWeight: "bold",
