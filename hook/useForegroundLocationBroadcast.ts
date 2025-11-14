@@ -13,19 +13,11 @@ export function useForegroundLocationBroadcast() {
     (state) => state.broadcast
   );
 
-  console.log("Foreground Broadcast Hook:", {
-    isBroadcasting,
-    isForegroundServiceRunning,
-    isBackgroundServiceRunning,
-    activeTrip,
-  });
   const watcherRef = useRef<Location.LocationSubscription | null>(null);
 
   useEffect(() => {
-    console.log("Foreground Broadcast Effect Triggered");
     if (isBroadcasting && isForegroundServiceRunning && activeTrip && !isBackgroundServiceRunning) {
       startForegroundBroadcasting();
-      console.log("Started Foreground Broadcasting");
     }
     return () => {
       stopForegroundBroadcasting();

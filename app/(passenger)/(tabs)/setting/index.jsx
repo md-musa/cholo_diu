@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, TouchableOpacity, Linking, ScrollView, Image } from "react-native";
+import { View, Text, TouchableOpacity, Linking, ScrollView, Image, Alert } from "react-native";
 import Constants from "expo-constants";
 import { useAppDispatch, useAppSelector } from "@/store/storeConfig";
 import { clearCredentials } from "@/store/features/auth/authSlice";
@@ -8,6 +8,7 @@ import { useRouter } from "expo-router";
 import { Ionicons, FontAwesome, MaterialIcons } from "@expo/vector-icons";
 import axiosInstance from "@/config/axiosInstance";
 import { ASYNC_STORAGE_KEYS } from "@/constants";
+import musaImg from "../../../../assets/images/musa.jpg";
 
 export default function Settings() {
   const dispatch = useAppDispatch();
@@ -30,17 +31,29 @@ export default function Settings() {
   }, []);
 
   const handleLogout = async () => {
-    try {
-      await AsyncStorage.removeItem(ASYNC_STORAGE_KEYS.AUTH_TOKEN);
-      await AsyncStorage.removeItem(ASYNC_STORAGE_KEYS.CURRENT_ROUTE);
-      await AsyncStorage.clear();
+    Alert.alert("Confirm Logout", "Are you sure you want to log out?", [
+      {
+        text: "Cancel",
+        style: "cancel",
+      },
+      {
+        text: "Log Out",
+        style: "destructive",
+        onPress: async () => {
+          try {
+            await AsyncStorage.removeItem(ASYNC_STORAGE_KEYS.AUTH_TOKEN);
+            await AsyncStorage.removeItem(ASYNC_STORAGE_KEYS.CURRENT_ROUTE);
+            await AsyncStorage.clear();
 
-      dispatch(clearCredentials());
+            dispatch(clearCredentials());
 
-      router.replace("/(auth)/login");
-    } catch (err) {
-      //console.log("Logout failed:", err.message);
-    }
+            router.replace("/(auth)/login");
+          } catch (err) {
+            console.log("Logout failed:", err.message);
+          }
+        },
+      },
+    ]);
   };
 
   return (
@@ -104,58 +117,56 @@ export default function Settings() {
 
         <View className="border-b border-gray-300 my-10" />
 
-        {/* Developer Profile */}
-        {/* <SectionCard title="Developer">
-          <View className="items-center mb-4">
-            <Image source={musaImg} className="w-32 h-32 rounded-full border-2 border-muted-300" />
-            <Text className="text-xl font-bold text-muted-900 mt-3">Mohammad Musa</Text>
-            <Text className="text-muted-600">Software Developer</Text>
-            <Text className="text-muted-500 text-sm mt-1 text-center px-4">
-              Building innovative mobile solutions with React Native and Node.js.
-            </Text>
-            <View className="flex-row mt-3">
-              <SocialLink
-                url="https://facebook.com/yourprofile"
-                icon={<FontAwesome name="facebook" size={15} color="#3b5998" />}
-                bgColor="bg-blue-100"
-              />
-              <SocialLink
-                url="https://linkedin.com/in/yourprofile"
-                icon={<FontAwesome name="linkedin" size={18} color="#0077b5" />}
-                bgColor="bg-blue-100"
-              />
-              <SocialLink
-                url="mailto:mohammad.musa706@gmail.com"
-                icon={<MaterialIcons name="email" size={18} color="#d44638" />}
-                bgColor="bg-red-100"
-              />
-              <SocialLink
-                url="https://github.com/yourprofile"
-                icon={<FontAwesome name="github" size={18} color="#333" />}
-                bgColor="bg-muted-100"
-              />
+        <SectionCard title="Developed By">
+          <View className="flex-row items-center space-x-6 px-2 py-4 bg-white rounded-xl shadow-sm border border-muted-100">
+            {/* Left Column - Image */}
+            <View className="w-[35%] ">
+              <Image source={musaImg} className="w-28 h-28 rounded-full border-4 border-blue-200 shadow-lg" />
+            </View>
+
+            {/* Right Column - Details */}
+            <View className="flex-1">
+              <Text className="text-lg font-semibold text-muted-800">Mohammad Musa</Text>
+              <Text className="text-muted-600 mt-1 text-lg">Software Developer</Text>
+
+              {/* Social Links */}
+              <View className="flex-row mt-4 space-x-4">
+                <SocialLink
+                  url="https://www.facebook.com/md.musa706/"
+                  icon={<FontAwesome name="facebook-f" size={18} color="#3b5998" />}
+                  bgColor="bg-blue-100"
+                />
+
+                <SocialLink
+                  url="mailto:mohammad.musa.dev@gmail.com"
+                  icon={<MaterialIcons name="email" size={20} color="#d44638" />}
+                  bgColor="bg-red-100"
+                />
+
+                <SocialLink
+                  url="https://github.com/md-musa"
+                  icon={<FontAwesome name="github" size={20} color="#333" />}
+                  bgColor="bg-gray-100"
+                />
+              </View>
             </View>
           </View>
-        </SectionCard> */}
+        </SectionCard>
 
-        {/* Future Features */}
-        {/* <SectionCard title="Planned Features">
-          <ListItem text="Push notifications for bus arrivals" />
-          <ListItem text="Offline route access" />
-          <ListItem text="Real-time bus crowd tracking" />
-        </SectionCard> */}
+        <SectionCard title="Growth & Future Plans">
+          <Text className="text-muted-700 text-sm mb-2">
+            This app is maintained without funding, so servers may sometimes be slow or temporarily unavailable. We
+            apologize for any inconvenience and appreciate your understanding.
+          </Text>
 
-        {/* Known Bugs */}
-        {/* <SectionCard title="Known Bugs">
-          <ListItem text="Occasional delay in bus location updates" />
-          <ListItem text="Route data mismatch on slow networks" />
-        </SectionCard> */}
+          <Text className="mt-4 text-muted-700 mb-3 bg-yellow-100 px-2 py-1 rounded">
+            If we get any funding, we plan to add these features:
+          </Text>
 
-        {/* Current Limitations */}
-        {/* <SectionCard title="Current Limitations">
-          <ListItem text="No multi-language support yet" />
-          <ListItem text="Only available for selected campus routes" />
-        </SectionCard> */}
+          <ListItem text="🗺️ Integrate Google Maps for a more interactive and user-friendly experience." />
+          <ListItem text="📍 Install GPS trackers in all buses for automatic real-time location updates." />
+          <ListItem text="📅 Create a smart scheduling system to plan the number of buses based on class and work schedules." />
+        </SectionCard>
 
         {/* App Version */}
         <View className="items-center my-8">

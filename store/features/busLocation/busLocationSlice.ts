@@ -31,7 +31,6 @@ const busLocationSlice = createSlice({
   reducers: {
     updateBusLocation: (state, action: PayloadAction<BusLocationData>) => {
       const data = action.payload;
-      console.log("🚌 Bus location update received:", JSON.stringify(data, null, 2));
 
       if (Array.isArray(data)) {
         data.forEach((busData) => {

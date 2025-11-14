@@ -60,15 +60,15 @@ export default function AvailableBusListCard({ item, highlightBus, closeBottomSh
 
   if (!item) return <Text className="text-center text-gray-500">Not available</Text>;
 
-  const { busName, userType, longitude, latitude, busId } = item;
+  const { busName, userType, longitude, latitude, busId, hostName } = item;
 
   const dataToShow = distanceData || distanceCache[busId];
 
   return (
-    <View className="flex-row justify-between items-center px-4 py-2 rounded-2xl mb-4 border border-gray-200 bg-white shadow-md">
+    <View className="flex-row justify-between items-center rounded-2xl mb-4  px-2  py-2 border border-gray-200 bg-white shadow-md">
       {/* Bus Icon */}
       <View className="bg-secondary-100 p-2 rounded-full mr-3">
-        <MaterialCommunityIcons name="bus" size={28} color="#4f46e5" />
+        <MaterialCommunityIcons name="bus" size={32} color="#4f46e5" />
       </View>
 
       {/* Bus Info */}
@@ -76,14 +76,20 @@ export default function AvailableBusListCard({ item, highlightBus, closeBottomSh
         {/* Bus Name */}
         <View className="flex-row items-center gap-2">
           <Text className="text-lg font-bold text-gray-800 capitalize">{busName}</Text>
-          <View className="bg-secondary-100 border border-secondary-200 rounded-full px-3 py-0.5">
+          <View className="absolute right-0 bg-secondary-100 border border-secondary-200 rounded-full px-2 py-0.5">
             <Text className="text-xs text-black text-center capitalize">{userType} Bus</Text>
           </View>
         </View>
 
+        <View className="bg-yellow-50 border border-yellow-200 rounded-full px-2 mt-1 self-start">
+          <Text className="text-xs text-yellow-700">Shared By: {hostName}</Text>
+        </View>
+
         {/* Distance & ETA */}
-        <View className="flex-row items-center justify-between mt-1">
-          <Text className="ml-1 text-lg">
+        <View className="flex-row items-center justify-between">
+          <Text className="text-md">
+            {" "}
+            ETA:{" "}
             {dataToShow ? formatDistanceAndTime(dataToShow.distanceKm, dataToShow.estimatedTimeMin) : "Calculating..."}
           </Text>
 
@@ -116,5 +122,5 @@ function formatDistanceAndTime(distanceKm, estimatedTimeMin) {
     time = `${Math.round(estimatedTimeMin)} min`;
   }
 
-  return `${distance} (${time})`;
+  return `${time} (${distance})`;
 }

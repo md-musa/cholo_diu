@@ -18,6 +18,12 @@
     },
     "production": {
       "autoIncrement": true
+    },
+    "release": {
+      "android": {
+        "buildType": "app-bundle",
+        "gradleCommand": ":app:bundleRelease"
+      }
     }
   },
   "submit": {

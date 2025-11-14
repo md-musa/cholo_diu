@@ -61,12 +61,12 @@ const WatchBusLocation = () => {
 
         {/* --- Route Center --- */}
         <TouchableOpacity
-          className="absolute bottom-[25rem] right-5 bg-white  border border-muted-300 rounded-full shadow flex-row p-3 items-center justify-center"
+          className="absolute bottom-[25rem] right-5 bg-white  border border-muted-300 rounded-full shadow flex-row p-3.5 items-center justify-center"
           onPress={centerToRouteCenter}
           disabled={!location}
           style={{ opacity: location ? 1 : 0.5 }}
         >
-          <MaterialIcons name="route" size={24} color="black" />
+          <MaterialIcons name="route" size={25} color="black" />
         </TouchableOpacity>
 
         <TouchableOpacity
