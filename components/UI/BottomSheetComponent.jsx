@@ -66,7 +66,7 @@ const BottomSheetComponent = ({ bottomSheetRef, activeBuses, closeBottomSheet, h
         ) : (
           <View className="flex items-center justify-center">
             <MaterialIcons name="directions-bus" size={40} color="#888" />
-            <Text className="text-center mt-2 text-muted-500">Currently none sharing bus location.</Text>
+            <Text className="text-center mt-2 text-muted-500">Currently nobody sharing bus location.</Text>
           </View>
         )}
       </BottomSheetView>

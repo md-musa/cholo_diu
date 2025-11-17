@@ -90,12 +90,12 @@ const Index = () => {
         accessibilityIgnoresInvertColors
       />
 
-      <Text className="text-3xl font-bold text-center mt-10 mb-2 px-5 text-secondary-900">Cholo – Bus Tracker</Text>
+      <Text className="text-3xl font-bold text-center mt-10 mb-2 px-5 text-secondary-900">Cholo – DIU Bus Tracker</Text>
 
       <Text className="text-lg text-muted-500 text-center px-8 mb-4">Track your campus buses in real-time</Text>
 
       <Text className="text-footnote text-muted-400 text-center px-8 mb-8">
-        Never miss your bus again! View live bus locations, schedules, and see which buses are assigned to your routes.
+        Never miss your bus again! View live bus locations, schedules, and assigned buses to your route.
       </Text>
 
       <View className="mt-10 mb-10">

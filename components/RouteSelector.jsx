@@ -1,7 +1,6 @@
 import React, { useState } from "react";
-import { View, Text, Image, Alert } from "react-native";
+import { View, Text } from "react-native";
 import { Picker } from "@react-native-picker/picker";
-import busImage from "@/assets/images/icon.png";
 import { findOngoingOrNextSchedule } from "@/utils/scheduleHelper";
 import { Link } from "expo-router";
 import { useAppDispatch, useAppSelector } from "@/store/storeConfig";
@@ -39,7 +38,6 @@ const RouteSelector = () => {
     try {
       await Promise.all([refetchRoutes(), refetchSchedule()]);
     } catch (err) {
-      // console.error("Refresh failed", err);
     } finally {
       setRefreshing(false);
     }

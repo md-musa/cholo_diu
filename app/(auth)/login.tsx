@@ -85,7 +85,7 @@ const Login = () => {
           <View>
             <Text className="text-title-2 font-semibold text-center mb-4">Track Your Campus Buses</Text>
             <Text className="text-body text-center text-muted-500 mb-10">
-              Login to view real-time bus locations and schedules
+              See bus locations and schedules in real time
             </Text>
           </View>
 

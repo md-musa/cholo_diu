@@ -107,7 +107,7 @@ function LiveMapLocation() {
           className="bg-red-700 py-2 rounded-xl shadow-md mt-6 mb-5 active:opacity-80"
           onPress={handleStopSharing}
         >
-          <Text className="text-white text-center font-semibold text-lg">Stop Sharing Bus Location</Text>
+          <Text className="text-white text-center font-semibold text-lg">Stop Sharing</Text>
         </TouchableOpacity>
       </View>
     </View>

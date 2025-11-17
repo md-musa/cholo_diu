@@ -1,14 +1,13 @@
-import { useEffect, useRef, useState } from "react";
+import * as KeepAwake from "expo-keep-awake";
+import { ToastUtil } from "./../utils/toastUtil";
+import { useEffect, useRef } from "react";
 import * as Location from "expo-location";
 import socket from "@/config/socketIoConfig";
 import { SOCKET_EVENTS } from "@/constants";
-import { useAppDispatch, useAppSelector } from "@/store/storeConfig";
-import { stopBroadcasting } from "@/store/features/broadcast/broadcastSlice";
-import KeepAwake from "expo-keep-awake";
+import { useAppSelector } from "@/store/storeConfig";
 import { LOCATION_CONSTANTS } from "@/constants/location";
 
 export function useForegroundLocationBroadcast() {
-  const dispatch = useAppDispatch();
   const { isBroadcasting, isForegroundServiceRunning, isBackgroundServiceRunning, activeTrip } = useAppSelector(
     (state) => state.broadcast
   );
@@ -26,8 +25,7 @@ export function useForegroundLocationBroadcast() {
 
   const startForegroundBroadcasting = async () => {
     try {
-      // KeepAwake.activateKeepAwakeAsync();
-
+      await KeepAwake.activateKeepAwakeAsync("foreground");
       if (!socket.connected) {
         socket.connect();
       }
@@ -52,11 +50,13 @@ export function useForegroundLocationBroadcast() {
         }
       );
     } catch (error) {
-      console.error("[Foreground Broadcast Error]:", error);
+      console.log(error);
+      ToastUtil.error("Failed to start foreground location broadcasting.");
     }
   };
 
   const stopForegroundBroadcasting = async () => {
+    KeepAwake.deactivateKeepAwake("foreground");
     if (watcherRef.current) {
       watcherRef.current.remove();
       watcherRef.current = null;

@@ -8,7 +8,9 @@ import { useRouter } from "expo-router";
 import { Ionicons, FontAwesome, MaterialIcons } from "@expo/vector-icons";
 import axiosInstance from "@/config/axiosInstance";
 import { ASYNC_STORAGE_KEYS } from "@/constants";
-import musaImg from "../../../../assets/images/musa.jpg";
+import musaImg1 from "../../../../assets/images/p1.png";
+import musaImg2 from "../../../../assets/images/p2.png";
+
 
 export default function Settings() {
   const dispatch = useAppDispatch();
@@ -118,21 +120,21 @@ export default function Settings() {
         <View className="border-b border-gray-300 my-10" />
 
         <SectionCard title="Developed By">
-          <View className="flex-row items-center space-x-6 px-2 py-4 bg-white rounded-xl shadow-sm border border-muted-100">
+          <View className="flex-row items-center space-x-6 bg-white rounded-xl">
             {/* Left Column - Image */}
             <View className="w-[35%] ">
-              <Image source={musaImg} className="w-28 h-28 rounded-full border-4 border-blue-200 shadow-lg" />
+              <Image source={musaImg2} className="w-28 h-28 rounded-full border-4 border-gray-200 shadow-lg" />
             </View>
 
             {/* Right Column - Details */}
             <View className="flex-1">
               <Text className="text-lg font-semibold text-muted-800">Mohammad Musa</Text>
-              <Text className="text-muted-600 mt-1 text-lg">Software Developer</Text>
+              <Text className="text-muted-600 mt-1 text-md">Full-Stack Software Developer</Text>
 
               {/* Social Links */}
               <View className="flex-row mt-4 space-x-4">
                 <SocialLink
-                  url="https://www.facebook.com/md.musa706/"
+                  url="https://www.facebook.com/md.musa706"
                   icon={<FontAwesome name="facebook-f" size={18} color="#3b5998" />}
                   bgColor="bg-blue-100"
                 />
@@ -154,18 +156,19 @@ export default function Settings() {
         </SectionCard>
 
         <SectionCard title="Growth & Future Plans">
+          <Text className="mt-2 text-muted-700 mb-1 font-semibold">Notice:</Text>
           <Text className="text-muted-700 text-sm mb-2">
-            This app is maintained without funding, so servers may sometimes be slow or temporarily unavailable. We
-            apologize for any inconvenience and appreciate your understanding.
+            The server is running on limited resources, as we do not have any funding. It may sometimes be slow or
+            temporarily unavailable. We apologize for any inconvenience.
           </Text>
 
-          <Text className="mt-4 text-muted-700 mb-3 bg-yellow-100 px-2 py-1 rounded">
-            If we get any funding, we plan to add these features:
+          <Text className="mt-4 text-muted-700 mb-1 font-semibold">
+            This project can be improved by adding the following features:
           </Text>
 
-          <ListItem text="🗺️ Integrate Google Maps for a more interactive and user-friendly experience." />
-          <ListItem text="📍 Install GPS trackers in all buses for automatic real-time location updates." />
-          <ListItem text="📅 Create a smart scheduling system to plan the number of buses based on class and work schedules." />
+          <ListItem text="🗺️ Integrate Google Maps for a more interactive and user-friendly map experience." />
+          <ListItem text="📍 Install a GPS tracker on each bus for automatic real-time location updates, so users don’t need to manually share their location. Bus locations can be viewed at any time." />
+          <ListItem text="📅 Create a smart scheduling system to plan the number of buses required for each schedule based on class and work schedules." />
         </SectionCard>
 
         {/* App Version */}

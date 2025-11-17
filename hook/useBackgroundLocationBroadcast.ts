@@ -30,7 +30,7 @@ export function useBackgroundLocationBroadcast() {
     try {
       const options = {
         taskName: "location_sharing",
-        taskTitle: "You're Sharing Location",
+        taskTitle: "Sharing Bus Location",
         taskDesc: "Sharing live location with students and employees",
         taskIcon: {
           name: "ic_launcher",
@@ -99,7 +99,7 @@ export function useBackgroundLocationBroadcast() {
     if (!location.coords.speed) return;
     try {
       await BackgroundService.updateNotification({
-        taskDesc: `Current Speed: ${(location.coords.speed * 3.6).toFixed(2)} km/h\nTo stop, click here`,
+        taskDesc: `Speed: ${(location.coords.speed * 3.6).toFixed(2)} km/h\n Click to stop.`,
       });
     } catch (err) {
       console.log("Background Notification Error:", err);

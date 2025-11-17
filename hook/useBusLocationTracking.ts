@@ -11,20 +11,27 @@ export const useBusLocation = () => {
   const { route } = useAppSelector((state) => state.auth);
   const [isDisconnected, setIsDisconnected] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
+  const scoketDisConnectionErrMsg = "Live location temporarily unavailable";
 
   // 1. Listen for network changes
   useEffect(() => {
     const unsubscribe = NetInfo.addEventListener((state: any) => {
       const isOffline = !state.isConnected || !state.isInternetReachable;
-      //console.log("📶");
       setIsDisconnected(isOffline);
 
       if (isOffline) {
         setMessage("You are offline");
-        //console.warn("📴 Internet disconnected");
       } else {
-        if (!socket.connected) socket.connect();
+        if (!socket.connected) {
+          setMessage(scoketDisConnectionErrMsg);
+          setIsDisconnected(true);
+        } else {
+          setMessage(null);
+          setIsDisconnected(false);
+        }
       }
+
+      if (!socket.connected) socket.connect();
     });
 
     return () => unsubscribe();
@@ -46,27 +53,26 @@ export const useBusLocation = () => {
     const handleLocationUpdate = (data: any) => {
       dispatch(updateBusLocation(data));
       setIsDisconnected(false);
+      setMessage(null);
     };
 
     const handleDisconnect = () => {
-      // console.warn("🚫 Socket disconnected");
       setIsDisconnected(true);
-      // setMessage("Disconnected from server");
+      setMessage(scoketDisConnectionErrMsg);
     };
 
     const handleConnect = () => {
       setIsDisconnected(false);
+      setMessage(null);
 
       if (route) {
         socket.emit(SOCKET_EVENTS.JOIN_ROUTE, route._id);
-        //console.log(`✅ Joined room: ${route._id}`);
       }
     };
 
     const handleConnectError = (error: any) => {
-      // console.error("⚠️ Socket connect error:", error?.message);
       setIsDisconnected(true);
-      // setMessage("Disconnected from server");
+      setMessage(scoketDisConnectionErrMsg);
     };
 
     // Attach socket listeners

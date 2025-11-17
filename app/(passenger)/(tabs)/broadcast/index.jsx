@@ -156,7 +156,7 @@ const Index = () => {
         {/* Header */}
         <View className="mb-3 items-center">
           <Text className="text-md text-muted-800 text-center mt-2">
-            Help the campus community track bus in real-time
+            Share your bus location so others on the same route can see it.
           </Text>
           <Text className="text-sm text-center mt-2 bg-secondary-200 text-black rounded-md px-2">
             Current Route: <Text className="text-muted-700">{route.routeName}</Text>

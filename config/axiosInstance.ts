@@ -1,19 +1,14 @@
 import Constants from "expo-constants";
 import axios from "axios";
-import { removeAccessToken, getAccessToken, setAccessToken, AuthUtil } from "@/utils/authUtil";
+import { removeAccessToken, setAccessToken, AuthUtil } from "@/utils/authUtil";
 import { router } from "expo-router";
-import { store } from "@/store/storeConfig";
 import { ToastUtil } from "@/utils/toastUtil";
-
-// const SERVER_URL = "http://192.168.1.15:4000/api/v1";
-// // const SERVER_URL = `https://tms-dcro.onrender.com/api/v1`;
-// // const SERVER_URL = "https://choloserver-production.up.railway.app/api/v1";
 
 const SERVER_URL =
   process.env.NODE_ENV === "development"
     ? Constants.expoConfig?.extra?.DVELOPMENT_SERVER_URL
     : Constants.expoConfig?.extra?.PRODUCTION_SERVER_URL;
-//
+
 // console.log(SERVER_URL);
 // 🔁 Refresh token helper
 const refreshAccessToken = async () => {
@@ -95,7 +90,7 @@ apiClient.interceptors.response.use(
       return handle401Retry(error);
     }
 
-    ToastUtil.error(message || "Something went wrong!");
+    ToastUtil.error(message || "Check you internet connection or server is down or something went wrong!");
 
     return Promise.reject(error);
   }
