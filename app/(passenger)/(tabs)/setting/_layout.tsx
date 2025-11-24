@@ -1,7 +1,7 @@
-import { TouchableOpacity } from "react-native";
-import React from "react";
-import { Stack } from "expo-router";
-import { Ionicons } from "@expo/vector-icons";
+import { TouchableOpacity } from 'react-native';
+import React from 'react';
+import { Stack } from 'expo-router';
+import { Ionicons } from '@expo/vector-icons';
 
 const Layout = () => {
   return (
@@ -10,14 +10,14 @@ const Layout = () => {
         name="index"
         options={({ navigation }) => ({
           headerShown: true,
-          headerTitle: "Settings",
-          headerTitleAlign: "left",
+          headerTitle: 'Settings',
+          headerTitleAlign: 'left',
           headerStyle: {
-            backgroundColor: "white",
+            backgroundColor: 'white',
           },
           headerTitleStyle: {
             fontSize: 18,
-            fontWeight: "bold",
+            fontWeight: 'bold',
           },
           headerLeft: () => (
             <TouchableOpacity onPress={() => navigation.goBack()} className="bg-muted-100 rounded-full p-1 mx-2">
@@ -30,17 +30,17 @@ const Layout = () => {
       />
 
       <Stack.Screen
-        name="privaryAndPolicy"
+        name="privacyAndPolicy"
         options={({ navigation }: { navigation: any }) => ({
           headerShown: true,
-          headerTitle: "Privacy And Policy",
-          headerTitleAlign: "left",
+          headerTitle: 'Privacy And Policy',
+          headerTitleAlign: 'left',
           headerStyle: {
-            backgroundColor: "white",
+            backgroundColor: 'white',
           },
           headerTitleStyle: {
             fontSize: 18,
-            fontWeight: "bold",
+            fontWeight: 'bold',
           },
           headerLeft: () => (
             <TouchableOpacity onPress={() => navigation.goBack()} className="bg-muted-100 rounded-full p-1 mx-2">
@@ -55,14 +55,14 @@ const Layout = () => {
         name="deleteAccount"
         options={({ navigation }: { navigation: any }) => ({
           headerShown: true,
-          headerTitle: "Delete Account",
-          headerTitleAlign: "left",
+          headerTitle: 'Delete Account',
+          headerTitleAlign: 'left',
           headerStyle: {
-            backgroundColor: "white",
+            backgroundColor: 'white',
           },
           headerTitleStyle: {
             fontSize: 18,
-            fontWeight: "bold",
+            fontWeight: 'bold',
           },
           headerLeft: () => (
             <TouchableOpacity onPress={() => navigation.goBack()} className="bg-muted-100 rounded-full p-1 mx-2">

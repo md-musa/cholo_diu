@@ -1,0 +1,17 @@
+{
+  "version": "1.0.0",
+
+  "api_url": "https://choloserver-production.up.railway.app",
+  "socket_url": "https://choloserver-production.up.railway.app",
+
+  "force_update": false,
+
+  "update_version": "1.0.0",
+  "update_message": "",
+  "playstore_url": "",
+
+  "maintenance_mode": false,
+  "maintenance_message": "The server is under maintenance. Please try again later.",
+
+  "features": {}
+}

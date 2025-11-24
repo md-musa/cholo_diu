@@ -1,17 +1,18 @@
 // src/hooks/useBusLocation.ts
-import { useEffect, useState } from "react";
-import NetInfo from "@react-native-community/netinfo";
-import socket from "@/config/socketIoConfig";
-import { SOCKET_EVENTS } from "@/constants";
-import { useAppDispatch, useAppSelector } from "@/store/storeConfig";
-import { clearBuses, removeInactiveBuses, updateBusLocation } from "@/store/features/busLocation/busLocationSlice";
+import { useEffect, useState } from 'react';
+import NetInfo from '@react-native-community/netinfo';
+import { getSocket } from '@/config/socketIoConfig';
+import { SOCKET_EVENTS } from '@/constants';
+import { useAppDispatch, useAppSelector } from '@/store/storeConfig';
+import { clearBuses, removeInactiveBuses, updateBusLocation } from '@/store/features/busLocation/busLocationSlice';
 
 export const useBusLocation = () => {
   const dispatch = useAppDispatch();
-  const { route } = useAppSelector((state) => state.auth);
+  const { route } = useAppSelector(state => state.auth);
   const [isDisconnected, setIsDisconnected] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
-  const scoketDisConnectionErrMsg = "Live location temporarily unavailable";
+  const scoketDisConnectionErrMsg = 'Live location temporarily unavailable';
+  const socket = getSocket();
 
   // 1. Listen for network changes
   useEffect(() => {
@@ -20,7 +21,7 @@ export const useBusLocation = () => {
       setIsDisconnected(isOffline);
 
       if (isOffline) {
-        setMessage("You are offline");
+        setMessage('You are offline');
       } else {
         if (!socket.connected) {
           setMessage(scoketDisConnectionErrMsg);
@@ -77,9 +78,9 @@ export const useBusLocation = () => {
 
     // Attach socket listeners
     socket.on(SOCKET_EVENTS.BUS_LOCATION_UPDATE, handleLocationUpdate);
-    socket.on("connect", handleConnect);
-    socket.on("disconnect", handleDisconnect);
-    socket.on("connect_error", handleConnectError);
+    socket.on('connect', handleConnect);
+    socket.on('disconnect', handleDisconnect);
+    socket.on('connect_error', handleConnectError);
 
     // Join route room if already connected
     if (socket.connected && route) {
@@ -88,9 +89,9 @@ export const useBusLocation = () => {
 
     return () => {
       socket.off(SOCKET_EVENTS.BUS_LOCATION_UPDATE, handleLocationUpdate);
-      socket.off("connect", handleConnect);
-      socket.off("disconnect", handleDisconnect);
-      socket.off("connect_error", handleConnectError);
+      socket.off('connect', handleConnect);
+      socket.off('disconnect', handleDisconnect);
+      socket.off('connect_error', handleConnectError);
 
       if (route) {
         socket.emit(SOCKET_EVENTS.LEAVE_ROUTE_ROOM, route._id);

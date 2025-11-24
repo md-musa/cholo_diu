@@ -1,27 +1,26 @@
-import React, { useEffect, useState } from "react";
-import { View, Text, TouchableOpacity, Linking, ScrollView, Image, Alert } from "react-native";
-import Constants from "expo-constants";
-import { useAppDispatch, useAppSelector } from "@/store/storeConfig";
-import { clearCredentials } from "@/store/features/auth/authSlice";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useRouter } from "expo-router";
-import { Ionicons, FontAwesome, MaterialIcons } from "@expo/vector-icons";
-import axiosInstance from "@/config/axiosInstance";
-import { ASYNC_STORAGE_KEYS } from "@/constants";
-import musaImg1 from "../../../../assets/images/p1.png";
-import musaImg2 from "../../../../assets/images/p2.png";
-
+import React, { useEffect, useState } from 'react';
+import { View, Text, TouchableOpacity, Linking, ScrollView, Image, Alert } from 'react-native';
+import Constants from 'expo-constants';
+import { useAppDispatch, useAppSelector } from '@/store/storeConfig';
+import { clearCredentials } from '@/store/features/auth/authSlice';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useRouter } from 'expo-router';
+import { Ionicons, FontAwesome, MaterialIcons } from '@expo/vector-icons';
+import axiosInstance from '@/config/axiosInstance';
+import { ASYNC_STORAGE_KEYS } from '@/constants';
+import musaImg1 from '../../../../assets/images/p1.png';
+import musaImg2 from '../../../../assets/images/p2.png';
 
 export default function Settings() {
   const dispatch = useAppDispatch();
   const router = useRouter();
-  const { user, route } = useAppSelector((state) => state.auth);
+  const { user, route } = useAppSelector(state => state.auth);
   const [userData, setUserData] = useState(null);
 
   useEffect(() => {
     const getUserData = async () => {
       try {
-        const { data } = await axiosInstance.get("/auth/user", {
+        const { data } = await axiosInstance.get('/auth/user', {
           params: { userId: user._id },
         });
         setUserData(data);
@@ -33,14 +32,14 @@ export default function Settings() {
   }, []);
 
   const handleLogout = async () => {
-    Alert.alert("Confirm Logout", "Are you sure you want to log out?", [
+    Alert.alert('Confirm Logout', 'Are you sure you want to log out?', [
       {
-        text: "Cancel",
-        style: "cancel",
+        text: 'Cancel',
+        style: 'cancel',
       },
       {
-        text: "Log Out",
-        style: "destructive",
+        text: 'Log Out',
+        style: 'destructive',
         onPress: async () => {
           try {
             await AsyncStorage.removeItem(ASYNC_STORAGE_KEYS.AUTH_TOKEN);
@@ -49,9 +48,9 @@ export default function Settings() {
 
             dispatch(clearCredentials());
 
-            router.replace("/(auth)/login");
+            router.replace('/(auth)/login');
           } catch (err) {
-            console.log("Logout failed:", err.message);
+            console.log('Logout failed:', err.message);
           }
         },
       },
@@ -76,7 +75,7 @@ export default function Settings() {
               <Text className="text-white text-sm capitalize">Role: {userData?.role}</Text>
             </View>
             <View className="bg-secondary-500 px-4 py-2 rounded-full mx-2">
-              <Text className="text-white text-sm">Route: {route?.routeName || "N/A"}</Text>
+              <Text className="text-white text-sm">Route: {route?.routeName || 'N/A'}</Text>
             </View>
           </View>
         </View>
@@ -88,12 +87,12 @@ export default function Settings() {
           <SettingOption
             icon="mail-outline"
             text="Contact Support"
-            onPress={() => Linking.openURL("mailto:mohammad.musa.dev@gmail.com")}
+            onPress={() => Linking.openURL('mailto:mohammad.musa.dev@gmail.com')}
           />
           <SettingOption
             icon="shield-checkmark-outline"
             text="Privacy Policy"
-            onPress={() => router.push("/(passenger)/setting/privacyAndPolicy")}
+            onPress={() => router.push('/(passenger)/(tabs)/setting/privacyAndPolicy')}
           />
           {/* <SettingOption
             icon="document-text-outline"
@@ -104,7 +103,7 @@ export default function Settings() {
           <SettingOption
             icon="remove-circle-outline"
             text="Delete Account & Data"
-            onPress={() => router.push("/(passenger)/setting/deleteAccount")}
+            onPress={() => router.push('/(passenger)/setting/deleteAccount')}
           />
         </SectionCard>
 
@@ -123,7 +122,7 @@ export default function Settings() {
           <View className="flex-row items-center space-x-6 bg-white rounded-xl">
             {/* Left Column - Image */}
             <View className="w-[35%] ">
-              <Image source={musaImg2} className="w-28 h-28 rounded-full border-4 border-gray-200 shadow-lg" />
+              <Image source={musaImg1} className="w-28 h-28 rounded-full border-4 border-gray-200 shadow-lg" />
             </View>
 
             {/* Right Column - Details */}
@@ -189,14 +188,14 @@ const SectionCard = ({ title, children }) => (
   </View>
 );
 
-const SettingOption = ({ icon, text, onPress, rightComponent, color = "gray" }) => (
+const SettingOption = ({ icon, text, onPress, rightComponent, color = 'gray' }) => (
   <TouchableOpacity
     className="flex-row items-center justify-between py-4 border-b border-muted-100 last:border-b-0"
     onPress={onPress}
     disabled={!onPress}
   >
     <View className="flex-row items-center">
-      <Ionicons name={icon} size={22} color={color === "gray" ? "#6b7280" : color} style={{ marginRight: 12 }} />
+      <Ionicons name={icon} size={22} color={color === 'gray' ? '#6b7280' : color} style={{ marginRight: 12 }} />
       <Text className="text-muted-700">{text}</Text>
     </View>
     {rightComponent || <Ionicons name="chevron-forward" size={20} color="#9ca3af" />}

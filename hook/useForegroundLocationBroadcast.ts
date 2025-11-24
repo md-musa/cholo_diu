@@ -1,17 +1,17 @@
-import * as KeepAwake from "expo-keep-awake";
-import { ToastUtil } from "./../utils/toastUtil";
-import { useEffect, useRef } from "react";
-import * as Location from "expo-location";
-import socket from "@/config/socketIoConfig";
-import { SOCKET_EVENTS } from "@/constants";
-import { useAppSelector } from "@/store/storeConfig";
-import { LOCATION_CONSTANTS } from "@/constants/location";
+import * as KeepAwake from 'expo-keep-awake';
+import { ToastUtil } from './../utils/toastUtil';
+import { useEffect, useRef } from 'react';
+import * as Location from 'expo-location';
+import { getSocket } from '@/config/socketIoConfig';
+import { SOCKET_EVENTS } from '@/constants';
+import { useAppSelector } from '@/store/storeConfig';
+import { LOCATION_CONSTANTS } from '@/constants/location';
 
 export function useForegroundLocationBroadcast() {
   const { isBroadcasting, isForegroundServiceRunning, isBackgroundServiceRunning, activeTrip } = useAppSelector(
-    (state) => state.broadcast
+    state => state.broadcast
   );
-
+  const socket = getSocket();
   const watcherRef = useRef<Location.LocationSubscription | null>(null);
 
   useEffect(() => {
@@ -25,7 +25,7 @@ export function useForegroundLocationBroadcast() {
 
   const startForegroundBroadcasting = async () => {
     try {
-      await KeepAwake.activateKeepAwakeAsync("foreground");
+      await KeepAwake.activateKeepAwakeAsync('foreground');
       if (!socket.connected) {
         socket.connect();
       }
@@ -37,10 +37,10 @@ export function useForegroundLocationBroadcast() {
           timeInterval: LOCATION_CONSTANTS.UPDATE_TIME_INTERVAL,
           distanceInterval: LOCATION_CONSTANTS.UPDATE_DISTANCE_INTERVAL,
         },
-        (location) => {
+        location => {
           socket.emit(SOCKET_EVENTS.BROADCAST_BUS_LOCATION, {
             tripId: activeTrip?.tripId,
-            broadcaster: "user",
+            broadcaster: 'user',
             latitude: location.coords.latitude,
             longitude: location.coords.longitude,
             speed: location.coords.speed,
@@ -51,12 +51,12 @@ export function useForegroundLocationBroadcast() {
       );
     } catch (error) {
       console.log(error);
-      ToastUtil.error("Failed to start foreground location broadcasting.");
+      ToastUtil.error('Failed to start foreground location broadcasting.');
     }
   };
 
   const stopForegroundBroadcasting = async () => {
-    KeepAwake.deactivateKeepAwake("foreground");
+    KeepAwake.deactivateKeepAwake('foreground');
     if (watcherRef.current) {
       watcherRef.current.remove();
       watcherRef.current = null;

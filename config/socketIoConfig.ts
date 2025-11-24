@@ -1,17 +1,30 @@
-import Constants from "expo-constants";
-import { io } from "socket.io-client";
+import { io, Socket } from 'socket.io-client';
 
-const SERVER_URL =
-  process.env.NODE_ENV === "development"
-    ? Constants.expoConfig?.extra?.DVELOPMENT_SERVER_URL
-    : Constants.expoConfig?.extra?.PRODUCTION_SERVER_URL;
+let socket: Socket | null = null;
+let currentUrl = '';
 
-const socket = io(SERVER_URL, {
-  autoConnect: false, // Automatically connect when the socket is created
-  reconnection: true, // Enable reconnection
-  reconnectionAttempts: 5, // Number of reconnection attempts
-  reconnectionDelay: 2000, // Delay between reconnection attempts in milliseconds
-  // transports: ["websocket"], // Use WebSocket transport only
-});
+export function setupSocketUrl(newUrl: string) {
+  // If URL is unchanged → do nothing
+  if (currentUrl === newUrl && socket) return;
 
-export default socket;
+  currentUrl = newUrl;
+
+  // If socket exists → disconnect before updating
+  if (socket) {
+    socket.disconnect();
+  }
+
+  // Create a fresh new socket with the new URL
+  socket = io(newUrl, {
+    transports: ['websocket'],
+    autoConnect: true,
+    reconnection: true,
+    reconnectionAttempts: 5,
+    reconnectionDelay: 2000,
+  });
+}
+
+export function getSocket(): Socket {
+  if (!socket) throw new Error('Socket URL is not initialized. Call setSocketUrl() first.');
+  return socket;
+}

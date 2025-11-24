@@ -1,17 +1,14 @@
-import { View, Text, Image, TouchableOpacity } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
-import React, { useEffect, useState } from "react";
-import { useRouter } from "expo-router";
-import coverImage from "@/assets/images/login_bg.png";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { jwtDecode } from "jwt-decode";
-import { ASYNC_STORAGE_KEYS, USER_ROLES } from "@/constants";
-import { useAppDispatch } from "@/store/storeConfig";
-import { AuthUser, clearCredentials, setCredentials } from "@/store/features/auth/authSlice";
-import LoadingScreen from "../components/UI/LoadingScreen";
-
-// Prevent splash from auto-hiding
-// SplashScreen.preventAutoHideAsync();
+import { View, Text, Image, TouchableOpacity, Alert } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import React, { useEffect, useState } from 'react';
+import { useRouter } from 'expo-router';
+import coverImage from '@/assets/images/login_bg.png';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { jwtDecode } from 'jwt-decode';
+import { ASYNC_STORAGE_KEYS, USER_ROLES } from '@/constants';
+import { useAppDispatch } from '@/store/storeConfig';
+import { AuthUser, clearCredentials, setCredentials } from '@/store/features/auth/authSlice';
+import LoadingScreen from '../components/UI/LoadingScreen';
 
 interface DecodedToken {
   _id: string;
@@ -48,16 +45,16 @@ const Index = () => {
         dispatch(setCredentials({ user, route, accessToken: token }));
         switch (decoded.role) {
           case USER_ROLES.EMPLOYEE:
-            router.replace("/(passenger)");
+            router.replace('/(passenger)');
             break;
           case USER_ROLES.STUDENT:
-            router.replace("/(passenger)");
+            router.replace('/(passenger)');
             break;
           case USER_ROLES.DRIVER:
-            router.replace("/(driver)");
+            router.replace('/(driver)');
             break;
           default:
-            router.replace("/(auth)/login");
+            router.replace('/(auth)/login');
         }
       } catch (err) {
         // console.log("error", err);
@@ -69,13 +66,6 @@ const Index = () => {
 
     initialize();
   }, []);
-
-  // const onLayoutRootView = useCallback(async () => {
-  //   if (appReady) {
-  //     await SplashScreen.hideAsync();
-  //     console.log("appready");
-  //   }
-  // }, [appReady]);
 
   if (!appReady) {
     return <LoadingScreen />;
@@ -100,7 +90,7 @@ const Index = () => {
 
       <View className="mt-10 mb-10">
         <TouchableOpacity
-          onPress={() => router.push("/login")}
+          onPress={() => router.push('/login')}
           className="my-2 flex-row items-center justify-center bg-secondary-900 py-3 rounded-full mx-6"
           activeOpacity={0.8}
         >
@@ -108,7 +98,7 @@ const Index = () => {
         </TouchableOpacity>
 
         <TouchableOpacity
-          onPress={() => router.push("/register")}
+          onPress={() => router.push('/register')}
           className="my-2 flex-row items-center justify-center bg-secondary-900 py-3 rounded-full mx-6"
           activeOpacity={0.8}
         >
