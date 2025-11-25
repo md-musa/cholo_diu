@@ -3,9 +3,9 @@
   "main": "expo-router/entry",
   "version": "1.0.0",
   "scripts": {
-    "dev": "cross-env NODE_ENV=production npx expo start",
+    "dev": "cross-env NODE_ENV=development npx expo start",
     "build:dev": "cross-env NODE_ENV=production eas build --profile development --platform android",
-    "build:production": "cross-env NODE_ENV=production eas build --profile production-apk --platform android",
+    "build:prod_apk": "cross-env NODE_ENV=production eas build --profile production-apk --platform android",
     "reset-project": "node ./scripts/reset-project.js",
     "android": "cross-env NODE_ENV=development expo run:android",
     "build:release": "cross-env NODE_ENV=production eas build --profile release --platform android",

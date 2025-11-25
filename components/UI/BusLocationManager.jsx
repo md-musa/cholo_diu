@@ -1,24 +1,35 @@
-import { useBusLocation } from "@/hook/useBusLocationTracking";
-import React, { useEffect, useState } from "react";
-import { Text } from "react-native";
+import { useBusLocation } from '@/hook/useBusLocationTracking';
+import React, { useEffect, useState } from 'react';
+import { Text } from 'react-native';
 
 function BusLocationManager() {
   const { isUserDisConnected, internetStatus } = useBusLocation();
-  const [showConnectedMsg, setShowConnectedMsg] = useState(false);
+  const [showMsg, setShowMsg] = useState(false);
 
   useEffect(() => {
-    if (!isUserDisConnected) {
-      setShowConnectedMsg(true);
-      const timer = setTimeout(() => setShowConnectedMsg(false), 2000);
-      return () => clearTimeout(timer);
+    let timer;
+
+    // If user is disconnected, wait 2 seconds before showing message
+    if (isUserDisConnected) {
+      timer = setTimeout(() => {
+        if (isUserDisConnected) {
+          setShowMsg(true);
+        }
+      }, 2000);
+    } else {
+      setShowMsg(false);
     }
+
+    return () => clearTimeout(timer);
   }, [isUserDisConnected]);
 
-  if (isUserDisConnected)
+  if (showMsg) {
     return (
       <Text className="z-100 text-center w-full text-sm font-semibold bg-muted-600 text-white">{internetStatus}</Text>
     );
-  else return <></>;
+  }
+
+  return <></>;
 }
 
 export default React.memo(BusLocationManager);
