@@ -1,5 +1,5 @@
 import { Tabs } from 'expo-router';
-import { MaterialIcons, FontAwesome5, Feather } from '@expo/vector-icons';
+import { MaterialIcons, Feather, MaterialCommunityIcons } from '@expo/vector-icons';
 import { colors } from '@/config/colors';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -41,17 +41,11 @@ export default function TabLayout() {
       <Tabs.Screen
         name="broadcast"
         options={{
-          title: 'Broadcast',
-          tabBarIcon: ({ color, size }) => <FontAwesome5 name="broadcast-tower" size={21} color={color} />,
+          title: 'Share Location',
+          tabBarIcon: ({ color, size }) => <MaterialCommunityIcons name="bus-marker" size={21} color={color} />,
         }}
       />
-      {/* <Tabs.Screen
-        name="notification"
-        options={{
-          title: "Notifications",
-          tabBarIcon: ({ color, size }) => <Ionicons name="notifications-outline" size={21} color={color} />,
-        }}
-      /> */}
+
       <Tabs.Screen
         name="setting"
         options={{

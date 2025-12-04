@@ -1,14 +1,14 @@
 {
   "version": "1.0.0",
 
-  "api_url": "https://choloserver-production.up.railway.app",
-  "socket_url": "https://choloserver-production.up.railway.app",
+  "api_url": "https://api.cholodiu.xyz",
+  "socket_url": "https://api.cholodiu.xyz",
 
   "force_update": false,
 
   "update_version": "1.0.0",
   "update_message": "",
-  "playstore_url": "",
+  "playstore_url": "https://cholodiu.xyz/",
 
   "maintenance_mode": false,
   "maintenance_message": "The server is under maintenance. Please try again later.",

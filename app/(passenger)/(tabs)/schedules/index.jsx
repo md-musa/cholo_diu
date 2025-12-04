@@ -1,33 +1,34 @@
-import React, { useEffect, useState } from "react";
-import { View, Text, TouchableOpacity, ScrollView, RefreshControl } from "react-native";
-import { processSchedules } from "@/utils/scheduleHelper";
-import ScheduleCard from "@/components/ScheduleCard";
-import { Feather, FontAwesome5, MaterialCommunityIcons } from "@expo/vector-icons";
-import { Picker } from "@react-native-picker/picker";
-import { useAppDispatch, useAppSelector } from "@/store/storeConfig";
-import { useGetRoutesQuery } from "@/store/features/route/routeApi";
-import { useGetScheduleByRouteQuery } from "@/store/features/schedule/scheduleApi";
-import { updateRoute } from "@/store/features/auth/authSlice";
-import { useRouter } from "expo-router";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { ASYNC_STORAGE_KEYS } from "@/constants";
-import LoadingScreen from "@/components/UI/LoadingScreen";
-import { colors } from "@/config/colors";
-import { DirectionTitleDown, DirectionTitleUp } from "@/components/schedule/DirectionTitle";
+import React, { useEffect, useState } from 'react';
+import { View, Text, TouchableOpacity, ScrollView, RefreshControl } from 'react-native';
+import { processSchedules } from '@/utils/scheduleHelper';
+import ScheduleCard from '@/components/ScheduleCard';
+import { Feather, FontAwesome5, MaterialCommunityIcons } from '@expo/vector-icons';
+import { Picker } from '@react-native-picker/picker';
+import { useAppDispatch, useAppSelector } from '@/store/storeConfig';
+import { useGetRoutesQuery } from '@/store/features/route/routeApi';
+import { useGetScheduleByRouteQuery } from '@/store/features/schedule/scheduleApi';
+import { updateRoute } from '@/store/features/auth/authSlice';
+import { useRouter } from 'expo-router';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { ASYNC_STORAGE_KEYS } from '@/constants';
+import LoadingScreen from '@/components/UI/LoadingScreen';
+import { colors } from '@/config/colors';
+import { DirectionTitleDown, DirectionTitleUp } from '@/components/schedule/DirectionTitle';
+import ScheduleTypeDropdown from '@/components/schedule/ScheduleTypeDropdown';
 
 const BusSchedule = () => {
-  const scheduleTypes = ["regular", "mid-term", "final", "ramadan"];
-  const scheduleDays = ["weekdays", "friday"];
+  const scheduleTypes = ['regular', 'mid-term', 'final', 'ramadan'];
+  const scheduleDays = ['weekdays', 'friday'];
 
   const router = useRouter();
   const dispatch = useAppDispatch();
-  const { user, route } = useAppSelector((state) => state.auth);
-  const { isBroadcasting } = useAppSelector((state) => state.broadcast);
+  const { user, route } = useAppSelector(state => state.auth);
+  const { isBroadcasting } = useAppSelector(state => state.broadcast);
 
   const [selectedType, setSelectedType] = useState(null);
   const [selectedFilter, setSelectedFilter] = useState(user?.role);
   const [selectedDay, setSelectedDay] = useState(
-    new Date().toLocaleString("en-US", { weekday: "long" }).toLowerCase() === "friday" ? "friday" : "weekdays"
+    new Date().toLocaleString('en-US', { weekday: 'long' }).toLowerCase() === 'friday' ? 'friday' : 'weekdays'
   );
 
   const { data: routes, isRoutesLoading, refetch: refetchRoutes } = useGetRoutesQuery();
@@ -58,8 +59,8 @@ const BusSchedule = () => {
     if (scheduleResult) setSelectedType(scheduleResult.scheduleMode);
   }, [scheduleResult]);
 
-  const handleRouteChange = async (selectedRouteId) => {
-    const selectedRouteData = routes.find((r) => r._id === selectedRouteId);
+  const handleRouteChange = async selectedRouteId => {
+    const selectedRouteData = routes.find(r => r._id === selectedRouteId);
     dispatch(updateRoute(selectedRouteData));
     await AsyncStorage.setItem(ASYNC_STORAGE_KEYS.CURRENT_ROUTE, JSON.stringify(selectedRouteData));
   };
@@ -75,58 +76,53 @@ const BusSchedule = () => {
       <MaterialCommunityIcons name="bus-clock" size={40} color={colors.tertiary[400]} />
       <Text className="text-muted-700 font-semibold text-base mt-3 mb-1">No Schedule Available</Text>
       <Text className="text-muted-500 text-center">
-        {message || "There are currently no bus schedules for this selection."}
+        {message || 'There are currently no bus schedules for this selection.'}
       </Text>
     </View>
   );
 
   return (
     <ScrollView
-      className="flex-1 bg-muted-50 px-4"
+      className="flex-1 bg-muted-100 px-4"
       refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
     >
       <View className="">
         <View className="flex-row items-center mt-4 my-2">
-          <TouchableOpacity
-            className={`mx-1 px-3 py-1 border rounded-full bg-secondary-500 border-muted-300`}
-            disabled={true}
-          >
-            <Text className="capitalize text-white">{selectedType}</Text>
-          </TouchableOpacity>
+          <ScheduleTypeDropdown types={['Regular', 'Mid Term', 'Final Term', 'Ramadan']} default={selectedType} />
 
           <Text className="text-2xl text-gray-500 px-2">|</Text>
           {/* ---- Schedule days -----  */}
-          {scheduleDays.map((day) => (
+          {scheduleDays.map(day => (
             <TouchableOpacity
               key={day}
-              className={`mx-1 px-4 py-1 border rounded-full ${
-                selectedDay === day ? "bg-secondary-500" : "bg-white"
+              className={`mx-1 px-4 py-1 border rounded-xl ${
+                selectedDay === day ? 'bg-secondary-500' : 'bg-white'
               } border-muted-300`}
               onPress={() => setSelectedDay(day)}
             >
-              <Text className={`capitalize ${selectedDay === day ? "text-white" : "text-black"}`}>{day}</Text>
+              <Text className={`capitalize ${selectedDay === day ? 'text-white' : 'text-black'}`}>{day}</Text>
             </TouchableOpacity>
           ))}
         </View>
       </View>
 
       <TouchableOpacity
-        onPress={() => router.push("/(passenger)/schedules/waypoints")}
-        className="py-1.5 mt-2 mb-1 bg-white border border-muted-300 rounded-full flex-row items-center justify-center"
+        onPress={() => router.push('/(passenger)/schedules/waypoints')}
+        className="py-1.5 my-2 bg-white border border-muted-300 rounded-xl flex-row items-center justify-center"
       >
         <MaterialCommunityIcons name="map-marker-path" size={18} color="black" style={{ marginRight: 8 }} />
         <Text className="text-center text-black text-mg">View Stoppages</Text>
       </TouchableOpacity>
 
-      <View className="bg-tertiary-900 rounded-t-3xl mt-2.5 px-0.5">
-        <View className="mt-2 flex-row justify-between items-center px-4">
+      <View className="rounded-t-xl border border-muted-300 my-2 overflow-hidden shadow-md">
+        {/* <View className="mt-2 flex-row justify-between items-center px-4">
           <View className="flex-row items-center flex-[0.6]">
             <Feather name="calendar" size={20} color="white" style={{ marginRight: 8 }} />
             <Text className="text-lg font-semibold text-white">
-              {new Date().toLocaleDateString("en-GB", {
-                weekday: "short",
-                day: "2-digit",
-                month: "short",
+              {new Date().toLocaleDateString('en-GB', {
+                weekday: 'short',
+                day: '2-digit',
+                month: 'short',
               })}
             </Text>
           </View>
@@ -138,9 +134,9 @@ const BusSchedule = () => {
               enabled={!isBroadcasting}
               style={{
                 flex: 1,
-                backgroundColor: "white",
+                backgroundColor: 'white',
                 fontSize: 14,
-                color: "black",
+                color: 'black',
               }}
               dropdownIconColor="black"
               mode="dialog"
@@ -152,7 +148,7 @@ const BusSchedule = () => {
                   fontSize: 14,
                 }}
               />
-              {routes?.map((route) => (
+              {routes?.map(route => (
                 <Picker.Item
                   key={route?._id}
                   label={`${route?.routeName}`}
@@ -164,70 +160,69 @@ const BusSchedule = () => {
               ))}
             </Picker>
           </View>
+        </View> */}
+
+        <View className="flex-row justify-around rounded-md px-5 pt-5 bg-white">
+          <TouchableOpacity
+            className={`px-6 py-2 rounded-lg border w-[45%] mx-2
+              ${selectedFilter === 'student' ? 'bg-secondary-500 border-secondary-600' : 'bg-white border-muted-400'}`}
+            onPress={() => setSelectedFilter('student')}
+          >
+            <View className="flex-row items-center justify-center">
+              <FontAwesome5
+                name="user-graduate"
+                size={14}
+                color={selectedFilter === 'student' ? 'white' : colors.secondary[500]}
+              />
+
+              <Text
+                className={`text-center font-semibold mx-1 
+                ${selectedFilter === 'student' ? 'text-white' : 'text-muted-700'}`}
+              >
+                Student
+              </Text>
+            </View>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            className={`px-6 py-2 rounded-lg border w-[45%] mx-2
+              ${selectedFilter === 'employee' ? 'bg-secondary-500 border-secondary-600' : 'bg-white border-muted-400'}`}
+            onPress={() => setSelectedFilter('employee')}
+          >
+            <View className="flex-row items-center justify-center">
+              <MaterialCommunityIcons
+                name="account-tie"
+                size={18}
+                color={selectedFilter === 'employee' ? 'white' : colors.secondary[500]}
+              />
+              <Text
+                className={`text-center font-semibold mx-1
+                ${selectedFilter === 'employee' ? 'text-white' : 'text-muted-700'}`}
+              >
+                Employee
+              </Text>
+            </View>
+          </TouchableOpacity>
         </View>
 
-        <View className="bg-white p-4 my-3">
-          <View className="flex-row justify-around rounded-md">
-            {/* Student Button  */}
-            <TouchableOpacity
-              className={`px-6 py-2 rounded-lg border w-[45%] mx-2
-              ${selectedFilter === "student" ? "bg-secondary-500 border-secondary-600" : "bg-white border-muted-400"}`}
-              onPress={() => setSelectedFilter("student")}
-            >
-              <View className="flex-row items-center justify-center">
-                <FontAwesome5
-                  name="user-graduate"
-                  size={14}
-                  color={selectedFilter === "student" ? "white" : colors.secondary[500]}
-                />
-
-                <Text
-                  className={`text-center font-semibold mx-1 
-                ${selectedFilter === "student" ? "text-white" : "text-muted-700"}`}
-                >
-                  Student
-                </Text>
-              </View>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              className={`px-6 py-2 rounded-lg border w-[45%] mx-2
-              ${selectedFilter === "employee" ? "bg-secondary-500 border-secondary-600" : "bg-white border-muted-400"}`}
-              onPress={() => setSelectedFilter("employee")}
-            >
-              <View className="flex-row items-center justify-center">
-                <MaterialCommunityIcons
-                  name="account-tie"
-                  size={18}
-                  color={selectedFilter === "employee" ? "white" : colors.secondary[500]}
-                />
-                <Text
-                  className={`text-center font-semibold mx-1
-                ${selectedFilter === "employee" ? "text-white" : "text-muted-700"}`}
-                >
-                  Employee
-                </Text>
-              </View>
-            </TouchableOpacity>
-          </View>
-
-          <View className="mt-4">
-            {selectedFilter == "student" ? (
+        <View className="bg-white p-4">
+          <View className="">
+            {selectedFilter == 'student' ? (
               <>
                 <View className="">
                   <DirectionTitleUp routeName={route?.routeName} />
 
                   {toCampusStudent?.length > 0 ? (
-                    toCampusStudent?.map((schedule) => <ScheduleCard key={schedule?._id} schedule={schedule} />)
+                    toCampusStudent?.map(schedule => <ScheduleCard key={schedule?._id} schedule={schedule} />)
                   ) : (
                     <NoSchedule message="No bus schedule found for students going to campus." />
                   )}
                 </View>
-                <View className="mt-4">
+                <View className="mt-6">
                   <DirectionTitleDown routeName={route?.routeName} />
 
                   {fromCampusStudent?.length > 0 ? (
-                    fromCampusStudent?.map((schedule) => <ScheduleCard key={schedule?._id} schedule={schedule} />)
+                    fromCampusStudent?.map(schedule => <ScheduleCard key={schedule?._id} schedule={schedule} />)
                   ) : (
                     <NoSchedule message="No bus schedule found for students leaving campus." />
                   )}
@@ -239,16 +234,16 @@ const BusSchedule = () => {
                   <DirectionTitleUp routeName={route?.routeName} />
 
                   {toCampusEmployee?.length > 0 ? (
-                    toCampusEmployee?.map((schedule) => <ScheduleCard key={schedule?._id} schedule={schedule} />)
+                    toCampusEmployee?.map(schedule => <ScheduleCard key={schedule?._id} schedule={schedule} />)
                   ) : (
                     <NoSchedule message="No bus schedule found for employees going to campus." />
                   )}
                 </View>
-                <View className="mt-4">
+                <View className="">
                   <DirectionTitleDown routeName={route?.routeName} />
 
                   {fromCampusEmployee?.length > 0 ? (
-                    fromCampusEmployee?.map((schedule) => <ScheduleCard key={schedule?._id} schedule={schedule} />)
+                    fromCampusEmployee?.map(schedule => <ScheduleCard key={schedule?._id} schedule={schedule} />)
                   ) : (
                     <NoSchedule message="No bus schedule found for employees leaving campus." />
                   )}

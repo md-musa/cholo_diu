@@ -34,20 +34,22 @@ export default function RootLayout() {
 
           const status = checkAppStatus(config);
           if (status === 'BLOCKED') {
-            Alert.alert('App Blocked', 'This version of the app is no longer supported.');
+            // Alert.alert('App Blocked', 'This version of the app is no longer supported.');
             return;
           }
 
           setupApiBaseUrl(config.api_url);
           setupSocketUrl(config.api_url);
+          setAppReady(true);
         } else if (process.env.NODE_ENV === 'development') {
           setupApiBaseUrl(DEV_SERVER_URL);
           setupSocketUrl(DEV_SERVER_URL);
+          setAppReady(true);
         }
       } catch (err) {
         console.log('Initialization error:', err);
-      } finally {
-        setAppReady(true);
+        setAppReady(false);
+        return;
       }
     };
 

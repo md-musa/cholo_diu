@@ -1,26 +1,26 @@
-import React, { useEffect, useState } from "react";
-import { Image, StyleSheet, Text, View } from "react-native";
-import * as MapLibreGL from "@maplibre/maplibre-react-native";
-import { generateMarkers } from "@/utils/mappingHelper";
-import busMarker from "@/assets/images/navigatorArrow3.png";
-import UniIcon from "@/assets/images/uni-2.png";
-import pinIcon from "@/assets/images/red-pin-marker.png";
-import busMarkerGreen from "@/assets/images/navigatorArrow2.png";
-import { useAppSelector } from "@/store/storeConfig";
-import { getWayline, getWaypoints, ROUTES } from "@/assets/routes";
-import useLocation from "@/hook/useLocation";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { MapUtils } from "@/utils/mapUtils";
+import React, { useEffect, useState } from 'react';
+import { Image, StyleSheet, Text, View } from 'react-native';
+import * as MapLibreGL from '@maplibre/maplibre-react-native';
+import { generateMarkers } from '@/utils/mappingHelper';
+import busMarker from '@/assets/images/navigatorArrow3.png';
+import UniIcon from '@/assets/images/uni-2.png';
+import pinIcon from '@/assets/images/red-pin-marker.png';
+import busMarkerGreen from '@/assets/images/navigatorArrow2.png';
+import { useAppSelector } from '@/store/storeConfig';
+import { getWayline, getWaypoints, ROUTES } from '@/assets/routes';
+import useLocation from '@/hook/useLocation';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { MapUtils } from '@/utils/mapUtils';
 function cpfl(string) {
-  if (!string) return "";
+  if (!string) return '';
   return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
 const MapComponent = ({ mapRef, zoom, setZoom, cameraRef, currentCenter, setCurrentCenter }) => {
   const { location } = useLocation();
-  const { route } = useAppSelector((state) => state.auth);
-  const { isBroadcasting, activeTrip } = useAppSelector((state) => state.broadcast);
-  const { activeBuses } = useAppSelector((state) => state.busLocation);
+  const { route } = useAppSelector(state => state.auth);
+  const { isBroadcasting, activeTrip } = useAppSelector(state => state.broadcast);
+  const { activeBuses } = useAppSelector(state => state.busLocation);
   const [busInfo, setBusInfo] = useState(null);
   const waypoints = getWaypoints(route?.routeNo);
 
@@ -36,12 +36,12 @@ const MapComponent = ({ mapRef, zoom, setZoom, cameraRef, currentCenter, setCurr
   return (
     <MapLibreGL.MapView
       localizeLabels={true}
-      logoEnabled={true}
+      logoEnabled={false}
       compassEnabled={true}
       compassViewMargins={{ x: 5, y: 100 }}
       styleURL={MapLibreGL.StyleURL.Street}
       textureMode={false}
-      attributionEnabled={true}
+      attributionEnabled={false}
       style={styles.map}
       ref={mapRef}
       // if map is fully loaded, then hanlderegiondidchange will be calable
@@ -62,7 +62,7 @@ const MapComponent = ({ mapRef, zoom, setZoom, cameraRef, currentCenter, setCurr
       {/* --------- Load tile --------- */}
       <MapLibreGL.RasterSource
         id="osm"
-        tileUrlTemplates={["https://tile.openstreetmap.org/{z}/{x}/{y}.png"]}
+        tileUrlTemplates={['https://tile.openstreetmap.org/{z}/{x}/{y}.png']}
         tileSize={256}
       >
         <MapLibreGL.RasterLayer id="osmLayer" sourceID="osm" />
@@ -71,7 +71,7 @@ const MapComponent = ({ mapRef, zoom, setZoom, cameraRef, currentCenter, setCurr
       <MapLibreGL.ShapeSource id="routeSource" shape={getWayline(route?.routeNo)}>
         <MapLibreGL.LineLayer
           id="routeLayer"
-          style={{ lineColor: "#2e2e2e", lineWidth: 2.5, lineCap: "round", lineJoin: "round" }}
+          style={{ lineColor: '#2e2e2e', lineWidth: 2.5, lineCap: 'round', lineJoin: 'round' }}
         />
       </MapLibreGL.ShapeSource>
       {/* ---- Image Load ------ */}
@@ -81,11 +81,11 @@ const MapComponent = ({ mapRef, zoom, setZoom, cameraRef, currentCenter, setCurr
         <MapLibreGL.ShapeSource
           id="userLocation-4"
           shape={{
-            type: "FeatureCollection",
-            features: waypoints.map((point) => ({
-              type: "Feature",
+            type: 'FeatureCollection',
+            features: waypoints.map(point => ({
+              type: 'Feature',
               geometry: {
-                type: "Point",
+                type: 'Point',
                 coordinates: point.coords,
               },
               properties: {
@@ -102,28 +102,28 @@ const MapComponent = ({ mapRef, zoom, setZoom, cameraRef, currentCenter, setCurr
       <MapLibreGL.ShapeSource
         id="userLocation-2"
         shape={{
-          type: "FeatureCollection",
+          type: 'FeatureCollection',
           features: [
             {
-              type: "Feature",
+              type: 'Feature',
               geometry: {
-                type: "Point",
+                type: 'Point',
                 coordinates: [90.320463, 23.879],
               },
               properties: {
-                icon: "UniIcon", // matches the key in MapLibreGL.Images
-                title: "Campus",
+                icon: 'UniIcon', // matches the key in MapLibreGL.Images
+                title: 'Campus',
               },
             },
             {
-              type: "Feature",
+              type: 'Feature',
               geometry: {
-                type: "Point",
+                type: 'Point',
                 coordinates: [90.322004, 23.876107],
               },
               properties: {
-                icon: "pinIcon", // matches the key in MapLibreGL.Images
-                title: "Transport",
+                icon: 'pinIcon', // matches the key in MapLibreGL.Images
+                title: 'Transport',
               },
             },
           ],
@@ -132,15 +132,15 @@ const MapComponent = ({ mapRef, zoom, setZoom, cameraRef, currentCenter, setCurr
         <MapLibreGL.SymbolLayer
           id="customMarkerLayer"
           style={{
-            iconImage: ["get", "icon"],
+            iconImage: ['get', 'icon'],
             iconSize: 0.06,
             iconAllowOverlap: true,
-            textField: ["get", "title"], // shows "DIU"
+            textField: ['get', 'title'], // shows "DIU"
             textSize: 15,
             textOffset: [0, -2.5], // adjust label position below the icon
-            textAnchor: "top",
+            textAnchor: 'top',
             textAllowOverlap: false,
-            textColor: "#000", // label text color
+            textColor: '#000', // label text color
           }}
         />
       </MapLibreGL.ShapeSource>
@@ -148,8 +148,8 @@ const MapComponent = ({ mapRef, zoom, setZoom, cameraRef, currentCenter, setCurr
       {/* -----Show buses location-------*/}
       <MapLibreGL.ShapeSource
         id="busMarkers"
-        shape={{ type: "FeatureCollection", features: generateMarkers(activeBuses) }}
-        onPress={(e) => {
+        shape={{ type: 'FeatureCollection', features: generateMarkers(activeBuses) }}
+        onPress={e => {
           setBusInfo(e.features[0]);
           setTimeout(() => setBusInfo(null), 3000);
         }}
@@ -194,12 +194,12 @@ const MapComponent = ({ mapRef, zoom, setZoom, cameraRef, currentCenter, setCurr
         <MapLibreGL.ShapeSource
           id="userLocation-666"
           shape={{
-            type: "FeatureCollection",
+            type: 'FeatureCollection',
             features: [
               {
-                type: "Feature",
+                type: 'Feature',
                 geometry: {
-                  type: "Point",
+                  type: 'Point',
                   coordinates: [location.longitude, location.latitude],
                 },
               },
@@ -215,12 +215,12 @@ const MapComponent = ({ mapRef, zoom, setZoom, cameraRef, currentCenter, setCurr
         <MapLibreGL.ShapeSource
           id="currentBusLocation-111"
           shape={{
-            type: "FeatureCollection",
+            type: 'FeatureCollection',
             features: [
               {
-                type: "Feature",
+                type: 'Feature',
                 geometry: {
-                  type: "Point",
+                  type: 'Point',
                   coordinates: [location.longitude, location.latitude],
                 },
                 properties: {
@@ -261,8 +261,8 @@ const styles = StyleSheet.create({
   },
 
   markerContainer: {
-    alignItems: "center",
-    backgroundColor: "white",
+    alignItems: 'center',
+    backgroundColor: 'white',
     padding: 4,
     borderRadius: 8,
   },
@@ -271,106 +271,106 @@ const styles = StyleSheet.create({
 
   busShadow1: {
     circleRadius: 17,
-    circleColor: "rgba(229, 129, 52, 0.4)",
+    circleColor: 'rgba(229, 129, 52, 0.4)',
     circleBlur: 0,
   },
   busShadow2: {
     circleRadius: 12,
-    circleColor: "#fff",
+    circleColor: '#fff',
     circleBlur: 0,
   },
   busShadow3: {
     circleRadius: 10,
-    circleColor: "black",
+    circleColor: 'black',
     circleBlur: 0,
   },
   busMarker: {
-    iconImage: "marker",
+    iconImage: 'marker',
     iconSize: 0.025,
-    iconAnchor: "center",
-    iconRotate: ["get", "heading"],
-    textField: ["get", "title"],
+    iconAnchor: 'center',
+    iconRotate: ['get', 'heading'],
+    textField: ['get', 'title'],
     textSize: 11,
-    textColor: "black",
-    textAnchor: "bottom",
+    textColor: 'black',
+    textAnchor: 'bottom',
     textOffset: [0, 3.7],
-    textHaloColor: "black",
+    textHaloColor: 'black',
     textHaloWidth: 0.1,
-    textRotate: ["get", "heading"], // This will rotate the label with the marker heading
+    textRotate: ['get', 'heading'], // This will rotate the label with the marker heading
   },
   currentBusShadow1: {
     circleRadius: 18,
-    circleColor: "rgba(0, 50, 255, 0.2)",
+    circleColor: 'rgba(0, 50, 255, 0.2)',
     circleBlur: 0,
   },
   currentBusShadow2: {
     circleRadius: 12,
-    circleColor: "#fff",
+    circleColor: '#fff',
     circleBlur: 0,
   },
   currentBusShadow3: {
     circleRadius: 10,
-    circleColor: "#000f50c9",
+    circleColor: '#000f50c9',
     circleBlur: 0,
   },
   currentBusMarker: {
-    iconImage: "busMarkerGreen",
+    iconImage: 'busMarkerGreen',
     iconSize: 0.028,
-    iconAnchor: "center",
-    iconRotate: ["get", "heading"],
-    textField: ["get", "title"],
+    iconAnchor: 'center',
+    iconRotate: ['get', 'heading'],
+    textField: ['get', 'title'],
     textSize: 11,
-    textColor: "black",
-    textAnchor: "bottom",
+    textColor: 'black',
+    textAnchor: 'bottom',
     textOffset: [0, 4],
-    textHaloColor: "black",
+    textHaloColor: 'black',
     textHaloWidth: 0.1,
-    textRotate: ["get", "heading"],
+    textRotate: ['get', 'heading'],
   },
   userShadow: {
     circleRadius: 20,
-    circleColor: "rgba(0, 50, 255, 0.3)",
+    circleColor: 'rgba(0, 50, 255, 0.3)',
     circleBlur: 0,
   },
   userDot: {
     circleRadius: 5,
-    circleColor: "blue",
-    circleStrokeColor: "white",
+    circleColor: 'blue',
+    circleStrokeColor: 'white',
     circleStrokeWidth: 2,
   },
 
   stopageDot: {
     circleRadius: 3.5,
-    circleColor: "black",
-    circleStrokeColor: "white",
+    circleColor: 'black',
+    circleStrokeColor: 'white',
     circleStrokeWidth: 1,
   },
   stopageInfo: {
-    textField: ["get", "title"],
+    textField: ['get', 'title'],
     textSize: 10,
-    textColor: "black",
-    textAnchor: "right",
-    textHaloColor: "black",
+    textColor: 'black',
+    textAnchor: 'right',
+    textHaloColor: 'black',
     textHaloWidth: 0.2,
     textOffset: [-0.8, 0.2],
   },
   pointMarker: {
-    iconImage: "customMarker",
+    iconImage: 'customMarker',
     iconSize: 0.5,
     iconAllowOverlap: true,
   },
   calloutTitle: {
-    fontWeight: "bold",
+    fontWeight: 'bold',
     fontSize: 14,
   },
   calloutDescription: {
     fontSize: 12,
   },
   calloutContainer: {
-    backgroundColor: "white",
+    backgroundColor: 'white',
     padding: 3,
     borderRadius: 6,
-    borderColor: "gray",
+    borderColor: 'gray',
     borderWidth: 1,
   },
 });

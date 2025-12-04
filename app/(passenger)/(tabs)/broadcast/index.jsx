@@ -1,36 +1,36 @@
-import React, { useEffect, useState, useMemo } from "react";
-import { View, Text, TextInput, ScrollView, TouchableOpacity, KeyboardAvoidingView, Platform } from "react-native";
-import { Ionicons, MaterialIcons, FontAwesome5, MaterialCommunityIcons } from "@expo/vector-icons";
-import { useRouter } from "expo-router";
-import LoadingScreen from "@/components/UI/LoadingScreen";
-import { useGetBusesQuery } from "@/store/features/bus/busApi";
-import { useAppDispatch, useAppSelector } from "@/store/storeConfig";
-import { useCreateTripByUserMutation } from "@/store/features/trip/tripApi";
-import { TripUtil } from "@/utils/tripUtil";
+import React, { useEffect, useState, useMemo } from 'react';
+import { View, Text, TextInput, ScrollView, TouchableOpacity, KeyboardAvoidingView, Platform } from 'react-native';
+import { Ionicons, MaterialIcons, FontAwesome5, MaterialCommunityIcons } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
+import LoadingScreen from '@/components/UI/LoadingScreen';
+import { useGetBusesQuery } from '@/store/features/bus/busApi';
+import { useAppDispatch, useAppSelector } from '@/store/storeConfig';
+import { useCreateTripByUserMutation } from '@/store/features/trip/tripApi';
+import { TripUtil } from '@/utils/tripUtil';
 import {
   startBackgroundService,
   startBroadcasting,
   startForegroundService,
-} from "@/store/features/broadcast/broadcastSlice";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { USER_ROLES } from "@/constants";
-import { colors } from "@/config/colors";
-import LoadingIndicator from "@/components/UI/LoadingIndicator";
-import { askForLocationPermission } from "@/utils/askForLocationPermission";
-import { ToastUtil } from "@/utils/toastUtil";
-import LiveMapLocation from "@/components/broadcast/LiveMapLocation";
+} from '@/store/features/broadcast/broadcastSlice';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { USER_ROLES } from '@/constants';
+import { colors } from '@/config/colors';
+import LoadingIndicator from '@/components/UI/LoadingIndicator';
+import { askForLocationPermission } from '@/utils/askForLocationPermission';
+import { ToastUtil } from '@/utils/toastUtil';
+import LiveMapLocation from '@/components/broadcast/LiveMapLocation';
 
 // Reusable Selectable Button
 const SelectableButton = ({ label, icon, selected, onPress }) => (
   <TouchableOpacity
     className={`flex-1 mx-1 p-2 rounded-xl items-center border ${
-      selected ? "bg-secondary-50 border-secondary-500" : "bg-muted-50 border-muted-300"
+      selected ? 'bg-secondary-50 border-secondary-500' : 'bg-muted-50 border-muted-300'
     }`}
     onPress={onPress}
   >
     <View className="flex-row items-center justify-center">
       {icon}
-      <Text className={`mx-1 text-sm font-medium capitalize ${selected ? "text-secondary-700" : "text-muted-700"}`}>
+      <Text className={`mx-1 text-sm font-medium capitalize ${selected ? 'text-secondary-700' : 'text-muted-700'}`}>
         {label}
       </Text>
     </View>
@@ -54,13 +54,13 @@ const BusSearch = ({ buses, selectedBus, setSelectedBus, searchQuery, setSearchQ
           onChangeText={setSearchQuery}
         />
       </View>
-      <ScrollView className="max-h-64" nestedScrollEnabled>
+      <ScrollView className="max-h-52" nestedScrollEnabled>
         {filteredBuses.length ? (
-          filteredBuses.map((bus) => (
+          filteredBuses.map(bus => (
             <TouchableOpacity
               key={bus._id}
               className={`border-b border-muted-300 py-2 px-3 my-1 rounded-lg ${
-                selectedBus?._id === bus._id ? "bg-secondary-50 border-secondary-500" : "bg-white"
+                selectedBus?._id === bus._id ? 'bg-secondary-50 border-secondary-500' : 'bg-white'
               }`}
               onPress={() => setSelectedBus(bus)}
             >
@@ -90,37 +90,36 @@ const BusSearch = ({ buses, selectedBus, setSelectedBus, searchQuery, setSearchQ
 };
 
 const Index = () => {
-  const router = useRouter();
   const dispatch = useAppDispatch();
-  const { user, route } = useAppSelector((state) => state.auth);
+  const { user, route } = useAppSelector(state => state.auth);
   const { isBroadcasting, isForegroundServiceRunning, isBackgroundServiceRunning } = useAppSelector(
-    (state) => state.broadcast
+    state => state.broadcast
   );
 
   const { data: buses, isLoading: isBusesLoading, error: busesError } = useGetBusesQuery();
   const [createTripByUser, { isLoading: isCreatingTrip }] = useCreateTripByUserMutation();
 
   const [tripData, setTripData] = useState({
-    busType: "",
-    direction: "",
+    busType: '',
+    direction: '',
     selectedBus: null,
-    note: "",
+    note: '',
   });
 
   useEffect(() => {
-    if (busesError) ToastUtil.error("Failed to load buses. Please try again later.");
+    if (busesError) ToastUtil.error('Failed to load buses. Please try again later.');
   }, [busesError]);
 
   const isValid = tripData.selectedBus && tripData.busType && tripData.direction;
 
   const handleStartSharing = async () => {
-    if (!isValid) return ToastUtil.error("Please select a bus, bus type, and direction.");
+    if (!isValid) return ToastUtil.error('Please select a bus, bus type, and direction.');
 
     const permissionType = await askForLocationPermission();
 
-    if (permissionType === "foreground") dispatch(startForegroundService());
-    else if (permissionType === "background") dispatch(startBackgroundService());
-    else return ToastUtil.error("Location permission is required to start sharing.");
+    if (permissionType === 'foreground') dispatch(startForegroundService());
+    else if (permissionType === 'background') dispatch(startBackgroundService());
+    else return ToastUtil.error('Location permission is required to start sharing.');
 
     try {
       const { data } = await createTripByUser({
@@ -141,9 +140,9 @@ const Index = () => {
         })
       );
 
-      await AsyncStorage.setItem("tripId", data._id);
+      await AsyncStorage.setItem('tripId', data._id);
     } catch (error) {
-      ToastUtil.error("Failed to start sharing. Please try again.");
+      ToastUtil.error('Failed to start sharing. Please try again.');
     }
   };
 
@@ -151,24 +150,25 @@ const Index = () => {
   if (isBroadcasting) return <LiveMapLocation />;
 
   return (
-    <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} className="flex-1 bg-muted-100">
-      <ScrollView contentContainerStyle={{ paddingBottom: 100 }} className="p-4" keyboardShouldPersistTaps="handled">
+    <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} className="flex-1 bg-muted-100">
+      <ScrollView contentContainerStyle={{ paddingBottom: 100 }} className="px-4" keyboardShouldPersistTaps="handled">
         {/* Header */}
         <View className="mb-3 items-center">
           <Text className="text-md text-muted-800 text-center mt-2">
-            Share your bus location so others on the same route can see it.
+            Share your bus location while you're on the bus so others on the same route can see it.
           </Text>
-          <Text className="text-sm text-center mt-2 bg-secondary-200 text-black rounded-md px-2">
+
+          {/* <Text className="text-sm text-center mt-2 bg-secondary-200 text-black rounded-md px-2">
             Current Route: <Text className="text-muted-700">{route.routeName}</Text>
-          </Text>
+          </Text> */}
         </View>
 
         <BusSearch
           buses={buses}
           selectedBus={tripData.selectedBus}
-          setSelectedBus={(bus) => setTripData((prev) => ({ ...prev, selectedBus: bus }))}
+          setSelectedBus={bus => setTripData(prev => ({ ...prev, selectedBus: bus }))}
           searchQuery={tripData.note}
-          setSearchQuery={(text) => setTripData((prev) => ({ ...prev, note: text }))}
+          setSearchQuery={text => setTripData(prev => ({ ...prev, note: text }))}
         />
 
         {/* Bus Type */}
@@ -185,7 +185,7 @@ const Index = () => {
                 />
               }
               selected={tripData.busType === USER_ROLES.STUDENT}
-              onPress={() => setTripData((prev) => ({ ...prev, busType: USER_ROLES.STUDENT }))}
+              onPress={() => setTripData(prev => ({ ...prev, busType: USER_ROLES.STUDENT }))}
             />
             <SelectableButton
               label={USER_ROLES.EMPLOYEE}
@@ -197,7 +197,7 @@ const Index = () => {
                 />
               }
               selected={tripData.busType === USER_ROLES.EMPLOYEE}
-              onPress={() => setTripData((prev) => ({ ...prev, busType: USER_ROLES.EMPLOYEE }))}
+              onPress={() => setTripData(prev => ({ ...prev, busType: USER_ROLES.EMPLOYEE }))}
             />
           </View>
         </View>
@@ -207,8 +207,8 @@ const Index = () => {
           <Text className="text-lg font-semibold text-muted-900 mb-3">Bus Direction</Text>
           <View className="flex-row justify-between space-x-3">
             {[
-              { dir: "to_campus", icon: "arrow-up", label: "To Campus" },
-              { dir: "from_campus", icon: "arrow-down", label: "From Campus" },
+              { dir: 'to_campus', icon: 'arrow-up', label: 'To Campus' },
+              { dir: 'from_campus', icon: 'arrow-down', label: 'From Campus' },
             ].map(({ dir, icon, label }) => (
               <SelectableButton
                 key={dir}
@@ -221,7 +221,7 @@ const Index = () => {
                   />
                 }
                 selected={tripData.direction === dir}
-                onPress={() => setTripData((prev) => ({ ...prev, direction: dir }))}
+                onPress={() => setTripData(prev => ({ ...prev, direction: dir }))}
               />
             ))}
           </View>
@@ -230,7 +230,7 @@ const Index = () => {
         {/* Start Sharing */}
         <TouchableOpacity
           className={`flex-row rounded-xl mt-4 p-2 items-center justify-center shadow-sm ${
-            isValid ? "bg-secondary-600" : "bg-muted-400"
+            isValid ? 'bg-secondary-600' : 'bg-muted-400'
           }`}
           onPress={handleStartSharing}
           disabled={!isValid || isCreatingTrip}

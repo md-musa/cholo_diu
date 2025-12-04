@@ -1,15 +1,15 @@
-import { min } from "moment";
-import { baipail } from "./routesAndWaypoints/baipail";
-import { dhamrai } from "./routesAndWaypoints/dhamrai";
-import { dhanmondi } from "./routesAndWaypoints/dhanmondi";
-import { ecb } from "./routesAndWaypoints/ecb";
-import { konabariPukurPar } from "./routesAndWaypoints/konabariPukurPar";
-import { mirpur1 } from "./routesAndWaypoints/mirpur1";
-import { savar } from "./routesAndWaypoints/savar";
-import { tongiCollegeGate } from "./routesAndWaypoints/tongiCollegeGate";
-import { uttara } from "./routesAndWaypoints/uttara";
+import { min } from 'moment';
+import { baipail } from './routesAndWaypoints/baipail';
+import { dhamrai } from './routesAndWaypoints/dhamrai';
+import { dhanmondi } from './routesAndWaypoints/dhanmondi';
+import { ecb } from './routesAndWaypoints/ecb';
+import { konabariPukurPar } from './routesAndWaypoints/konabariPukurPar';
+import { mirpur1 } from './routesAndWaypoints/mirpur1';
+import { savar } from './routesAndWaypoints/savar';
+import { tongiCollegeGate } from './routesAndWaypoints/tongiCollegeGate';
+import { uttara } from './routesAndWaypoints/uttara';
 
-type RouteKey = "R1" | "R2" | "R3" | "R4" | "R5" | "R6" | "R7" | "R8" | "R9" | "R10" | "R11" | "R12";
+type RouteKey = 'R1' | 'R2' | 'R3' | 'R4' | 'R5' | 'R6' | 'R7' | 'R8' | 'R9' | 'R10' | 'R11' | 'R12';
 
 const routes = {
   R1: dhanmondi,
@@ -24,17 +24,17 @@ const routes = {
   R10: uttara,
   R12: mirpur1,
 };
-
+console.log(routes['R1']);
 export const getWayline = (routeNo: RouteKey) => {
   return {
-    type: "FeatureCollection",
+    type: 'FeatureCollection',
     features: [
       {
-        type: "Feature",
+        type: 'Feature',
         properties: {},
         geometry: {
           coordinates: routes[routeNo]?.wayline ?? [],
-          type: "LineString",
+          type: 'LineString',
         },
       },
     ],

@@ -162,12 +162,13 @@ export default function Settings() {
           </Text>
 
           <Text className="mt-4 text-muted-700 mb-1 font-semibold">
-            This project can be improved by adding the following features:
+            If funding is provided, the project can be improved by adding the following features:
           </Text>
 
           <ListItem text="🗺️ Integrate Google Maps for a more interactive and user-friendly map experience." />
           <ListItem text="📍 Install a GPS tracker on each bus for automatic real-time location updates, so users don’t need to manually share their location. Bus locations can be viewed at any time." />
           <ListItem text="📅 Create a smart scheduling system to plan the number of buses required for each schedule based on class and work schedules." />
+          <ListItem text="💬 Add a messaging feature so each route's community members can communicate, receive notices, and stay updated." />
         </SectionCard>
 
         {/* App Version */}

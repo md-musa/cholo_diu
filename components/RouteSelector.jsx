@@ -1,24 +1,24 @@
-import React, { useState } from "react";
-import { View, Text } from "react-native";
-import { Picker } from "@react-native-picker/picker";
-import { findOngoingOrNextSchedule } from "@/utils/scheduleHelper";
-import { Link } from "expo-router";
-import { useAppDispatch, useAppSelector } from "@/store/storeConfig";
-import { updateRoute } from "@/store/features/auth/authSlice";
-import { useGetRoutesQuery } from "@/store/features/route/routeApi";
-import { useGetScheduleByRouteQuery } from "@/store/features/schedule/scheduleApi";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { ASYNC_STORAGE_KEYS } from "@/constants";
+import React, { useState } from 'react';
+import { View, Text } from 'react-native';
+import { Picker } from '@react-native-picker/picker';
+import { findOngoingOrNextSchedule } from '@/utils/scheduleHelper';
+import { Link } from 'expo-router';
+import { useAppDispatch, useAppSelector } from '@/store/storeConfig';
+import { updateRoute } from '@/store/features/auth/authSlice';
+import { useGetRoutesQuery } from '@/store/features/route/routeApi';
+import { useGetScheduleByRouteQuery } from '@/store/features/schedule/scheduleApi';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { ASYNC_STORAGE_KEYS } from '@/constants';
 
 // Import icons
-import { MaterialIcons, FontAwesome5, MaterialCommunityIcons } from "@expo/vector-icons";
+import { MaterialIcons, FontAwesome5, MaterialCommunityIcons } from '@expo/vector-icons';
 
 const RouteSelector = () => {
   const dispatch = useAppDispatch();
-  const { route } = useAppSelector((state) => state.auth);
-  const { isBroadcasting } = useAppSelector((state) => state.broadcast);
+  const { route } = useAppSelector(state => state.auth);
+  const { isBroadcasting } = useAppSelector(state => state.broadcast);
   const [selectedDay, setSelectedDay] = useState(
-    new Date().toLocaleString("en-US", { weekday: "long" }).toLowerCase() === "friday" ? "friday" : "weekdays"
+    new Date().toLocaleString('en-US', { weekday: 'long' }).toLowerCase() === 'friday' ? 'friday' : 'weekdays'
   );
 
   const { data: routes, isLoading: isRoutesLoading, refetch: refetchRoutes } = useGetRoutesQuery();
@@ -44,8 +44,8 @@ const RouteSelector = () => {
   };
 
   if (!route) return null;
-  const handleRouteChange = async (selectedRouteId) => {
-    const selectedRouteData = routes.find((r) => r._id === selectedRouteId);
+  const handleRouteChange = async selectedRouteId => {
+    const selectedRouteData = routes.find(r => r._id === selectedRouteId);
     dispatch(updateRoute(selectedRouteData));
     await AsyncStorage.setItem(ASYNC_STORAGE_KEYS.CURRENT_ROUTE, JSON.stringify(selectedRouteData));
   };
@@ -67,12 +67,13 @@ const RouteSelector = () => {
           value
           style={{
             flex: 1,
-            backgroundColor: "white",
+            backgroundColor: 'white',
             fontSize: 16,
-            fontWeight: "bold",
-            color: "black",
+            fontWeight: 'bold',
+            color: 'black',
           }}
           dropdownIconColor="black"
+          dropdownIconRippleColor="gray"
           mode="dialog"
         >
           {/* <Picker.Item
@@ -89,21 +90,21 @@ const RouteSelector = () => {
               label={`${route.routeName}`}
               value={route._id}
               style={{
-                fontWeight: "bold",
+                fontWeight: 'bold',
                 fontSize: 16,
-                color: "black",
+                color: 'black',
               }}
             />
           ) : (
-            routes?.map((route) => (
+            routes?.map(route => (
               <Picker.Item
                 key={route?._id}
                 label={`${route.routeNo}: ${route.routeName}`}
                 value={route._id}
                 style={{
-                  fontWeight: "bold",
+                  fontWeight: 'bold',
                   fontSize: 16,
-                  color: "black",
+                  color: 'black',
                 }}
               />
             ))
@@ -112,7 +113,7 @@ const RouteSelector = () => {
       </View>
 
       <View className="flex-row my-2">
-        <View className="flex-row items-center bg-muted-50/25 py-1 px-2 rounded-xl">
+        <View className="flex-row items-center bg-muted-50/10 py-1 px-2 rounded-xl">
           <MaterialIcons name="schedule" size={16} color="#ffff" />
           <Text className="text-md text-white mx-2 font-semibold">Next Bus Schedule</Text>
         </View>
@@ -123,11 +124,11 @@ const RouteSelector = () => {
         {/* Grid Container */}
         <View className="flex-col-[1.5fr_1fr_1fr]">
           {/* Header Row */}
-          <View className="flex-row bg-muted-50/15 border-b border-white">
+          <View className="flex-row bg-muted-50/10 border-b border-white">
             <View className="flex-[3.5] px-1 py-2 items-center justify-center">
               <View className="flex-row items-center">
                 <MaterialCommunityIcons name="swap-vertical-variant" size={20} color="#fff" />
-                <Text className="text-white text-md font-semibold ml-2">Route</Text>
+                <Text className="text-white text-md font-semibold ml-2">Direction</Text>
               </View>
             </View>
 
@@ -153,12 +154,12 @@ const RouteSelector = () => {
             </View>
             <View className="flex-[3.25] px-1 py-2 items-center justify-center border-l border-r border-white">
               <Text className="text-white text-md text-center">
-                {toCampusStudent ? toCampusStudent.formattedTime : "No Sch."}
+                {toCampusStudent ? toCampusStudent.formattedTime : 'No Sch.'}
               </Text>
             </View>
             <View className="flex-[3.25] px-1 py-2 items-center justify-center">
               <Text className="text-white text-md text-right">
-                {toCampusEmployee ? toCampusEmployee.formattedTime : "No Sch."}
+                {toCampusEmployee ? toCampusEmployee.formattedTime : 'No Sch.'}
               </Text>
             </View>
           </View>
@@ -170,12 +171,12 @@ const RouteSelector = () => {
             </View>
             <View className="flex-[3.25] px-1 py-2 items-center justify-center border-l border-r border-white">
               <Text className="text-white text-md text-center">
-                {fromCampusStudent ? fromCampusStudent.formattedTime : "No Sch."}
+                {fromCampusStudent ? fromCampusStudent.formattedTime : 'No Sch.'}
               </Text>
             </View>
             <View className="flex-[3.25] px-1 py-2 items-center justify-center">
               <Text className="text-white text-md text-right">
-                {fromCampusEmployee ? fromCampusEmployee.formattedTime : "No Sch."}
+                {fromCampusEmployee ? fromCampusEmployee.formattedTime : 'No Sch.'}
               </Text>
             </View>
           </View>
@@ -183,7 +184,7 @@ const RouteSelector = () => {
       </View>
 
       <Link className="text-right text-white mt-2 text-md font-semibold" href="/(passenger)/schedules">
-        <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "flex-end" }}>
+        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-end' }}>
           <Text className="text-white">View all </Text>
           <MaterialIcons name="arrow-forward-ios" size={14} color="#fff" />
         </View>

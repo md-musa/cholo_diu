@@ -11,7 +11,7 @@ export const checkAppStatus = config => {
     });
     return 'BLOCKED';
   }
-
+  console.log(config.force_update, config.update_version, currentVersion);
   // 🔥 2. Force Update Required
   if (config.force_update && config.update_version !== currentVersion) {
     Alert.alert(

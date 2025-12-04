@@ -1,12 +1,12 @@
-import { View, Text, TouchableOpacity } from "react-native";
-import React from "react";
-import { useAppSelector } from "@/store/storeConfig";
-import { Ionicons, MaterialIcons, FontAwesome5, MaterialCommunityIcons } from "@expo/vector-icons";
-import { useRouter } from "expo-router";
-import { colors } from "@/config/colors";
-import { SCHEDULE_STATUS } from "@/constants";
-import moment from "moment";
-import { getTimeLeft } from "@/utils/time";
+import { View, Text, TouchableOpacity } from 'react-native';
+import React from 'react';
+import { useAppSelector } from '@/store/storeConfig';
+import { Ionicons, MaterialIcons, FontAwesome5, MaterialCommunityIcons } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
+import { colors } from '@/config/colors';
+import { SCHEDULE_STATUS } from '@/constants';
+import moment from 'moment';
+import { getTimeLeft } from '@/utils/time';
 
 // Interfaces
 interface AssignedBus {
@@ -53,7 +53,7 @@ const ScheduleHeader: React.FC<{ status: string; formattedTime: string; note?: s
           />
           <Text
             className={`text-lg ${
-              status === SCHEDULE_STATUS.NEXT ? "font-semibold text-secondary-600" : "text-muted-800"
+              status === SCHEDULE_STATUS.NEXT ? 'font-semibold text-secondary-600' : 'text-muted-800'
             }`}
           >
             {formattedTime}
@@ -71,9 +71,18 @@ const ScheduleHeader: React.FC<{ status: string; formattedTime: string; note?: s
           </View>
         )}
 
+        {/* Time Left */}
         {timeLeft && (
           <View className="flex-row items-center ml-2">
-            <Text className="text-sm text-secondary-700 bg-secondary-100 border border-secondary-400 px-4 py-0.5 rounded-full font-semibold">
+            <Text
+              className={`text-sm px-4 py-0.5 rounded-full font-semibold
+        ${
+          status === SCHEDULE_STATUS.NEXT
+            ? 'bg-secondary-100 text-secondary-700 border border-secondary-400'
+            : 'bg-gray-100 text-gray-700 border border-gray-300'
+        }
+      `}
+            >
               {timeLeft} left
             </Text>
           </View>
@@ -85,7 +94,7 @@ const ScheduleHeader: React.FC<{ status: string; formattedTime: string; note?: s
         <View className="flex-row items-start mt-1">
           <Text>
             <Text className="text-sm font-semibold text-muted-700">Note:</Text>
-            <Text className="text-sm text-muted-700"> {" " + (note.charAt(0).toUpperCase() + note.slice(1))}</Text>
+            <Text className="text-sm text-muted-700"> {' ' + (note.charAt(0).toUpperCase() + note.slice(1))}</Text>
           </Text>
         </View>
       )}
@@ -100,24 +109,24 @@ const AssignedBusItem: React.FC<{ bus: AssignedBus; isActive: any; onPress: () =
   onPress,
 }) => {
   // Determine trip status
-  const tripStatus = bus.trip?.status || "scheduled";
+  const tripStatus = bus.trip?.status || 'scheduled';
   let statusText = tripStatus;
-  let statusColor = "bg-gray-200 text-gray-700"; // default for scheduled
+  let statusColor = 'bg-gray-200 text-gray-700'; // default for scheduled
 
-  if (tripStatus === "departed") {
+  if (tripStatus === 'departed') {
     if (bus.trip?.startTime) {
       const dur = moment.duration(moment().diff(moment(bus.trip.startTime)));
       const h = dur.hours();
       const m = dur.minutes();
-      const compact = h && m ? `${h}h ${m}m ago` : h ? `${h}h ago` : m ? `${m}m ago` : "just now";
+      const compact = h && m ? `${h}h ${m}m ago` : h ? `${h}h ago` : m ? `${m}m ago` : 'just now';
       statusText = `departed ${compact}`;
     } else {
-      statusText = "departed";
+      statusText = 'departed';
     }
-    statusColor = "bg-secondary-100 text-secondary-700";
-  } else if (tripStatus === "completed") {
-    statusText = "completed";
-    statusColor = "bg-green-100 text-green-700";
+    statusColor = 'bg-secondary-100 text-secondary-700';
+  } else if (tripStatus === 'completed') {
+    statusText = 'completed';
+    statusColor = 'bg-green-100 text-green-700';
   }
 
   return (
@@ -142,7 +151,7 @@ const AssignedBusItem: React.FC<{ bus: AssignedBus; isActive: any; onPress: () =
 // ------------------ Bus List ------------------
 const AssignedBusList: React.FC<{ assignedBuses: AssignedBus[] }> = ({ assignedBuses }) => {
   const router = useRouter();
-  const { activeBuses } = useAppSelector((state) => state.busLocation);
+  const { activeBuses } = useAppSelector(state => state.busLocation);
 
   if (assignedBuses.length === 0) {
     return (
@@ -161,7 +170,7 @@ const AssignedBusList: React.FC<{ assignedBuses: AssignedBus[] }> = ({ assignedB
         const handleBusPress = () => {
           if (isActive) {
             router.push({
-              pathname: "/(passenger)/watchBusLocation",
+              pathname: '/(passenger)/watchBusLocation',
               params: {
                 latitude: isActive.latitude,
                 longitude: isActive.longitude,
@@ -183,7 +192,7 @@ const ScheduleCard: React.FC<ScheduleCardProps> = ({ schedule }) => {
   return (
     <View
       className={`rounded-lg my-2.5 border ${
-        status === SCHEDULE_STATUS.NEXT ? "bg-secondary-50 border-secondary-400" : "border-muted-400 bg-white shadow-md"
+        status === SCHEDULE_STATUS.NEXT ? 'bg-secondary-50 border-secondary-400' : 'border-muted-400 bg-white shadow-md'
       }`}
     >
       <ScheduleHeader status={status} formattedTime={formattedTime} note={note} />
