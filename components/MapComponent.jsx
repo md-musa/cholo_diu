@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Image, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import * as MapLibreGL from '@maplibre/maplibre-react-native';
 import { generateMarkers } from '@/utils/mappingHelper';
 import busMarker from '@/assets/images/navigatorArrow3.png';
@@ -7,7 +7,7 @@ import UniIcon from '@/assets/images/uni-2.png';
 import pinIcon from '@/assets/images/red-pin-marker.png';
 import busMarkerGreen from '@/assets/images/navigatorArrow2.png';
 import { useAppSelector } from '@/store/storeConfig';
-import { getWayline, getWaypoints, ROUTES } from '@/assets/routes';
+import { getWayline, getWaypoints } from '@/assets/routes';
 import useLocation from '@/hook/useLocation';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { MapUtils } from '@/utils/mapUtils';

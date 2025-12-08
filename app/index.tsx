@@ -80,7 +80,9 @@ const Index = () => {
         accessibilityIgnoresInvertColors
       />
 
-      <Text className="text-3xl font-bold text-center mt-10 mb-2 px-5 text-secondary-900">Cholo – DIU Bus Tracker</Text>
+      <Text className="text-3xl font-bold text-center mt-10 mb-2 px-5 text-secondary-900">
+        Cholo – Campus Bus Tracker
+      </Text>
 
       <Text className="text-lg text-muted-500 text-center px-8 mb-4">Track your campus buses in real-time</Text>
 

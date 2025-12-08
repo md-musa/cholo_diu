@@ -46,7 +46,7 @@
       [
         "expo-splash-screen",
         {
-          "image": "./assets/images/splash.png",
+          "image": "./assets/images/icon-512.png",
           "imageWidth": 200,
           "resizeMode": "contain",
           "backgroundColor": "#ffffff"
@@ -81,7 +81,7 @@
       "typedRoutes": true
     },
     "extra": {
-      "DEV_SERVER_URL": "http://192.168.1.13:4000",
+      "DEV_SERVER_URL": "http://192.168.1.14:4000",
       "CLOUDFLARE_URL": "https://cholo.mohammad-musa-dev.workers.dev",
 
       "router": {

@@ -79,14 +79,18 @@ const Login = () => {
 
   return (
     <SafeAreaView className="flex-1 bg-white">
-      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={{ flex: 1 }}>
-        <ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={{ flexGrow: 1 }}>
+      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'padding'} style={{ flex: 1 }}>
+        <ScrollView
+          keyboardShouldPersistTaps="handled"
+          contentContainerStyle={{ flexGrow: 1 }}
+          showsVerticalScrollIndicator={false}
+        >
           <View className="flex-1 justify-end px-10 mb-10">
             {/* Title and Caption */}
             <View>
               <Text className="text-title-2 font-semibold text-center mb-4">Track Your Campus Buses</Text>
               <Text className="text-body text-center text-muted-500 mb-10">
-                See bus locations and schedules in real time
+                See bus locations and schedules in real-time
               </Text>
             </View>
 

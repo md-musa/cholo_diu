@@ -1,17 +1,17 @@
-import React, { useEffect, useState } from "react";
-import { Text, TouchableOpacity, View, Alert } from "react-native";
-import { MaterialIcons, MaterialCommunityIcons } from "@expo/vector-icons";
-import * as Location from "expo-location";
-import { calculateDistanceAndTime } from "@/utils/distanceUtil";
-import { getWaylineCoords } from "@/assets/routes";
-import { useAppSelector } from "@/store/storeConfig";
+import React, { useEffect, useState } from 'react';
+import { Text, TouchableOpacity, View, Alert } from 'react-native';
+import { MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
+import * as Location from 'expo-location';
+import { calculateDistanceAndTime } from '@/utils/distanceUtil';
+import { getWaylineCoords } from '@/assets/routes';
+import { useAppSelector } from '@/store/storeConfig';
 
 // External cache for previous distance data
 const distanceCache: Record<string, { distanceKm: number, estimatedTimeMin: number }> = {};
 
 export default function AvailableBusListCard({ item, highlightBus, closeBottomSheet }) {
   const [distanceData, setDistanceData] = useState(null);
-  const { routeNo } = useAppSelector((state) => state.auth.route);
+  const { routeNo } = useAppSelector(state => state.auth.route);
 
   useEffect(() => {
     if (!item) return;
@@ -21,8 +21,8 @@ export default function AvailableBusListCard({ item, highlightBus, closeBottomSh
     const fetchDistance = async () => {
       try {
         const { status } = await Location.requestForegroundPermissionsAsync();
-        if (status !== "granted") {
-          Alert.alert("Location Permission", "Permission to access location was denied.");
+        if (status !== 'granted') {
+          Alert.alert('Location Permission', 'Permission to access location was denied.');
           return;
         }
 
@@ -33,6 +33,8 @@ export default function AvailableBusListCard({ item, highlightBus, closeBottomSh
         });
 
         const routeWaylineCoords = getWaylineCoords(routeNo);
+        if (routeWaylineCoords.length === 0) return;
+
         const userCoords = [location.coords.longitude, location.coords.latitude];
         const busCoords = [item.longitude, item.latitude];
 
@@ -47,7 +49,7 @@ export default function AvailableBusListCard({ item, highlightBus, closeBottomSh
         }
       } catch (error) {
         //console.error("Location error:", error);
-        Alert.alert("Location Error", "Failed to get location.");
+        Alert.alert('Location Error', 'Failed to get location.');
       }
     };
 
@@ -88,9 +90,9 @@ export default function AvailableBusListCard({ item, highlightBus, closeBottomSh
         {/* Distance & ETA */}
         <View className="flex-row items-center justify-between">
           <Text className="text-md">
-            {" "}
-            ETA:{" "}
-            {dataToShow ? formatDistanceAndTime(dataToShow.distanceKm, dataToShow.estimatedTimeMin) : "Calculating..."}
+            {' '}
+            ETA:{' '}
+            {dataToShow ? formatDistanceAndTime(dataToShow.distanceKm, dataToShow.estimatedTimeMin) : 'Calculating...'}
           </Text>
 
           <TouchableOpacity
