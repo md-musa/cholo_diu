@@ -6,10 +6,12 @@ import { ScheduleService } from "./schedule.service";
 import sendResponse from "../../../shared/sendResponse";
 import ApiError from "../../../errors/ApiError";
 import config from "../../../config";
+import { SCHEDULE_MODES } from "../../../enums";
 
 export const ScheduleController = {
   createSchedule: async (req: Request, res: Response) => {
     const data: ISchedule = req.body;
+    // console.log(data);
 
     const result = await ScheduleService.createSchedule(data);
 
@@ -31,7 +33,7 @@ export const ScheduleController = {
 
     const scheduleMode = config.APP_VARIABLES.SCHEDULE_MODE;
     const result = await ScheduleService.getScheduleByRoute(routeId as string, scheduleMode, operatingDays as string);
-   // console.log(result);
+    // console.log(result);
     sendResponse(res, {
       statusCode: StatusCodes.OK,
       success: true,
@@ -39,22 +41,22 @@ export const ScheduleController = {
       data: { scheduleMode, operatingDays, schedules: result },
     });
   },
-  
+
   getScheduleForAdminByRoute: async (req: Request, res: Response) => {
-    const { routeId } = req.params;
+    const { routeId, mode } = req.params;
+    // console.log("Route ID:", req.params);
 
     if (!routeId) {
       throw ApiError.badRequest("Route ID is required");
     }
 
-    const scheduleMode = config.APP_VARIABLES.SCHEDULE_MODE;
-    const result = await ScheduleService.getScheduleForAdminByRoute(routeId as string, scheduleMode);
+    const result = await ScheduleService.getScheduleForAdminByRoute(routeId as string, mode as SCHEDULE_MODES);
     //console.log(result);
     sendResponse(res, {
       statusCode: StatusCodes.OK,
       success: true,
       message: "Schedules fetched successfully",
-      data: { scheduleMode, schedules: result },
+      data: { mode, schedules: result },
     });
   },
 

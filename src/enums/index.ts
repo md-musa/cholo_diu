@@ -52,7 +52,7 @@ export enum SCHEDULE_USER_TYPES {
 export enum SCHEDULE_MODES {
   REGULAR = "regular",
   MID_TERM = "mid_term",
-  FINAL_TERM = "final_term",
+  FINAL_EXAM = "final_exam",
   RAMADAN = "ramadan",
 }
 export enum SCHEDULE_OPERATING_DAYS {

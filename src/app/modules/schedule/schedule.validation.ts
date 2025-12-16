@@ -12,7 +12,7 @@ export const ScheduleValidation = {
       mode: z.enum([
         SCHEDULE_MODES.REGULAR,
         SCHEDULE_MODES.MID_TERM,
-        SCHEDULE_MODES.FINAL_TERM,
+        SCHEDULE_MODES.FINAL_EXAM,
         SCHEDULE_MODES.RAMADAN,
       ]),
       operatingDays: z.enum([SCHEDULE_OPERATING_DAYS.WEEKDAYS, SCHEDULE_OPERATING_DAYS.FRIDAY]),
@@ -28,7 +28,7 @@ export const ScheduleValidation = {
       time: z.string().optional(),
       userType: z.enum([SCHEDULE_USER_TYPES.STUDENT, SCHEDULE_USER_TYPES.EMPLOYEE]).optional(),
       mode: z
-        .enum([SCHEDULE_MODES.REGULAR, SCHEDULE_MODES.MID_TERM, SCHEDULE_MODES.FINAL_TERM, SCHEDULE_MODES.RAMADAN])
+        .enum([SCHEDULE_MODES.REGULAR, SCHEDULE_MODES.MID_TERM, SCHEDULE_MODES.FINAL_EXAM, SCHEDULE_MODES.RAMADAN])
         .optional(),
       operatingDays: z.enum([SCHEDULE_OPERATING_DAYS.WEEKDAYS, SCHEDULE_OPERATING_DAYS.FRIDAY]).optional(),
       note: z.string().optional(),

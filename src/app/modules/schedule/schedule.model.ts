@@ -25,7 +25,7 @@ const scheduleSchema: Schema<ISchedule> = new Schema(
     },
     mode: {
       type: String,
-      enum: [SCHEDULE_MODES.REGULAR, SCHEDULE_MODES.MID_TERM, SCHEDULE_MODES.FINAL_TERM, SCHEDULE_MODES.RAMADAN],
+      enum: [SCHEDULE_MODES.REGULAR, SCHEDULE_MODES.MID_TERM, SCHEDULE_MODES.FINAL_EXAM, SCHEDULE_MODES.RAMADAN],
       required: true,
     },
     operatingDays: {

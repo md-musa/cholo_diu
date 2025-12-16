@@ -6,7 +6,7 @@ import { ScheduleValidation } from "./schedule.validation";
 const router = express.Router();
 
 router.get("/route/:routeId", ScheduleController.getScheduleByRoute);
-router.get("/admin/route/:routeId", ScheduleController.getScheduleForAdminByRoute);
+router.get("/admin/route/:routeId/:mode", ScheduleController.getScheduleForAdminByRoute);
 
 router.post(
   "/",
