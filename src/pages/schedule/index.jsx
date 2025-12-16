@@ -14,7 +14,7 @@ import { EmployeeSchedules } from "./components/EmployeeSchedules";
 function SchedulePage() {
   const [schedules, setSchedules] = useState([]);
   const [routes, setRoutes] = useState([]);
-  const [selectedMode, setSelectedMode] = useState(SCHEDULE_MODES.REGULAR);
+  const [selectedMode, setSelectedMode] = useState(SCHEDULE_MODES.FINAL_EXAM);
   const [selectedRoute, setSelectedRoute] = useState("");
 
   const [form, setForm] = useState({
@@ -34,6 +34,7 @@ function SchedulePage() {
     specificDate: "",
   });
 
+  console.log(selectedMode, selectedRoute);
   const [modalVisible, setModalVisible] = useState(false);
   const [busAssignModalVisible, setBusAssignModalVisible] = useState(false);
   const [selectedScheduleId, setSelectedScheduleId] = useState(null);
@@ -55,7 +56,7 @@ function SchedulePage() {
   const fetchSchedule = async () => {
     if (!selectedRoute) return;
     try {
-      const schedulesResponse = await apiClient.get(`/schedules/admin/route/${selectedRoute}`);
+      const schedulesResponse = await apiClient.get(`/schedules/admin/route/${selectedRoute}/${selectedMode}`);
       setSchedules(schedulesResponse.data);
       // showSuccess("Schedules loaded successfully");
     } catch (err) {
@@ -69,7 +70,7 @@ function SchedulePage() {
 
   useEffect(() => {
     fetchSchedule();
-  }, [selectedRoute]);
+  }, [selectedRoute, selectedMode]);
 
   const groupedSchedule = groupSchedule(schedules);
 

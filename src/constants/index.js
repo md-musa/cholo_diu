@@ -25,7 +25,7 @@ export const SCHEDULE_USER_TYPES = {
 export const SCHEDULE_MODES = {
   REGULAR: "regular",
   MID_TERM: "mid_term",
-  FINAL_TERM: "final_term",
+  FINAL_EXAM: "final_exam",
   RAMADAN: "ramadan",
 };
 
