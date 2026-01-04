@@ -31,7 +31,6 @@ export const TripValidation = {
       hostId: z.string().nonempty("Host ID is required"),
       busName: z.string().nonempty("Bus name is required"),
       departureTime: z.coerce.date().optional(),
-      busType: z.enum([BUS_TYPES.STUDENT, BUS_TYPES.EMPLOYEE]),
       direction: z.string().nonempty("Direction is required"),
       status: z
         .enum([TRIP_STATUS.SCHEDULED, TRIP_STATUS.DEPARTED, TRIP_STATUS.COMPLETED, TRIP_STATUS.CANCELED])

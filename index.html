@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/png" href="./assets/images/favicon.ico" />
+    <title>Cholo - Campus Bus Tracker</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+  </head>
+
+  <body class="bg-gradient-to-b from-indigo-500 to-white min-h-screen flex flex-col text-gray-800">
+    <!-- Hero Section -->
+    <section class="flex flex-col items-center text-center py-20 px-4">
+      <div class="flex justify-center items-center space-x-4 mb-6 p-2 border border-white/30 rounded-xl bg-white/10">
+        <img src="./assets/images/logo.png" alt="Cholo Logo" class="w-16 h-16 rounded-full" />
+        <div class="flex flex-col justify-center items-start">
+          <h1 class="text-3xl font-bold text-white drop-shadow-md">Cholo</h1>
+          <p class="text-xl font-semibold text-white drop-shadow-sm">Campus Bus Tracker</p>
+        </div>
+      </div>
+
+      <p class="text-lg text-white/90 max-w-xl mb-8">
+        View bus schedules, assigned buses, real-time locations, and upcoming stops — all in one place.
+      </p>
+
+      <div class="flex flex-col items-center gap-4">
+        <!-- Telegram Download Button -->
+        <a
+          href="https://t.me/cholo_app/7"
+          target="_blank"
+          class="flex items-center justify-center space-x-2 bg-[#0088cc] text-white px-4 py-3 rounded-xl font-semibold shadow-md transform transition hover:scale-105 hover:shadow-lg w-64"
+        >
+          <!-- <i data-lucide="smartphone" class="w-5 h-5"></i> -->
+          <span>Download App from Telegram</span>
+        </a>
+
+        <!-- GitHub Download Button -->
+        <!-- <a
+          href="https://github.com/md-musa/cholo_website/releases/tag/v1.0.0--beta"
+          class="flex items-center justify-center space-x-2 bg-gray-800 text-white px-6 py-3 rounded-xl font-semibold shadow-md transform transition hover:scale-105 hover:shadow-lg w-64"
+        >
+          <span>Download App from GitHub</span>
+        </a> -->
+
+        <a
+          href="https://github.com/md-musa/cholo_website/releases/download/v1.0.0--beta/Cholo_App_V1.0.0.apk"
+          download="Cholo_App_V1.0.0.apk"
+          class="flex items-center justify-center space-x-2 bg-gray-800 text-white px-6 py-3 rounded-xl font-semibold shadow-md transform transition hover:scale-105 hover:shadow-lg w-64"
+        >
+          <span>Download App from GitHub</span>
+        </a>
+
+        <p class="mt-2 text-sm text-white/80 text-center">Android version only. iOS coming soon!</p>
+      </div>
+
+      <p class="mt-4 text-sm text-white/80">We’re submitting to the Play Store soon 🚀</p>
+    </section>
+
+    <!-- Features Section -->
+    <section class="bg-white py-16 px-6">
+      <h2 class="text-3xl font-bold text-center mb-10 text-indigo-700">Key Features</h2>
+
+      <div class="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+        <!-- Bus Schedule -->
+        <div
+          class="flex flex-col items-center text-center p-6 rounded-2xl shadow-lg hover:shadow-xl transition transform hover:scale-105"
+        >
+          <i data-lucide="calendar-days" class="w-10 h-10 text-indigo-500 mb-4"></i>
+          <h3 class="font-semibold text-lg mb-2">Bus Schedule</h3>
+          <p>View daily university bus schedules instantly and stay updated with all upcoming trips in one place.</p>
+        </div>
+
+        <!-- Assigned Buses -->
+        <div
+          class="flex flex-col items-center text-center p-6 rounded-2xl shadow-lg hover:shadow-xl transition transform hover:scale-105"
+        >
+          <i data-lucide="bus" class="w-10 h-10 text-indigo-500 mb-4"></i>
+          <h3 class="font-semibold text-lg mb-2">Assigned Buses</h3>
+          <p>
+            Check which buses are assigned to your route or schedule. Receive notifications when new buses are added.
+          </p>
+        </div>
+
+        <!-- Real-time Tracking & Sharing -->
+        <div
+          class="flex flex-col items-center text-center p-6 rounded-2xl shadow-lg hover:shadow-xl transition transform hover:scale-105"
+        >
+          <i data-lucide="map-pin" class="w-10 h-10 text-indigo-500 mb-4"></i>
+          <h3 class="font-semibold text-lg mb-2">Real-time Tracking & Sharing</h3>
+          <p>
+            Track buses live on an interactive map with stop details and estimated arrival time. Students, employees,
+            and drivers can share live locations securely.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-indigo-500 text-white text-center py-6 mt-auto">
+      <p class="mb-2">© 2025 Cholo. All rights reserved.</p>
+      <div class="flex justify-center gap-4 text-sm">
+        <a href="https://md-musa.github.io/cholo_privacy-policy/" class="hover:underline">Privacy Policy</a>
+        <a
+          href="mailto:mohammad.musa.dev@gmail.com"
+          class="hover:underline"
+          title="Typical response within 24 hours (Mon-Fri)"
+          >Contact</a
+        >
+        <a href="https://github.com/md-musa" class="hover:underline">GitHub</a>
+      </div>
+    </footer>
+
+    <script>
+      lucide.createIcons();
+    </script>
+  </body>
+</html>

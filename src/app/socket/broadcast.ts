@@ -4,6 +4,7 @@ import { io } from "../../server";
 import { TripModel, UserTripModel } from "../modules/trip/trip.model";
 import { updateTripSpeedAverage, getRoomUserCount, nowIso } from "./util";
 import { emitRouteLocationUpdate, getRecentlyUpdatedTrips } from "./tripUtil";
+import { BusModel } from "../modules/bus/bus.model";
 
 const tripCache = new LRUCache<string, any>({
   max: 100,
@@ -49,14 +50,19 @@ export async function handleUserLocationBroadcast(socket: any, data: IncomingLoc
     let trip = tripCache.get(tripId);
 
     if (!trip) {
-      trip = await UserTripModel.findById(tripId).populate("hostId", "name").lean();
+      const newTrip = await UserTripModel.findById(tripId).populate("hostId", "name").lean();
+      const bus = await BusModel.findOne({ name: newTrip?.busName }).lean();
+
+      console.log(bus);
+
+      trip = { ...newTrip, busType: bus?.busType };
+
       if (!trip) {
         console.warn("❌ UserTrip not found for id:", tripId);
         return;
       }
       tripCache.set(tripId, trip);
     }
-   // console.log("✅ Cached UserTrip:", trip);
 
     const { routeId, busName, direction, busType, hostId } = trip;
 

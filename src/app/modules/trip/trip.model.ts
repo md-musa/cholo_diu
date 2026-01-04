@@ -37,7 +37,6 @@ export const UserTripModel = model<IUserTrip>(
         required: false,
       },
 
-      busType: { type: String, enum: Object.values(BUS_TYPES), required: true },
       note: { type: String, required: false },
     },
     { timestamps: true }

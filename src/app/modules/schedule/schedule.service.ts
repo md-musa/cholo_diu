@@ -35,7 +35,7 @@ export const ScheduleService = {
         { assignmentType: "one-off", specificDate: { $gte: todayStart, $lte: todayEnd } },
       ],
     })
-      .populate("busId", "name")
+      .populate("busId", "name busType")
       .populate("driverId", "name")
       .lean();
 

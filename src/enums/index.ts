@@ -54,6 +54,7 @@ export enum SCHEDULE_MODES {
   MID_TERM = "mid_term",
   FINAL_EXAM = "final_exam",
   RAMADAN = "ramadan",
+  VACATION = "vacation",
 }
 export enum SCHEDULE_OPERATING_DAYS {
   WEEKDAYS = "weekdays", // Regular working days

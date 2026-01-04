@@ -1,7 +1,7 @@
 import "express-async-errors";
 import cors from "cors";
 import cookieParser from "cookie-parser";
-import express, { Application, Request, Response } from "express";
+import express, { Application, NextFunction, Request, Response } from "express";
 import globalErrorHandler from "./app/middlewares/globalErrorHandler";
 import routeNotFoundError from "./app/middlewares/routeNotFoundError";
 import { AuthRouter } from "./app/modules/auth/auth.route";
@@ -15,10 +15,9 @@ import { ErrorLogRoute } from "./app/modules/errorLog/errorLog.route";
 import AssignmentRoute from "./app/modules/assignment/assignment.route";
 import helmet from "helmet";
 import compression from "compression";
+import { ScheduleModeRouter } from "./app/modules/scheduleMode/scheduleMode.route";
 
 const app: Application = express();
-
-// ** these is an issue with socket.io
 
 app.use(cors());
 app.use(express.json());
@@ -27,10 +26,10 @@ app.use(helmet());
 app.use(compression());
 app.use(express.urlencoded({ extended: true }));
 
-// app.use((req: Request, res: Response, next: NextFunction) => {
-//   console.log(req.url);
-//   next();
-// });
+app.use((req: Request, res: Response, next: NextFunction) => {
+  console.log(req.url);
+  next();
+});
 
 // routes
 app.get("/health", (req: Request, res: Response) => {
@@ -44,6 +43,8 @@ app.use("/api/v1/trips", TripRouter);
 app.use("/api/v1/logs", ErrorLogRoute);
 app.use("/api/v1/schedules", ScheduleRouter);
 app.use("/api/v1/assignments", AssignmentRoute);
+app.use("/api/v1/schedule-modes", ScheduleModeRouter);
+
 app.use(globalErrorHandler);
 app.use(routeNotFoundError);
 // ---------------------------
