@@ -10,7 +10,7 @@ import { RouteRouter } from "./app/modules/route/route.route";
 import { TripRouter } from "./app/modules/trip/trip.route";
 import { SOCKET_EVENTS } from "./enums";
 import { ScheduleRouter } from "./app/modules/schedule/schedule.route";
-import { handleLocationBroadcast, handleRouteJoin } from "./app/socket/broadcast";
+import { handleLocationBroadcast, handleRouteJoin, stopBroadcasting } from "./app/socket/broadcast";
 import { ErrorLogRoute } from "./app/modules/errorLog/errorLog.route";
 import AssignmentRoute from "./app/modules/assignment/assignment.route";
 import helmet from "helmet";
@@ -52,10 +52,11 @@ app.use(routeNotFoundError);
 // ---------------------------
 
 export const socketHandler = (socket: any) => {
-  //console.log(`🟢 New client connected: ${socket.id}`);
+  console.log(`🟢 New client connected: ${socket.id}`);
 
   // 1️⃣ User joins a route-specific room
   socket.on(SOCKET_EVENTS.JOIN_ROUTE, (routeId: string) => {
+    console.log(`➡️ Client ${socket.id} joining route ${routeId}`);
     handleRouteJoin(socket, routeId);
   });
 
@@ -64,16 +65,20 @@ export const socketHandler = (socket: any) => {
     handleLocationBroadcast(socket, data);
   });
 
+  socket.on(SOCKET_EVENTS.STOP_BROADCASTING, () => {
+    console.log(`🛑 Bus stopped broadcasting`);
+    stopBroadcasting(socket);
+  });
+
   // 3️⃣ User leaves the route-specific room
   socket.on("leave-room", (room: string) => {
     socket.leave(room);
-    //const currUserCnt = io.sockets.adapter.rooms.get(room)?.size;
-    //console.log(`🚫 Client ${socket.id} left room ${room}, cnt: ${currUserCnt}`);
+    console.log(`🚫 Client ${socket.id} left room ${room}`);
   });
 
-  // 4️⃣ Handle disconnection
-  socket.on("disconnect", () => {
-    //console.log(`🔴 Client disconnected: ${socket.id}`);
+  socket.on("disconnecting", () => {
+    console.log(`⚠️ Client disconnecting: ${socket.id}`);
+    stopBroadcasting(socket);
   });
 };
 

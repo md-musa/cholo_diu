@@ -1,4 +1,3 @@
-import { create } from "./../bus/bus.validation";
 import { SCHEDULE_DIRECTIONS, SCHEDULE_USER_TYPES } from "../../../enums";
 import { ISchedule } from "./schedule.interface";
 import ScheduleModel from "./schedule.model";
@@ -6,6 +5,7 @@ import ApiError from "../../../errors/ApiError";
 import AssignmentModel from "../assignment/assignment.model";
 import moment from "moment";
 import { TripModel } from "../trip/trip.model";
+import CurrentScheduleModeModel from "../scheduleMode/scheduleMode.model";
 
 export const ScheduleService = {
   createSchedule: async (data: ISchedule) => {

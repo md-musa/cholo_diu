@@ -5,8 +5,8 @@ import { ISchedule } from "./schedule.interface";
 import { ScheduleService } from "./schedule.service";
 import sendResponse from "../../../shared/sendResponse";
 import ApiError from "../../../errors/ApiError";
-import config from "../../../config";
 import { SCHEDULE_MODES } from "../../../enums";
+import CurrentScheduleModeModel from "../scheduleMode/scheduleMode.model";
 
 export const ScheduleController = {
   createSchedule: async (req: Request, res: Response) => {
@@ -31,14 +31,23 @@ export const ScheduleController = {
       throw ApiError.badRequest("Route ID and OperatingDays are required");
     }
 
-    const scheduleMode = config.APP_VARIABLES.SCHEDULE_MODE;
-    const result = await ScheduleService.getScheduleByRoute(routeId as string, scheduleMode, operatingDays as string);
-    // console.log(result);
+    const currentScheduleMode = await CurrentScheduleModeModel.findOne();
+
+    if (!currentScheduleMode) {
+      throw ApiError.internal("Current schedule mode not set");
+    }
+
+    const result = await ScheduleService.getScheduleByRoute(
+      routeId as string,
+      currentScheduleMode.modeKey,
+      operatingDays as string
+    );
+
     sendResponse(res, {
       statusCode: StatusCodes.OK,
       success: true,
       message: "Schedules fetched successfully",
-      data: { scheduleMode, operatingDays, schedules: result },
+      data: { scheduleMode: currentScheduleMode.modeKey, operatingDays, schedules: result },
     });
   },
 

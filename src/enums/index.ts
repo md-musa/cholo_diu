@@ -35,6 +35,8 @@ export enum SOCKET_EVENTS {
   VIEW_LOCATIONS = "view-locations",
   REQUEST_BUS_LOCATION = "request-bus-location",
   BUS_LOCATION_UPDATE = "bus-location-update",
+  BUS_OFFLINE = "bus-offline",
+  STOP_BROADCASTING = "stop-broadcasting",
 }
 
 // direction.enum.ts

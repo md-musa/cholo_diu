@@ -1,7 +1,7 @@
 import { LRUCache } from "lru-cache";
-import { SOCKET_EVENTS, USER_ROLES } from "../../enums";
+import { SOCKET_EVENTS } from "../../enums";
 import { io } from "../../server";
-import { TripModel, UserTripModel } from "../modules/trip/trip.model";
+import {  UserTripModel } from "../modules/trip/trip.model";
 import { updateTripSpeedAverage, getRoomUserCount, nowIso } from "./util";
 import { emitRouteLocationUpdate, getRecentlyUpdatedTrips } from "./tripUtil";
 import { BusModel } from "../modules/bus/bus.model";
@@ -69,6 +69,8 @@ export async function handleUserLocationBroadcast(socket: any, data: IncomingLoc
     const avgSpeed = updateTripSpeedAverage(tripId, speed) ?? 0;
     const currUserCnt = getRoomUserCount(io, routeId.toString());
     const timestamp = nowIso();
+
+    socket.data.tripId = tripId;
 
     const outgoing: OutgoingLocationPayload = {
       tripId,
@@ -175,3 +177,30 @@ export async function handleRouteJoin(socket: any, routeId: string) {
 
   //console.log(`➕ Client ${socket.id} joined route ${routeId}; cnt: ${currUserCnt}`);
 }
+
+export async function stopBroadcasting(socket: any) {
+  try {
+    const tripId = socket.data.tripId;
+    const tripData = tripCache.get(tripId);
+
+    if (!tripData) return;
+
+    const routeId = tripData.routeId.toString();
+    const busName = tripData.busName;
+
+    console.log(routeId, busName);
+
+    activeTripsCache.delete(tripId);
+
+    console.log(`🔴`, busName);
+    io.to(routeId).emit(SOCKET_EVENTS.BUS_OFFLINE, {
+      busName,
+      routeId,
+      timestamp: nowIso(),
+    });
+    console.log("Emitted bus offline for", busName);
+  } catch (error) {
+    console.error("❌ Error in stopBroadcasting:", error);
+  }
+}
+
