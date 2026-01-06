@@ -1,7 +1,7 @@
 import { LRUCache } from "lru-cache";
 import { SOCKET_EVENTS } from "../../enums";
 import { io } from "../../server";
-import {  UserTripModel } from "../modules/trip/trip.model";
+import { UserTripModel } from "../modules/trip/trip.model";
 import { updateTripSpeedAverage, getRoomUserCount, nowIso } from "./util";
 import { emitRouteLocationUpdate, getRecentlyUpdatedTrips } from "./tripUtil";
 import { BusModel } from "../modules/bus/bus.model";
@@ -52,8 +52,6 @@ export async function handleUserLocationBroadcast(socket: any, data: IncomingLoc
     if (!trip) {
       const newTrip = await UserTripModel.findById(tripId).populate("hostId", "name").lean();
       const bus = await BusModel.findOne({ name: newTrip?.busName }).lean();
-
-      console.log(bus);
 
       trip = { ...newTrip, busType: bus?.busType };
 
@@ -188,19 +186,14 @@ export async function stopBroadcasting(socket: any) {
     const routeId = tripData.routeId.toString();
     const busName = tripData.busName;
 
-    console.log(routeId, busName);
-
     activeTripsCache.delete(tripId);
 
-    console.log(`🔴`, busName);
     io.to(routeId).emit(SOCKET_EVENTS.BUS_OFFLINE, {
       busName,
       routeId,
       timestamp: nowIso(),
     });
-    console.log("Emitted bus offline for", busName);
   } catch (error) {
     console.error("❌ Error in stopBroadcasting:", error);
   }
 }
-
