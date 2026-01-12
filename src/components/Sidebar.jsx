@@ -11,6 +11,7 @@ import {
   FaSignOutAlt,
 } from "react-icons/fa";
 import { useAuth } from "../contexts/AuthContext";
+import { FaListCheck } from "react-icons/fa6";
 
 function Sidebar() {
   const { userData, logout } = useAuth();
@@ -24,6 +25,7 @@ function Sidebar() {
     { label: "Schedules", to: "/schedules", icon: <FaCalendarPlus /> },
     { label: "Buses", to: "/buses", icon: <FaBus /> },
     { label: "Routes", to: "/routes", icon: <FaRoute /> },
+    { label: "Schedule Mode", to: "/schedule-mode", icon: <FaListCheck /> },
     { label: "Logs", to: "/logs", icon: <FaInfo /> },
   ];
 

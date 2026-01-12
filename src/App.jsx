@@ -5,6 +5,8 @@ import Logs from "./pages/Logs";
 import SchedulePage from "./pages/schedule";
 import BusPage from "./pages/bus";
 import RoutePage from "./pages/route";
+import ScheduleMode from "./pages/scheduleMode";
+import NotFound from "./pages/NotFound";
 
 const DashboardLayout = () => {
   return (
@@ -17,6 +19,7 @@ const DashboardLayout = () => {
             <Route path="/routes" element={<RoutePage />} />
             <Route path="/buses" element={<BusPage />} />
             <Route path="/logs" element={<Logs />} />
+            <Route path="/schedule-mode" element={<ScheduleMode />} />
           </Routes>
         </div>
       </div>
@@ -29,6 +32,7 @@ function App() {
     <Routes>
       <Route path="/" element={<LoginPage />} />
       <Route path="/*" element={<DashboardLayout />} />
+      <Route path="*" element={<NotFound />} />
     </Routes>
   );
 }

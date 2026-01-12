@@ -18,17 +18,17 @@ export function WeekdaySchedules({
   metadata,
 }) {
   return (
-    <div className="mx-4 border-2 shadow border-gray-300 rounded-lg p-3 bg-white">
-      <div className="flex items-center justify-center mb-2 gap-2 text-md font-medium">
+    <div className="mx-4 border border-gray-200 shadow-sm hover:shadow-md transition-shadow duration-300 rounded-xl p-4 bg-white">
+      <div className="flex items-center justify-center mb-4 gap-2 text-lg font-bold text-gray-700">
         <FaCalendarAlt className={iconColor} />
         <span>{title}</span>
       </div>
 
-      <div className="grid grid-cols-2 gap-1">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-10 2xl:gap-8">
         <DirectionSchedules
           directionSchedules={schedules?.to}
-          direction="To Campus"
-          iconRotation="rotate-90"
+          direction="Up Trip"
+          icon="up"
           onAdd={onAddTo}
           addSchedule={addSchedule}
           editSchedule={editSchedule}
@@ -41,8 +41,8 @@ export function WeekdaySchedules({
         />
         <DirectionSchedules
           directionSchedules={schedules?.from}
-          direction="From Campus"
-          iconRotation="-rotate-90"
+          direction="Down Trip"
+          icon="down"
           onAdd={onAddFrom}
           addSchedule={addSchedule}
           editSchedule={editSchedule}

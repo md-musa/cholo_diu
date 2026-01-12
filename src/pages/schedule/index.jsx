@@ -7,14 +7,12 @@ import AddScheduleModal from "../../components/AddScheduleModal";
 import BusAssignModal from "../../components/AssignBusModal";
 import { Header } from "./components/Header";
 import { SelectionPanel } from "./components/SelectionPanel";
-import { RouteHeader } from "./components/RouteHeader";
 import { StudentSchedules } from "./components/StudentSchedules";
-import { EmployeeSchedules } from "./components/EmployeeSchedules";
 
 function SchedulePage() {
   const [schedules, setSchedules] = useState([]);
   const [routes, setRoutes] = useState([]);
-  const [selectedMode, setSelectedMode] = useState(SCHEDULE_MODES.FINAL_EXAM);
+  const [selectedMode, setSelectedMode] = useState(SCHEDULE_MODES.REGULAR);
   const [selectedRoute, setSelectedRoute] = useState("");
 
   const [form, setForm] = useState({
@@ -40,6 +38,7 @@ function SchedulePage() {
   const [selectedScheduleId, setSelectedScheduleId] = useState(null);
   const [editingSchedule, setEditingSchedule] = useState(false);
   const [editingBus, setEditingBus] = useState(false);
+  const [scheduleMode, setScheduleMode] = useState([]);
 
   // ========================
   // Fetching Data
@@ -63,6 +62,8 @@ function SchedulePage() {
       showError(err.response?.data?.message || "Failed to load schedules");
     }
   };
+
+
 
   useEffect(() => {
     fetchRoutes();
@@ -226,7 +227,6 @@ function ScheduleDisplay({
 }) {
   return (
     <div className="">
-      {/* <RouteHeader groupedSchedule={groupedSchedule} /> */}
       <StudentSchedules
         groupedSchedule={groupedSchedule}
         addSchedule={addSchedule}
@@ -237,17 +237,6 @@ function ScheduleDisplay({
         deleteBus={deleteBus}
         fetchSchedule={fetchSchedule}
         metadata={{ userType: SCHEDULE_USER_TYPES.STUDENT }}
-      />
-      <EmployeeSchedules
-        groupedSchedule={groupedSchedule}
-        addSchedule={addSchedule}
-        editSchedule={editSchedule}
-        deleteSchedule={deleteSchedule}
-        assignBus={assignBus}
-        editBus={editBus}
-        deleteBus={deleteBus}
-        fetchSchedule={fetchSchedule}
-        metadata={{ userType: SCHEDULE_USER_TYPES.EMPLOYEE }}
       />
     </div>
   );
