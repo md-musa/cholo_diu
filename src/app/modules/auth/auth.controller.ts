@@ -33,13 +33,9 @@ const login = async (req: Request, res: Response): Promise<void> => {
 };
 
 const refreshToken = async (req: Request, res: Response): Promise<void> => {
-  //console.log("refreshToken--------------\n [refresh()]", req.cookies);
   const { refreshToken } = req.cookies;
   const { accessToken, newRefreshToken } = await AuthService.refreshToken(refreshToken);
   res.cookie("refreshToken", newRefreshToken);
-
-  //console.log("accessToken", accessToken);
-  //console.log("newRefreshToken", newRefreshToken);
 
   sendResponse(res, {
     statusCode: StatusCodes.OK,
@@ -50,8 +46,6 @@ const refreshToken = async (req: Request, res: Response): Promise<void> => {
 };
 
 const getSingleUserData = async (req: Request, res: Response): Promise<void> => {
-  //console.log(req.params);
-  //console.log(req.query);
   const { userId } = req.query;
   const user = await AuthService.getSingleUserData(userId as string);
 
@@ -86,6 +80,46 @@ const deleteUserById = async (req: Request, res: Response): Promise<void> => {
   });
 };
 
+
+const sendOtp = async (req: Request, res: Response) => {
+  const { email } = req.body;
+  await AuthService.sendOtp(email);
+
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: "OTP sent successfully",
+    data: { email },
+  });
+};
+
+const verifyOtp = async (req: Request, res: Response) => {
+  const { email, otp } = req.body;
+  const result = await AuthService.verifyOtp(email, otp);
+
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: "OTP verified successfully",
+    data: result,
+  });
+};
+
+const resetPassword = async (req: Request, res: Response) => {
+  const { email, newPassword } = req.body;
+  console.log(req.body);
+  await AuthService.resetPassword(email, newPassword);
+
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: "Password reset successfully",
+    data: { email },
+  });
+};
+
+
+
 export const AuthController = {
   registerUser,
   login,
@@ -93,4 +127,7 @@ export const AuthController = {
   getSingleUserData,
   getAllDrivers,
   deleteUserById,
+  sendOtp,
+  verifyOtp,
+  resetPassword,
 };

@@ -25,4 +25,23 @@ const login = z.object({
   }),
 });
 
-export const AuthValidation = { register, login };
+const forgotPassword = z.object({
+  body: z.object({
+    email: z.string().email("Invalid email format"),
+  }),
+});
+
+const verifyOtp = z.object({
+  body: z.object({
+    email: z.string().email("Invalid email format"),
+    otp: z.string().length(6, "OTP must be 6 digits"),
+  }),
+});
+
+const resetPassword = z.object({
+  body: z.object({
+    newPassword: z.string().min(6, "Password must be at least 6 characters long"),
+  }),
+});
+
+export const AuthValidation = { register, login, forgotPassword, verifyOtp, resetPassword };

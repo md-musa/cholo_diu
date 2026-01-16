@@ -12,5 +12,9 @@ router.get("/user", AuthController.getSingleUserData)
 router.get("/drivers", AuthController.getAllDrivers)
 router.delete("/delete/:id", AuthController.deleteUserById)
 
+// Password Reset
+router.post("/send-otp", validateRequest(AuthValidation.forgotPassword), AuthController.sendOtp);
+router.post("/verify-otp", validateRequest(AuthValidation.verifyOtp), AuthController.verifyOtp);
+router.post("/reset-password", validateRequest(AuthValidation.resetPassword), AuthController.resetPassword);
+
 export const AuthRouter = router;
- 

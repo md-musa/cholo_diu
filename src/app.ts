@@ -25,10 +25,10 @@ app.use(helmet());
 app.use(compression());
 app.use(express.urlencoded({ extended: true }));
 
-// app.use((req: Request, res: Response, next: NextFunction) => {
-//   console.log(req.url);
-//   next();
-// });
+app.use((req: Request, res: Response, next: NextFunction) => {
+  console.log(req.url);
+  next();
+});
 
 // routes
 app.get("/health", (req: Request, res: Response) => {
@@ -44,6 +44,7 @@ app.use("/api/v1/schedules", ScheduleRouter);
 app.use("/api/v1/assignments", AssignmentRoute);
 app.use("/api/v1/schedule-modes", ScheduleModeRouter);
 
+
 app.use(globalErrorHandler);
 app.use(routeNotFoundError);
 // ---------------------------
@@ -51,11 +52,11 @@ app.use(routeNotFoundError);
 // ---------------------------
 
 export const socketHandler = (socket: any) => {
- // console.log(`🟢 New client connected: ${socket.id}`);
+  // console.log(`🟢 New client connected: ${socket.id}`);
 
   // 1️⃣ User joins a route-specific room
   socket.on(SOCKET_EVENTS.JOIN_ROUTE, (routeId: string) => {
-   // console.log(`➡️ Client ${socket.id} joining route ${routeId}`);
+    // console.log(`➡️ Client ${socket.id} joining route ${routeId}`);
     handleRouteJoin(socket, routeId);
   });
 
@@ -65,7 +66,7 @@ export const socketHandler = (socket: any) => {
   });
 
   socket.on(SOCKET_EVENTS.STOP_BROADCASTING, () => {
-   // console.log(`🛑 Bus stopped broadcasting`);
+    // console.log(`🛑 Bus stopped broadcasting`);
     stopBroadcasting(socket);
   });
 
@@ -76,7 +77,7 @@ export const socketHandler = (socket: any) => {
   });
 
   socket.on("disconnecting", () => {
-   // console.log(`⚠️ Client disconnecting: ${socket.id}`);
+    // console.log(`⚠️ Client disconnecting: ${socket.id}`);
     stopBroadcasting(socket);
   });
 };

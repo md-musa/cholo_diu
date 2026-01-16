@@ -5,6 +5,9 @@ import jwt, { Secret } from "jsonwebtoken";
 import UserModel from "./auth.model";
 import config from "../../../config";
 import mongoose, { Types } from "mongoose";
+import crypto from "crypto";
+import { OTPModel } from "./auth.passwordReset.model";
+import { sendEmail } from "../../../helper/sendEmail";
 
 const userId: Types.ObjectId = new mongoose.Types.ObjectId();
 
@@ -91,7 +94,7 @@ const refreshToken = async (token: string) => {
   }
 
   let decoded;
- // console.log("Decoded token", token);
+  // console.log("Decoded token", token);
   try {
     decoded = jwt.verify(token, REFRESH_TOKEN_SECRET) as {
       _id: string;
@@ -127,9 +130,9 @@ const refreshToken = async (token: string) => {
 };
 
 const getSingleUserData = async (userId: string) => {
- // console.log(userId);
+  // console.log(userId);
   const user = await UserModel.findById(userId);
- // console.log(user);
+  // console.log(user);
   if (!user) throw ApiError.notFound("User not found");
 
   return user;
@@ -142,4 +145,75 @@ const deleteUserById = async (id: string) => {
   return await UserModel.findByIdAndDelete(id);
 };
 
-export const AuthService = { registerUser, login, getSingleUserData, refreshToken, getAllDrivers, deleteUserById };
+
+
+const sendOtp = async (email: string) => {
+  const user = await UserModel.findOne({ email });
+  if (!user) throw ApiError.notFound("There is no account with this email");
+
+  const otp = Math.floor(100000 + Math.random() * 900000).toString();
+
+  const hashedOTP = crypto
+    .createHash("sha256")
+    .update(otp)
+    .digest("hex");
+
+  await OTPModel.deleteMany({ email });
+
+  await OTPModel.create({
+    email,
+    otp: hashedOTP,
+    expiresAt: Date.now() + 10 * 60 * 1000 // 10 min
+  });
+
+  const html = `
+    <h2>Cholo DIU App - Password Reset OTP</h2>
+    <p>Hello,</p>
+    <p>You requested to reset your password for the Cholo DIU app. Use the OTP below to reset your password:</p>
+    <h3>${otp}</h3>
+    <p>This OTP is valid for 10 minutes. If you did not request a password reset, please ignore this email.</p>
+    <p>Thank you,<br/>The Cholo DIU Team</p>
+  `;
+
+  await sendEmail(email, "Cholo DIU App - Password Reset OTP", html);
+  console.log("OTP:", otp);
+};
+
+const verifyOtp = async (email: string, otp: string) => {
+  const hashedOTP = crypto
+    .createHash("sha256")
+    .update(otp)
+    .digest("hex");
+
+  const record = await OTPModel.findOne({ email, otp: hashedOTP });
+
+  if (!record) throw ApiError.badRequest("Invalid or expired OTP");
+
+  // Keep OTP for reset step or let it expire
+  return { email };
+};
+
+const resetPassword = async (email: string, newPassword: any) => {
+  const user = await UserModel.findOne({ email });
+  if (!user) throw ApiError.notFound("User not found");
+
+  user.password = newPassword;
+  await user.save();
+
+  await OTPModel.deleteMany({ email });
+};
+
+
+
+
+export const AuthService = {
+  registerUser,
+  login,
+  getSingleUserData,
+  refreshToken,
+  getAllDrivers,
+  deleteUserById,
+  sendOtp,
+  verifyOtp,
+  resetPassword,
+};

@@ -6,6 +6,7 @@ import ApiError from "../../../errors/ApiError";
 
 const getScheduleMode = async (req: Request, res: Response) => {
   const result = await ScheduleModeService.getCurrentScheduleMode();
+  console.log("Current Schedule Mode:", result);
 
   sendResponse(res, {
     statusCode: StatusCodes.OK,
