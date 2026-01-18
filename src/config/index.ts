@@ -30,4 +30,9 @@ export default {
     USER: process.env.EMAIL_USER,
     PASS: process.env.EMAIL_PASS,
   },
+  BREVO: {
+    USER: process.env.BREVO_USER,
+    PASS: process.env.BREVO_PASS,
+    API_KEY: process.env.BREVO_API_KEY,
+  },
 };

@@ -107,7 +107,6 @@ const verifyOtp = async (req: Request, res: Response) => {
 
 const resetPassword = async (req: Request, res: Response) => {
   const { email, newPassword } = req.body;
-  console.log(req.body);
   await AuthService.resetPassword(email, newPassword);
 
   sendResponse(res, {

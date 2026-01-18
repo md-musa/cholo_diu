@@ -42,12 +42,12 @@ const registerUser = async (userInfo: IUser) => {
   const accessToken = generateToken(
     { _id: _id as Types.ObjectId, email, role },
     ACCESS_TOKEN_SECRET,
-    ACCESS_TOKEN_LIFE
+    ACCESS_TOKEN_LIFE,
   );
   const refreshToken = generateToken(
     { _id: _id as Types.ObjectId, email, role },
     REFRESH_TOKEN_SECRET,
-    REFRESH_TOKEN_LIFE
+    REFRESH_TOKEN_LIFE,
   );
 
   return { accessToken, refreshToken, user: { _id, name, email, role, phoneNumber, routeId } };
@@ -75,12 +75,12 @@ const login = async (userInfo: { email: string; password: string }) => {
   const accessToken = generateToken(
     { _id: _id as Types.ObjectId, email, role },
     ACCESS_TOKEN_SECRET,
-    ACCESS_TOKEN_LIFE
+    ACCESS_TOKEN_LIFE,
   );
   const refreshToken = generateToken(
     { _id: _id as Types.ObjectId, email, role },
     REFRESH_TOKEN_SECRET,
-    REFRESH_TOKEN_LIFE
+    REFRESH_TOKEN_LIFE,
   );
 
   return { accessToken, refreshToken, user: { _id, name, email, role, phoneNumber, routeId } };
@@ -118,12 +118,12 @@ const refreshToken = async (token: string) => {
   const accessToken = generateToken(
     { _id: _id as Types.ObjectId, email, role },
     ACCESS_TOKEN_SECRET,
-    ACCESS_TOKEN_LIFE
+    ACCESS_TOKEN_LIFE,
   );
   const newRefreshToken = generateToken(
     { _id: _id as Types.ObjectId, email, role },
     REFRESH_TOKEN_SECRET,
-    REFRESH_TOKEN_LIFE
+    REFRESH_TOKEN_LIFE,
   );
 
   return { accessToken, newRefreshToken };
@@ -145,25 +145,20 @@ const deleteUserById = async (id: string) => {
   return await UserModel.findByIdAndDelete(id);
 };
 
-
-
 const sendOtp = async (email: string) => {
   const user = await UserModel.findOne({ email });
   if (!user) throw ApiError.notFound("There is no account with this email");
 
   const otp = Math.floor(100000 + Math.random() * 900000).toString();
 
-  const hashedOTP = crypto
-    .createHash("sha256")
-    .update(otp)
-    .digest("hex");
+  const hashedOTP = crypto.createHash("sha256").update(otp).digest("hex");
 
   await OTPModel.deleteMany({ email });
 
   await OTPModel.create({
     email,
     otp: hashedOTP,
-    expiresAt: Date.now() + 10 * 60 * 1000 // 10 min
+    expiresAt: Date.now() + 10 * 60 * 1000, // 10 min
   });
 
   const html = `
@@ -176,14 +171,10 @@ const sendOtp = async (email: string) => {
   `;
 
   await sendEmail(email, "Cholo DIU App - Password Reset OTP", html);
-  console.log("OTP:", otp);
 };
 
 const verifyOtp = async (email: string, otp: string) => {
-  const hashedOTP = crypto
-    .createHash("sha256")
-    .update(otp)
-    .digest("hex");
+  const hashedOTP = crypto.createHash("sha256").update(otp).digest("hex");
 
   const record = await OTPModel.findOne({ email, otp: hashedOTP });
 
@@ -202,9 +193,6 @@ const resetPassword = async (email: string, newPassword: any) => {
 
   await OTPModel.deleteMany({ email });
 };
-
-
-
 
 export const AuthService = {
   registerUser,

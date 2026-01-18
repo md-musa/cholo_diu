@@ -25,10 +25,10 @@ app.use(helmet());
 app.use(compression());
 app.use(express.urlencoded({ extended: true }));
 
-app.use((req: Request, res: Response, next: NextFunction) => {
-  console.log(req.url);
-  next();
-});
+// app.use((req: Request, res: Response, next: NextFunction) => {
+//   console.log(req.url);
+//   next();
+// });
 
 // routes
 app.get("/health", (req: Request, res: Response) => {
