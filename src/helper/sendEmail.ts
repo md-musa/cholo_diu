@@ -3,7 +3,6 @@ import config from "../config";
 
 
 
-console.log(config.EMAIL)
 const transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
@@ -20,7 +19,7 @@ export const sendEmail = async (to: string, subject: string, html: string) => {
             subject,
             html
         });
-        console.log(`Email sent to ${to}`);
+       // console.log(`Email sent to ${to}`);
     } catch (error) {
         console.error("Error sending email:", error);
         throw new Error("Email could not be sent");
