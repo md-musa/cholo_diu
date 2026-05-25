@@ -1,0 +1,117 @@
+import React, { useRef, useState, useEffect } from "react";
+import { View, StatusBar, StyleSheet, TouchableOpacity } from "react-native";
+import useLocation from "@/hook/useLocation";
+import MapComponent from "@/components/MapComponent";
+import StatusOverlayComponent from "@/components/UI/StatusOverlayComponent";
+import BottomSheetComponent from "@/components/UI/BottomSheetComponent";
+import { Ionicons, MaterialIcons } from "@expo/vector-icons";
+import { useLocalSearchParams, useRouter } from "expo-router";
+import { useAppSelector } from "@/store/storeConfig";
+import { getCurrentRouteCenterCords } from "@/assets/routes";
+import { MapUtils } from "@/utils/mapUtils";
+
+const WatchBusLocation = () => {
+  const router = useRouter();
+  const paramsData = useLocalSearchParams();
+  const { route } = useAppSelector((state) => state.auth);
+  const { activeBuses } = useAppSelector((state) => state.busLocation);
+
+  const bottomSheetRef = useRef(null);
+  const { location } = useLocation();
+  const [zoom, setZoom] = useState(11);
+
+  const cameraRef = useRef(null);
+  const mapRef = useRef(null);
+
+  const [currentCenter, setCurrentCenter] = useState([90.320463, 23.879]);
+
+  const centerToRouteCenter = () => {
+    const routeCenter = getCurrentRouteCenterCords(route?.routeNo);
+    if (routeCenter) {
+      MapUtils.changeMapCenter(routeCenter, setCurrentCenter, setZoom, 11);
+    }
+  };
+
+  useEffect(() => {
+    centerToRouteCenter();
+  }, [route]);
+
+  useEffect(() => {
+    if (paramsData.longitude && paramsData.latitude) {
+      MapUtils.highlightBus(cameraRef, setZoom, setCurrentCenter, [
+        parseFloat(paramsData.longitude),
+        parseFloat(paramsData.latitude),
+      ]);
+    }
+  }, []);
+
+  return (
+    <View style={styles.container}>
+      <StatusBar hidden={true} />
+      <View className="relative flex-1">
+        <MapComponent
+          mapRef={mapRef}
+          zoom={zoom}
+          cameraRef={cameraRef}
+          setZoom={setZoom}
+          currentCenter={currentCenter}
+          setCurrentCenter={setCurrentCenter}
+        />
+        <StatusOverlayComponent />
+
+        {/* --- Route Center --- */}
+        <TouchableOpacity
+          className="absolute bottom-[25rem] right-5 bg-white  border border-muted-300 rounded-full shadow flex-row p-3.5 items-center justify-center"
+          onPress={centerToRouteCenter}
+          disabled={!location}
+          style={{ opacity: location ? 1 : 0.5 }}
+        >
+          <MaterialIcons name="route" size={25} color="black" />
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          className="absolute bottom-80 right-5 bg-white border border-muted-300 rounded-full shadow flex-row p-3 items-center justify-center"
+          onPress={() => MapUtils.centerToUserLocation(cameraRef, location, setZoom, setCurrentCenter, 15)}
+          disabled={!location}
+        >
+          <Ionicons name="locate" size={28} color="black" />
+        </TouchableOpacity>
+
+        {/* ----Expan bottom sheet---- */}
+        <TouchableOpacity
+          className="absolute bottom-20 left-1/2 -translate-x-1/2  bg-white border border-muted-300 rounded-full  flex-row p-2 items-center justify-center"
+          onPress={() => bottomSheetRef.current?.expand()}
+          disabled={!location}
+        >
+          <MaterialIcons name="keyboard-double-arrow-up" size={35} color="black" />
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          className="absolute top-10 left-5 bg-white border border-muted-300 rounded-full shadow flex-row p-2 items-center justify-center"
+          onPress={() => router.back()}
+        >
+          <Ionicons name="arrow-back" size={25} color="black" />
+        </TouchableOpacity>
+      </View>
+
+      <BottomSheetComponent
+        bottomSheetRef={bottomSheetRef}
+        highlightBus={([long, lat]) => {
+          MapUtils.highlightBus(cameraRef, setZoom, setCurrentCenter, [long, lat]);
+        }}
+        closeBottomSheet={() => bottomSheetRef.current?.close()}
+        openBottomSheet={() => bottomSheetRef.current?.expand()}
+        activeBuses={activeBuses}
+      />
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "gray",
+  },
+});
+
+export default WatchBusLocation;

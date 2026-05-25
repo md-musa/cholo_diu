@@ -1,0 +1,17 @@
+{
+  "version": "1.0.0",
+
+  "api_url": "https://api.cholodiu.xyz",
+  "socket_url": "https://api.cholodiu.xyz",
+
+  "force_update": false,
+
+  "update_version": "1.0.0",
+  "update_message": "",
+  "playstore_url": "https://cholodiu.xyz/",
+
+  "maintenance_mode": false,
+  "maintenance_message": "The server is under maintenance. Please try again later.",
+
+  "features": {}
+}

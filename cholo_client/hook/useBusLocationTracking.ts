@@ -1,0 +1,107 @@
+// src/hooks/useBusLocation.ts
+import { useEffect, useState } from 'react';
+import NetInfo from '@react-native-community/netinfo';
+import { getSocket } from '@/config/socketIoConfig';
+import { SOCKET_EVENTS } from '@/constants';
+import { useAppDispatch, useAppSelector } from '@/store/storeConfig';
+import { clearBuses, removeInactiveBuses, updateBusLocation } from '@/store/features/busLocation/busLocationSlice';
+
+export const useBusLocation = () => {
+  const dispatch = useAppDispatch();
+  const { route } = useAppSelector(state => state.auth);
+  const [isDisconnected, setIsDisconnected] = useState(false);
+  const [message, setMessage] = useState<string | null>(null);
+  const scoketDisConnectionErrMsg = 'Live location temporarily unavailable';
+  const socket = getSocket();
+
+  // 1. Listen for network changes
+  useEffect(() => {
+    const unsubscribe = NetInfo.addEventListener((state: any) => {
+      const isOffline = !state.isConnected || !state.isInternetReachable;
+      setIsDisconnected(isOffline);
+
+      if (isOffline) {
+        setMessage('You are offline');
+      } else {
+        if (!socket.connected) {
+          setMessage(scoketDisConnectionErrMsg);
+          setIsDisconnected(true);
+        } else {
+          setMessage(null);
+          setIsDisconnected(false);
+        }
+      }
+
+      if (!socket.connected) socket.connect();
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  // 2. Clean up inactive buses every 10 seconds
+  useEffect(() => {
+    const interval = setInterval(() => {
+      dispatch(removeInactiveBuses());
+    }, 10000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  // 3. Manage socket connection
+  useEffect(() => {
+    dispatch(clearBuses());
+
+    const handleLocationUpdate = (data: any) => {
+      dispatch(updateBusLocation(data));
+      setIsDisconnected(false);
+      setMessage(null);
+    };
+
+    const handleDisconnect = () => {
+      setIsDisconnected(true);
+      setMessage(scoketDisConnectionErrMsg);
+    };
+
+    const handleConnect = () => {
+      setIsDisconnected(false);
+      setMessage(null);
+
+      if (route) {
+        socket.emit(SOCKET_EVENTS.JOIN_ROUTE, route._id);
+      }
+    };
+
+    const handleConnectError = (error: any) => {
+      setIsDisconnected(true);
+      setMessage(scoketDisConnectionErrMsg);
+    };
+
+    // Attach socket listeners
+    socket.on(SOCKET_EVENTS.BUS_LOCATION_UPDATE, handleLocationUpdate);
+    socket.on('connect', handleConnect);
+    socket.on('disconnect', handleDisconnect);
+    socket.on('connect_error', handleConnectError);
+
+    // Join route room if already connected
+    if (socket.connected && route) {
+      socket.emit(SOCKET_EVENTS.JOIN_ROUTE, route._id);
+    }
+
+    return () => {
+      socket.off(SOCKET_EVENTS.BUS_LOCATION_UPDATE, handleLocationUpdate);
+      socket.off('connect', handleConnect);
+      socket.off('disconnect', handleDisconnect);
+      socket.off('connect_error', handleConnectError);
+
+      if (route) {
+        socket.emit(SOCKET_EVENTS.LEAVE_ROUTE_ROOM, route._id);
+      }
+    };
+  }, [route?._id]);
+
+  return {
+    isUserDisConnected: isDisconnected,
+    internetStatus: message,
+    clearBuses: () => dispatch(clearBuses()),
+  };
+};
