@@ -1,7 +1,7 @@
 import axios from "axios";
 
-// const SERVER_URL = "http://localhost:4000/api/v1";
-const SERVER_URL = "https://api.cholodiu.xyz/api/v1";
+const SERVER_URL = "http://localhost:4000/api/v1";
+// const SERVER_URL = "https://api.cholodiu.xyz/api/v1";
 
 const apiClient = axios.create({
   baseURL: SERVER_URL,
@@ -21,7 +21,7 @@ apiClient.interceptors.request.use(
     }
     return config;
   },
-  (error) => Promise.reject(error)
+  (error) => Promise.reject(error),
 );
 
 // Response Interceptor (Optional)
@@ -30,7 +30,7 @@ apiClient.interceptors.response.use(
   (error) => {
     console.error("🟥🟥 sAPI Error:", error.response?.data || error.message);
     return Promise.reject(error);
-  }
+  },
 );
 
 export default apiClient;
