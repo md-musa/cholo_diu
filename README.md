@@ -31,27 +31,27 @@
 
 ## 1. Overview
 
-Cholo App is a real-time university transport management system I built to solve a real problem at my university — students had no way of knowing where buses were, whether a trip had started, or how long they needed to wait.
+CholoDIU is a real-time university transport management system built to solve a real problem at Daffodil International University—students had no easy way to know where buses were, whether a trip had started, or how long they needed to wait.
 
-The system lets students view schedules, see assigned buses, and track live bus locations with ETA and distance from their phone. Drivers use the same app to start trips and broadcast their GPS location every 5 seconds. Everything updates in real time through Socket.IO.
+The system allows students to view schedules, check assigned buses, and track live bus locations with ETA and distance directly from their phones. Drivers use the same app to start trips and broadcast their GPS location every 5 seconds. All updates are delivered in real time using Socket.IO.
 
-The project is a monorepo with three parts: a React Native mobile app (students + drivers), a React admin dashboard, and an Express.js backend. It is live on the Google Play Store with 1000+ downloads and is actively used at my university.
+The project consists of a React Native mobile app for students and drivers, a React admin dashboard, and an Express.js backend. It is live on the Google Play Store with 1000+ downloads and is actively used by students at the university.
 
 ## 2. Features
 
 | #   | Feature               | Description                                              |
 | --- | --------------------- | -------------------------------------------------------- |
-| 1   | **Sign In / Sign Up** | Secure onboarding for students, drivers, and admins      |
-| 2   | **Authentication**    | JWT access and refresh tokens with role-based middleware |
-| 3   | **Role System**       | Separate roles for students, drivers, and admins         |
-| 4   | **Live Bus Tracking** | Real-time GPS updates via Socket.IO every 5 seconds      |
-| 5   | **ETA & Distance**    | Calculated using Turf.js and the Haversine formula       |
-| 6   | **Route-Based Rooms** | Users only receive updates for their selected route      |
-| 7   | **Schedule Viewing**  | Students can view bus schedules from the mobile app      |
-| 8   | **Driver Broadcast**  | Drivers share live location during active trips          |
-| 9   | **Admin Dashboard**   | Manage routes, buses, drivers, and schedules             |
-| 10  | **LRU Cache**         | Optimizes active trip lookup on the backend              |
-| 11  | **Map View**          | Live moving markers and route polylines with MapLibre    |
+| 1   | **Live Bus Tracking** | Real-time GPS updates via Socket.IO every 5 seconds      |
+| 2   | **ETA & Distance**    | Calculated using Turf.js and the Haversine formula       |
+| 3   | **Route-Based Rooms** | Users receive updates only for their selected route      |
+| 4   | **Assigned Bus View** | Students can view the bus assigned to their route        |
+| 5   | **Driver Broadcast**  | Drivers share live location during active trips          |
+| 6   | **Schedule Viewing**  | Students can view bus schedules from the mobile app      |
+| 7   | **Map View**          | Live moving markers and route polylines with MapLibre    |
+| 8   | **Sign In / Sign Up** | Secure onboarding for students, drivers, and admins      |
+| 9   | **Authentication**    | JWT access and refresh tokens with role-based middleware |
+| 10  | **Role System**       | Separate roles for students, drivers, and admins         |
+| 11  | **Admin Dashboard**   | Manage routes, buses, drivers, and schedules             |
 
 ## 3. Tech Stack
 
@@ -71,7 +71,7 @@ A high-level overview of the mobile, admin, and backend components with the live
 
 ![System Architecture](./assets/wfd.png)
 
-A workflow diagram showing how driver GPS updates are sent to the backend, processed, and broadcast to student devices in real time.
+The workflow diagram showing how driver GPS updates are sent to the backend, processed, and broadcast to student devices in real time.
 
 ## 6. Database Collections
 
@@ -161,53 +161,79 @@ cd admin && npm run dev
 
 ## 10. API Reference
 
-> Full Swagger documentation coming soon.
-
 ### Authentication
 
-| Method | Endpoint             | Description                               |
-| ------ | -------------------- | ----------------------------------------- |
-| POST   | `/api/auth/register` | Register a new user                       |
-| POST   | `/api/auth/login`    | Login and receive access + refresh tokens |
-| POST   | `/api/auth/refresh`  | Refresh an expired access token           |
-| POST   | `/api/auth/logout`   | Invalidate the refresh token              |
+| Method | Endpoint                      | Description                               |
+| ------ | ----------------------------- | ----------------------------------------- |
+| POST   | `/api/v1/auth/register`       | Register a new user                       |
+| POST   | `/api/v1/auth/login`          | Login and receive access + refresh tokens |
+| POST   | `/api/v1/auth/refresh-token`  | Refresh an expired access token           |
+| GET    | `/api/v1/auth/user`           | Get current user data                     |
+| GET    | `/api/v1/auth/drivers`        | List all drivers                          |
+| POST   | `/api/v1/auth/send-otp`       | Send OTP for password reset               |
+| POST   | `/api/v1/auth/verify-otp`     | Verify OTP code                           |
+| POST   | `/api/v1/auth/reset-password` | Reset password with OTP                   |
 
-### Routes & Schedules
+### Routes
 
-| Method | Endpoint                  | Description                        |
-| ------ | ------------------------- | ---------------------------------- |
-| GET    | `/api/routes`             | List all routes                    |
-| GET    | `/api/routes/:id`         | Get a single route with stops      |
-| GET    | `/api/schedules`          | List all schedules                 |
-| GET    | `/api/schedules/:routeId` | Get schedules for a specific route |
+| Method | Endpoint              | Description               |
+| ------ | --------------------- | ------------------------- |
+| GET    | `/api/v1/routes`      | List all routes           |
+| POST   | `/api/v1/routes`      | Create a new route        |
+| PUT    | `/api/v1/routes/:id`  | Update route details      |
+| DELETE | `/api/v1/routes/:id`  | Delete a route            |
+
+### Buses
+
+| Method | Endpoint             | Description            |
+| ------ | -------------------- | ---------------------- |
+| GET    | `/api/v1/buses`      | List all buses         |
+| POST   | `/api/v1/buses`      | Create a new bus       |
+| PUT    | `/api/v1/buses/:id`  | Update bus details     |
+| DELETE | `/api/v1/buses/:id`  | Delete a bus           |
+
+### Schedules
+
+| Method | Endpoint                                    | Description                           |
+| ------ | ------------------------------------------- | ------------------------------------- |
+| GET    | `/api/v1/schedules/route/:routeId`          | Get schedules for a specific route    |
+| GET    | `/api/v1/schedules/admin/route/:routeId/:mode` | Get admin schedules by route & mode   |
+| POST   | `/api/v1/schedules`                         | Create a new schedule                 |
+| PUT    | `/api/v1/schedules/:id`                     | Update schedule details               |
+| DELETE | `/api/v1/schedules/:id`                     | Delete a schedule                     |
 
 ### Trips
 
-| Method | Endpoint                     | Description                       |
-| ------ | ---------------------------- | --------------------------------- |
-| POST   | `/api/trips/start`           | Start a new trip (driver only)    |
-| POST   | `/api/trips/end`             | End the active trip (driver only) |
-| GET    | `/api/trips/active/:routeId` | Get the active trip for a route   |
+| Method | Endpoint                | Description                 |
+| ------ | ----------------------- | --------------------------- |
+| GET    | `/api/v1/trips`         | List all trips              |
+| POST   | `/api/v1/trips`         | Create a new trip           |
+| GET    | `/api/v1/trips/:id`     | Get trip details            |
+| PUT    | `/api/v1/trips/:id`     | Update trip details         |
+| DELETE | `/api/v1/trips/:id`     | Delete a trip               |
+| POST   | `/api/v1/trips/userTrip` | Create a user trip          |
 
-### Admin
+### Assignments
 
-| Method | Endpoint               | Description                |
-| ------ | ---------------------- | -------------------------- |
-| GET    | `/api/admin/users`     | List all users             |
-| POST   | `/api/admin/buses`     | Add a new bus              |
-| PUT    | `/api/admin/buses/:id` | Update bus details         |
-| DELETE | `/api/admin/buses/:id` | Remove a bus               |
-| POST   | `/api/admin/drivers`   | Assign a driver to a route |
+| Method | Endpoint                        | Description                      |
+| ------ | ------------------------------- | -------------------------------- |
+| GET    | `/api/v1/assignments`           | List all assignments             |
+| POST   | `/api/v1/assignments`           | Create driver schedule assignment |
+| GET    | `/api/v1/assignments/driver/:driverId` | Get assignments for a driver     |
+| PUT    | `/api/v1/assignments/:id`       | Update assignment details        |
+| DELETE | `/api/v1/assignments/:id`       | Delete an assignment             |
 
 ### Socket.IO Events
 
 | Event             | Direction       | Payload                                  |
 | ----------------- | --------------- | ---------------------------------------- |
 | `join_route`      | Client → Server | `{ routeId }`                            |
-| `location_update` | Client → Server | `{ lat, lng, speed, timestamp }`         |
+| `broadcast_bus_location` | Client → Server | `{ lat, lng, speed, timestamp }`    |
+| `stop_broadcasting` | Client → Server | -                                  |
 | `bus_location`    | Server → Client | `{ lat, lng, speed, tripId, timestamp }` |
 | `trip_started`    | Server → Client | `{ tripId, routeId, driverId }`          |
 | `trip_ended`      | Server → Client | `{ tripId }`                             |
+| `leave-room`      | Client → Server | `{ room }`                               |
 
 ## 11. Deployment
 
