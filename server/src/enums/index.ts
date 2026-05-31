@@ -39,13 +39,13 @@ export enum SOCKET_EVENTS {
   STOP_BROADCASTING = "stop-broadcasting",
 }
 
-// direction.enum.ts
+
 export enum SCHEDULE_DIRECTIONS {
   TO_CAMPUS = "to_campus",
   FROM_CAMPUS = "from_campus",
 }
 
-// userType.enum.ts
+
 export enum SCHEDULE_USER_TYPES {
   STUDENT = "student",
   EMPLOYEE = "employee",
@@ -59,6 +59,6 @@ export enum SCHEDULE_MODES {
   VACATION = "vacation",
 }
 export enum SCHEDULE_OPERATING_DAYS {
-  WEEKDAYS = "weekdays", // Regular working days
-  FRIDAY = "friday", // Special Friday schedule
+  WEEKDAYS = "weekdays",
+  FRIDAY = "friday",
 }

@@ -5,10 +5,10 @@ export interface ISchedule {
   _id: Types.ObjectId;
   routeId: Types.ObjectId;
   direction: SCHEDULE_DIRECTIONS.TO_CAMPUS | SCHEDULE_DIRECTIONS.FROM_CAMPUS;
-  time: string; // Time as string in "HH:mm" format
+  time: string;
   userType: SCHEDULE_USER_TYPES.STUDENT | SCHEDULE_USER_TYPES.EMPLOYEE;
   mode: SCHEDULE_MODES.REGULAR | SCHEDULE_MODES.MID_TERM | SCHEDULE_MODES.FINAL_EXAM | SCHEDULE_MODES.RAMADAN;
   operatingDays: SCHEDULE_OPERATING_DAYS.WEEKDAYS | SCHEDULE_OPERATING_DAYS.FRIDAY;
-  serviceType?: string; // Made optional
-  note?: string; // Made optional
+  serviceType?: string;
+  note?: string;
 }

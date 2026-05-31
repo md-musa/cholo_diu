@@ -5,7 +5,6 @@ import ApiError from "../../../errors/ApiError";
 import AssignmentModel from "../assignment/assignment.model";
 import moment from "moment";
 import { TripModel } from "../trip/trip.model";
-import CurrentScheduleModeModel from "../scheduleMode/scheduleMode.model";
 
 export const ScheduleService = {
   createSchedule: async (data: ISchedule) => {

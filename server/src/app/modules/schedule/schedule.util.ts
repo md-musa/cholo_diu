@@ -34,8 +34,8 @@ export const groupAndSortSchedules = (schedules: ISchedule[]) => {
   }
 
   const sortByTime = (a: ISchedule, b: ISchedule) => {
-    if (!a.time && !b.time) return 0; // both missing
-    if (!a.time) return 1; // push undefined to end
+    if (!a.time && !b.time) return 0;
+    if (!a.time) return 1;
     if (!b.time) return -1;
     return a.time.localeCompare(b.time);
   };

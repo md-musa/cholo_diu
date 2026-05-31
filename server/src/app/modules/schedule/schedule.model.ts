@@ -15,7 +15,7 @@ const scheduleSchema: Schema<ISchedule> = new Schema(
       required: true,
     },
     time: {
-      type: String, // Store time as string (HH:mm) format
+      type: String,
       required: true,
     },
     userType: {

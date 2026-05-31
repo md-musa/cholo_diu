@@ -11,7 +11,6 @@ export const DriverTripService = {
 
   update: async (id: string, payload: Partial<ITrip>) => {
     let trip = await TripModel.findById(id);
-    //console.log(trip);
     if (!trip) throw ApiError.notFound("Trip not found");
 
     // Prevent updating if trip is already completed or departed (and trying to cancel)

@@ -6,11 +6,8 @@ import { Request, Response } from "express";
 import ApiError from "../../../errors/ApiError";
 
 export const DriverTripController = {
-  // Create a trip
   create: async (req: Request, res: Response) => {
     const tripData: ITrip = req.body;
-
-    //console.log(tripData);
     const trip = await DriverTripService.create(tripData);
 
     sendResponse(res, {
@@ -21,7 +18,6 @@ export const DriverTripController = {
     });
   },
 
-  // Get trip by ID
   getById: async (req: Request, res: Response) => {
     const { id } = req.params;
     const trip = await DriverTripService.getById(id);
@@ -34,7 +30,6 @@ export const DriverTripController = {
     });
   },
 
-  // Get all trips
   getAll: async (req: Request, res: Response) => {
     const trips = await DriverTripService.getAll();
 
@@ -46,11 +41,9 @@ export const DriverTripController = {
     });
   },
 
-  // Update trip
   update: async (req: Request, res: Response) => {
     const { id } = req.params;
     const payload: Partial<ITrip> = req.body;
-    //console.log(id, payload);
     if (!payload.status) throw ApiError.badRequest("Status is required");
 
     const trip = await DriverTripService.update(id, payload);
@@ -63,7 +56,6 @@ export const DriverTripController = {
     });
   },
 
-  // Delete trip
   delete: async (req: Request, res: Response) => {
     const { id } = req.params;
     const trip = await DriverTripService.delete(id);
@@ -79,9 +71,7 @@ export const DriverTripController = {
 
 export const UserTripController = {
   create: async (req: Request, res: Response) => {
-   // console.log(req.body);
     const tripData = req.body;
-   // console.log(tripData);
     const trip = await UserTripService.create(tripData);
 
     sendResponse(res, {

@@ -21,7 +21,7 @@ const assignmentSchema = new Schema(
       default: "fixed",
     },
     specificDate: {
-      type: Date, // required only if one-off
+      type: Date,
     },
     workingDays: [
       {

@@ -1,9 +1,6 @@
 import { z } from "zod";
 
-// Days of the week
 const WeekDaysEnum = z.enum(["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"]);
-
-// Assignment type
 const AssignmentTypeEnum = z.enum(["fixed", "one-off"]);
 
 const ScheduleAssignmentValidation = {

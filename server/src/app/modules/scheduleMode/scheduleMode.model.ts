@@ -22,9 +22,7 @@ const currentScheduleModeSchema = new mongoose.Schema(
 
 
 /**
- * IMPORTANT:
- * This collection should contain ONLY ONE document
+ * IMPORTANT: This collection should contain ONLY ONE document
  */
-
 const CurrentScheduleModeModel = mongoose.model("Current_Schedule_Mode", currentScheduleModeSchema);
 export default CurrentScheduleModeModel;

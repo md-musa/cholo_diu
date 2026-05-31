@@ -1,20 +1,20 @@
 import { STUDENT_DENSITY } from "../../../enums";
 
 export interface IRoute {
-  routeNo: string; // required
-  routeName: string; // required
-  distance?: number; // optional, in km
-  travelTime?: number; // optional, in minutes
+  routeNo: string;
+  routeName: string;
+  distance?: number;
+  travelTime?: number;
 
-  routeLine: [number, number][]; // optional, [lat, lng]
+  routeLine: [number, number][];
 
   stopages: {
     name: string;
     fare: number;
-    coords: [number, number]; // optional
+    coords: [number, number];
   }[];
 
-  assignedBuses?: string[]; // optional
+  assignedBuses?: string[];
 
   waypoints?: {
     name?: string;

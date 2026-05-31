@@ -1,4 +1,3 @@
-// src/store/api/authApi.ts
 import { axiosBaseQuery } from "@/config/axiosBaseQuery";
 import { createApi } from "@reduxjs/toolkit/query/react";
 import { IUser } from "@/store/features/route/route.interface";

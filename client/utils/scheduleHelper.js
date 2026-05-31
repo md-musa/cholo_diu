@@ -7,10 +7,10 @@ export function findOngoingOrNextSchedule(schedules) {
   const now = moment();
   let ongoingSchedule = null;
   let nextSchedule = null;
-  let nextScheduleTimeDiff = Infinity; // Store min difference for next schedule
+  let nextScheduleTimeDiff = Infinity;
 
   schedules.forEach((schedule) => {
-    const scheduleTime = moment(schedule.time, "HH:mm"); // Parse schedule time
+    const scheduleTime = moment(schedule.time, "HH:mm");
     const scheduleEndTime = scheduleTime.clone().add(15, "minutes"); // Add 30 minutes
 
     // Check if the current time is within schedule time to +15 minutes range

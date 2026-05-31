@@ -5,6 +5,6 @@ export interface IAssignment extends Document {
   busId?: Types.ObjectId;
   driverId?: Types.ObjectId;
   assignmentType: "fixed" | "one-off";
-  specificDate?: Date; // required only if one-off
+  specificDate?: Date;
   workingDays?: ("sunday" | "monday" | "tuesday" | "wednesday" | "thursday" | "friday" | "saturday")[];
 }

@@ -26,10 +26,6 @@ export default {
   APP_VARIABLES: {
     SCHEDULE_MODE: process.env.SCHEDULE_MODE,
   },
-  EMAIL: {
-    USER: process.env.EMAIL_USER,
-    PASS: process.env.EMAIL_PASS,
-  },
   BREVO: {
     USER: process.env.BREVO_USER,
     PASS: process.env.BREVO_PASS,

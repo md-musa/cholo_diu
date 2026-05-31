@@ -157,6 +157,7 @@ export async function handleUserLocationBroadcast(socket: any, data: IncomingLoc
  * Public entry point for broadcasting location updates. Decides which handler to call
  * based on broadcaster type.
  */
+
 export async function handleLocationBroadcast(socket: any, data: IncomingLocationPayload) {
   if (data.broadcaster === "user") {
     return handleUserLocationBroadcast(socket, data);
@@ -170,10 +171,8 @@ export async function handleRouteJoin(socket: any, routeId: string) {
   const currUserCnt = getRoomUserCount(io, routeId);
 
   const activeTripsFromCache = getRecentlyUpdatedTrips(activeTripsCache, routeId);
-  //console.log("🟢 Active trips from cache:", activeTripsFromCache);
   socket.emit(SOCKET_EVENTS.BUS_LOCATION_UPDATE, activeTripsFromCache);
 
-  //console.log(`➕ Client ${socket.id} joined route ${routeId}; cnt: ${currUserCnt}`);
 }
 
 export async function stopBroadcasting(socket: any) {

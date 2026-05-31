@@ -36,7 +36,7 @@ const routeSchema = new Schema<IRoute>(
       {
         name: { type: String },
         coords: {
-          type: [Number], // [lat, lng]
+          type: [Number],
         },
         studentDensity: {
           type: String,

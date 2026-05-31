@@ -60,7 +60,6 @@ export const ScheduleController = {
     }
 
     const result = await ScheduleService.getScheduleForAdminByRoute(routeId as string, mode as SCHEDULE_MODES);
-    //console.log(result);
     sendResponse(res, {
       statusCode: StatusCodes.OK,
       success: true,
