@@ -1,14 +1,17 @@
 <div align="center">
+  <img src="./assets/logo.png" width="80" height="80" alt="CholoDIU Logo" />
 
-<img src="./assets/logo.png" width="80" height="80" alt="Cholo App Logo" />
+  <h1>CholoDIU</h1>
 
-<h1> CholoDIU </h1>
+  <p>Real-Time University Transport Tracking System</p>
 
-**Real-Time University Transport Tracking System**
+  <a href="https://play.google.com/store/apps/details?id=com.musa.cholo">
+    <img src="https://img.shields.io/badge/Play%20Store-1000+%20Downloads-34A853?style=for-the-badge&logo=googleplay&logoColor=white" alt="Play Store" />
+  </a>
 
-[![Play Store](https://img.shields.io/badge/Play%20Store-1000+%20Downloads-34A853?style=for-the-badge&logo=googleplay&logoColor=white)](https://play.google.com/store/apps/details?id=com.musa.cholo)
+  <br /></br>
 
-<!-- [![Demo Video](https://img.shields.io/badge/Demo%20Video-Coming%20Soon-FF0000?style=for-the-badge&logo=youtube&logoColor=white)](#) -->
+  > **Test credentials** &nbsp;|&nbsp; Email: `test.user@diu.edu.bd` &nbsp;&nbsp; Password: `111111`
 
 </div>
 
