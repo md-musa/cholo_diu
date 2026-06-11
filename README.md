@@ -9,7 +9,7 @@
     <img src="https://img.shields.io/badge/Play%20Store-1000+%20Downloads-34A853?style=for-the-badge&logo=googleplay&logoColor=white" alt="Play Store" />
   </a>
 
-  <br /></br>
+  <br />
 
   > **Test credentials** &nbsp;|&nbsp; Email: `test.user@diu.edu.bd` &nbsp;&nbsp; Password: `111111`
 
