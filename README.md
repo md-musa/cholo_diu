@@ -113,7 +113,7 @@ The workflow diagram showing how driver GPS updates are sent to the backend, pro
 ### Clone and Install
 
 ```bash
-git clone <YOUR_REPOSITORY_URL>
+git clone https://github.com/md-musa/cholo_diu.git
 cd cholo-diu
 
 cd server && npm install
