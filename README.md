@@ -1,14 +1,17 @@
 <div align="center">
+  <img src="./assets/logo.png" width="80" height="80" alt="CholoDIU Logo" />
 
-<img src="./assets/logo.png" width="80" height="80" alt="Cholo App Logo" />
+  <h1>CholoDIU</h1>
 
-<h1> CholoDIU </h1>
+  <p>Real-Time University Transport Tracking System</p>
 
-**Real-Time University Transport Tracking System**
+  <a href="https://play.google.com/store/apps/details?id=com.musa.cholo">
+    <img src="https://img.shields.io/badge/Play%20Store-1000+%20Downloads-34A853?style=for-the-badge&logo=googleplay&logoColor=white" alt="Play Store" />
+  </a>
 
-[![Play Store](https://img.shields.io/badge/Play%20Store-1000+%20Downloads-34A853?style=for-the-badge&logo=googleplay&logoColor=white)](https://play.google.com/store/apps/details?id=com.musa.cholo)
+  <br />
 
-<!--  will add later [![Demo Video](https://img.shields.io/badge/Demo%20Video-Coming%20Soon-FF0000?style=for-the-badge&logo=youtube&logoColor=white)](#) -->
+<!-- [![Demo Video](https://img.shields.io/badge/Demo%20Video-Coming%20Soon-FF0000?style=for-the-badge&logo=youtube&logoColor=white)](#) -->
 
 </div>
 
@@ -113,7 +116,7 @@ The workflow diagram showing how driver GPS updates are sent to the backend, pro
 ### Clone and Install
 
 ```bash
-git clone <YOUR_REPOSITORY_URL>
+git clone https://github.com/md-musa/cholo_diu.git
 cd cholo-diu
 
 cd server && npm install
@@ -176,64 +179,64 @@ cd admin && npm run dev
 
 ### Routes
 
-| Method | Endpoint              | Description               |
-| ------ | --------------------- | ------------------------- |
-| GET    | `/api/v1/routes`      | List all routes           |
-| POST   | `/api/v1/routes`      | Create a new route        |
-| PUT    | `/api/v1/routes/:id`  | Update route details      |
-| DELETE | `/api/v1/routes/:id`  | Delete a route            |
+| Method | Endpoint             | Description          |
+| ------ | -------------------- | -------------------- |
+| GET    | `/api/v1/routes`     | List all routes      |
+| POST   | `/api/v1/routes`     | Create a new route   |
+| PUT    | `/api/v1/routes/:id` | Update route details |
+| DELETE | `/api/v1/routes/:id` | Delete a route       |
 
 ### Buses
 
-| Method | Endpoint             | Description            |
-| ------ | -------------------- | ---------------------- |
-| GET    | `/api/v1/buses`      | List all buses         |
-| POST   | `/api/v1/buses`      | Create a new bus       |
-| PUT    | `/api/v1/buses/:id`  | Update bus details     |
-| DELETE | `/api/v1/buses/:id`  | Delete a bus           |
+| Method | Endpoint            | Description        |
+| ------ | ------------------- | ------------------ |
+| GET    | `/api/v1/buses`     | List all buses     |
+| POST   | `/api/v1/buses`     | Create a new bus   |
+| PUT    | `/api/v1/buses/:id` | Update bus details |
+| DELETE | `/api/v1/buses/:id` | Delete a bus       |
 
 ### Schedules
 
-| Method | Endpoint                                    | Description                           |
-| ------ | ------------------------------------------- | ------------------------------------- |
-| GET    | `/api/v1/schedules/route/:routeId`          | Get schedules for a specific route    |
-| GET    | `/api/v1/schedules/admin/route/:routeId/:mode` | Get admin schedules by route & mode   |
-| POST   | `/api/v1/schedules`                         | Create a new schedule                 |
-| PUT    | `/api/v1/schedules/:id`                     | Update schedule details               |
-| DELETE | `/api/v1/schedules/:id`                     | Delete a schedule                     |
+| Method | Endpoint                                       | Description                         |
+| ------ | ---------------------------------------------- | ----------------------------------- |
+| GET    | `/api/v1/schedules/route/:routeId`             | Get schedules for a specific route  |
+| GET    | `/api/v1/schedules/admin/route/:routeId/:mode` | Get admin schedules by route & mode |
+| POST   | `/api/v1/schedules`                            | Create a new schedule               |
+| PUT    | `/api/v1/schedules/:id`                        | Update schedule details             |
+| DELETE | `/api/v1/schedules/:id`                        | Delete a schedule                   |
 
 ### Trips
 
-| Method | Endpoint                | Description                 |
-| ------ | ----------------------- | --------------------------- |
-| GET    | `/api/v1/trips`         | List all trips              |
-| POST   | `/api/v1/trips`         | Create a new trip           |
-| GET    | `/api/v1/trips/:id`     | Get trip details            |
-| PUT    | `/api/v1/trips/:id`     | Update trip details         |
-| DELETE | `/api/v1/trips/:id`     | Delete a trip               |
-| POST   | `/api/v1/trips/userTrip` | Create a user trip          |
+| Method | Endpoint                 | Description         |
+| ------ | ------------------------ | ------------------- |
+| GET    | `/api/v1/trips`          | List all trips      |
+| POST   | `/api/v1/trips`          | Create a new trip   |
+| GET    | `/api/v1/trips/:id`      | Get trip details    |
+| PUT    | `/api/v1/trips/:id`      | Update trip details |
+| DELETE | `/api/v1/trips/:id`      | Delete a trip       |
+| POST   | `/api/v1/trips/userTrip` | Create a user trip  |
 
 ### Assignments
 
-| Method | Endpoint                        | Description                      |
-| ------ | ------------------------------- | -------------------------------- |
-| GET    | `/api/v1/assignments`           | List all assignments             |
-| POST   | `/api/v1/assignments`           | Create driver schedule assignment |
-| GET    | `/api/v1/assignments/driver/:driverId` | Get assignments for a driver     |
-| PUT    | `/api/v1/assignments/:id`       | Update assignment details        |
-| DELETE | `/api/v1/assignments/:id`       | Delete an assignment             |
+| Method | Endpoint                               | Description                       |
+| ------ | -------------------------------------- | --------------------------------- |
+| GET    | `/api/v1/assignments`                  | List all assignments              |
+| POST   | `/api/v1/assignments`                  | Create driver schedule assignment |
+| GET    | `/api/v1/assignments/driver/:driverId` | Get assignments for a driver      |
+| PUT    | `/api/v1/assignments/:id`              | Update assignment details         |
+| DELETE | `/api/v1/assignments/:id`              | Delete an assignment              |
 
 ### Socket.IO Events
 
-| Event             | Direction       | Payload                                  |
-| ----------------- | --------------- | ---------------------------------------- |
-| `join_route`      | Client → Server | `{ routeId }`                            |
-| `broadcast_bus_location` | Client → Server | `{ lat, lng, speed, timestamp }`    |
-| `stop_broadcasting` | Client → Server | -                                  |
-| `bus_location`    | Server → Client | `{ lat, lng, speed, tripId, timestamp }` |
-| `trip_started`    | Server → Client | `{ tripId, routeId, driverId }`          |
-| `trip_ended`      | Server → Client | `{ tripId }`                             |
-| `leave-room`      | Client → Server | `{ room }`                               |
+| Event                    | Direction       | Payload                                  |
+| ------------------------ | --------------- | ---------------------------------------- |
+| `join_route`             | Client → Server | `{ routeId }`                            |
+| `broadcast_bus_location` | Client → Server | `{ lat, lng, speed, timestamp }`         |
+| `stop_broadcasting`      | Client → Server | -                                        |
+| `bus_location`           | Server → Client | `{ lat, lng, speed, tripId, timestamp }` |
+| `trip_started`           | Server → Client | `{ tripId, routeId, driverId }`          |
+| `trip_ended`             | Server → Client | `{ tripId }`                             |
+| `leave-room`             | Client → Server | `{ room }`                               |
 
 ## 11. Deployment
 
