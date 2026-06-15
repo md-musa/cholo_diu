@@ -1,6 +1,9 @@
 export enum USER_ROLES {
+  // users
   STUDENT = "student",
   EMPLOYEE = "employee",
+
+  // organization members
   DRIVER = "driver",
   ADMIN = "admin",
   SUPER_ADMIN = "super_admin",

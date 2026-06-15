@@ -7,28 +7,43 @@ import { USER_ROLES } from "../../../enums";
 
 const router = express.Router();
 
+// Driver create trip and update trip
 router.post(
   "/",
   validateRequest(TripValidation.create),
-  // auth(USER_ROLES.STUDENT, USER_ROLES.EMPLOYEE),
+  auth(USER_ROLES.DRIVER),
   DriverTripController.create
 );
 
 router.put(
   "/:id",
   validateRequest(TripValidation.update),
-  // auth(USER_ROLES.STUDENT, USER_ROLES.EMPLOYEE),
+  auth(USER_ROLES.DRIVER),
   DriverTripController.update
 );
 
-router.get("/:id", DriverTripController.getById);
-router.get("/", DriverTripController.getAll);
-router.delete("/:id", DriverTripController.delete);
+router.get(
+  "/:id",
+  auth(USER_ROLES.DRIVER),
+  DriverTripController.getById
+);
+router.get(
+  "/",
+  auth(USER_ROLES.DRIVER),
+  DriverTripController.getAll
+);
+router.delete(
+  "/:id",
+  auth(USER_ROLES.DRIVER),
+  DriverTripController.delete
+);
 
+
+// User create trip
 router.post(
   "/userTrip",
   validateRequest(TripValidation.userTripCreate),
-  // auth(USER_ROLES.STUDENT, USER_ROLES.EMPLOYEE),
+  auth(USER_ROLES.STUDENT, USER_ROLES.EMPLOYEE),
   UserTripController.create
 );
 

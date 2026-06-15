@@ -1,6 +1,7 @@
 import axios from "axios";
 
-const SERVER_URL = "http://localhost:4000/api/v1";
+// const SERVER_URL = "http://localhost:4000/api/v1";
+const SERVER_URL = "https://cholodiu-production.up.railway.app/api/v1";
 // const SERVER_URL = "https://api.cholodiu.xyz/api/v1";
 
 const apiClient = axios.create({

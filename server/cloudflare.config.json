@@ -1,8 +1,8 @@
 {
   "version": "1.0.0",
 
-  "api_url": "https://api.cholodiu.xyz",
-  "socket_url": "https://api.cholodiu.xyz",
+  "api_url": "https://cholodiu-production.up.railway.app",
+  "socket_url": "https://cholodiu-production.up.railway.app",
 
   "force_update": false,
 

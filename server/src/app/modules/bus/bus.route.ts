@@ -7,22 +7,27 @@ import { USER_ROLES } from "../../../enums";
 
 const router = express.Router();
 
-router.get("/", BusController.getBuses);
+router.get("/",
+  auth(USER_ROLES.STUDENT, USER_ROLES.EMPLOYEE, USER_ROLES.DRIVER, USER_ROLES.ADMIN, USER_ROLES.SUPER_ADMIN),
+  BusController.getBuses);
 
 router.post(
   "/",
   validateRequest(BusValidation.create),
-  // auth(USER_ROLES.ADMIN, USER_ROLES.SUPER_ADMIN),
+  auth(USER_ROLES.ADMIN, USER_ROLES.SUPER_ADMIN),
   BusController.createBus
 );
 
 router.put(
   "/:id",
   validateRequest(BusValidation.update),
-  // auth(USER_ROLES.ADMIN, USER_ROLES.SUPER_ADMIN),
+  auth(USER_ROLES.ADMIN, USER_ROLES.SUPER_ADMIN),
   BusController.updateBus
 );
 
-router.delete("/:id", BusController.deleteBus);
+router.delete("/:id",
+  auth(USER_ROLES.ADMIN, USER_ROLES.SUPER_ADMIN),
+  BusController.deleteBus
+);
 
 export const BusRouter = router;

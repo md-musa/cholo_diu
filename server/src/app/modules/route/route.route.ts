@@ -7,22 +7,30 @@ import { USER_ROLES } from "../../../enums";
 
 const router = express.Router();
 
-router.get("/", RouteController.getRoutes);
+router.get(
+  "/",
+  auth(USER_ROLES.STUDENT, USER_ROLES.EMPLOYEE, USER_ROLES.DRIVER, USER_ROLES.ADMIN, USER_ROLES.SUPER_ADMIN),
+  RouteController.getRoutes
+);
 
 router.post(
   "/",
   validateRequest(RouteValidation.create),
-  // auth(USER_ROLES.ADMIN, USER_ROLES.SUPER_ADMIN),
+  auth(USER_ROLES.ADMIN, USER_ROLES.SUPER_ADMIN),
   RouteController.addRoute
 );
 
 router.put(
   "/:id",
   validateRequest(RouteValidation.update),
-  // auth(USER_ROLES.ADMIN, USER_ROLES.SUPER_ADMIN),
+  auth(USER_ROLES.ADMIN, USER_ROLES.SUPER_ADMIN),
   RouteController.updateRoute
 );
 
-router.delete("/:id", RouteController.deleteRoute);
+router.delete(
+  "/:id",
+  auth(USER_ROLES.ADMIN, USER_ROLES.SUPER_ADMIN),
+  RouteController.deleteRoute
+);
 
 export const RouteRouter = router;

@@ -8,7 +8,7 @@
 
 [![Play Store](https://img.shields.io/badge/Play%20Store-1000+%20Downloads-34A853?style=for-the-badge&logo=googleplay&logoColor=white)](https://play.google.com/store/apps/details?id=com.musa.cholo)
 
-<!-- [![Demo Video](https://img.shields.io/badge/Demo%20Video-Coming%20Soon-FF0000?style=for-the-badge&logo=youtube&logoColor=white)](#) -->
+<!--  will add later [![Demo Video](https://img.shields.io/badge/Demo%20Video-Coming%20Soon-FF0000?style=for-the-badge&logo=youtube&logoColor=white)](#) -->
 
 </div>
 

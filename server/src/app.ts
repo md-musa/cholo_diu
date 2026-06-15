@@ -10,7 +10,7 @@ import { RouteRouter } from "./app/modules/route/route.route";
 import { TripRouter } from "./app/modules/trip/trip.route";
 import { SOCKET_EVENTS } from "./enums";
 import { ScheduleRouter } from "./app/modules/schedule/schedule.route";
-import { handleLocationBroadcast, handleRouteJoin, stopBroadcasting } from "./app/socket/broadcast";
+import { handleLocationBroadcast, handleRouteJoin, stopBroadcasting } from "./app/socket";
 import { ErrorLogRoute } from "./app/modules/errorLog/errorLog.route";
 import AssignmentRoute from "./app/modules/assignment/assignment.route";
 import helmet from "helmet";
@@ -47,37 +47,33 @@ app.use("/api/v1/schedule-modes", ScheduleModeRouter);
 
 app.use(globalErrorHandler);
 app.use(routeNotFoundError);
+
+
 // ---------------------------
 // Socket IO
 // ---------------------------
 
 export const socketHandler = (socket: any) => {
-  // console.log(`🟢 New client connected: ${socket.id}`);
-
-  // 1️⃣ User joins a route-specific room
+  // User joins a route-specific room
   socket.on(SOCKET_EVENTS.JOIN_ROUTE, (routeId: string) => {
-    // console.log(`➡️ Client ${socket.id} joining route ${routeId}`);
     handleRouteJoin(socket, routeId);
   });
 
-  // 2️⃣ Bus broadcasts location updates along with user count and host name
+  // Bus broadcasts location updates along with user count and host name
   socket.on(SOCKET_EVENTS.BROADCAST_BUS_LOCATION, (data: any) => {
     handleLocationBroadcast(socket, data);
   });
 
   socket.on(SOCKET_EVENTS.STOP_BROADCASTING, () => {
-    // console.log(`🛑 Bus stopped broadcasting`);
     stopBroadcasting(socket);
   });
 
-  // 3️⃣ User leaves the route-specific room
+  // User leaves the route-specific room
   socket.on("leave-room", (room: string) => {
     socket.leave(room);
-    //console.log(`🚫 Client ${socket.id} left room ${room}`);
   });
 
   socket.on("disconnecting", () => {
-    // console.log(`⚠️ Client disconnecting: ${socket.id}`);
     stopBroadcasting(socket);
   });
 };
