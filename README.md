@@ -141,9 +141,9 @@ BCRYPT_SALT_ROUNDS=10
 
 # JWT configuration for access and refresh tokens
 ACCESS_TOKEN_SECRET=
-ACCESS_TOKEN_LIFE=30d
+ACCESS_TOKEN_LIFE=
 REFRESH_TOKEN_SECRET=
-REFRESH_TOKEN_LIFE=100d
+REFRESH_TOKEN_LIFE=
 
 # Brevo credentials for transactional email
 BREVO_USER=
