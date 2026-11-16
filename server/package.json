@@ -5,7 +5,7 @@
   "scripts": {
     "build": "tsc",
     "start:dev": "cross-env NODE_ENV=development ts-node-dev --respawn --transpile-only src/server.ts",
-    "start:": "cross-env NODE_ENV=production node dist/server.js",
+    "start": "cross-env NODE_ENV=production node dist/server.js",
     "build:start": "npm run build && npm start"
   },
   "author": "Mohammad Musa",
