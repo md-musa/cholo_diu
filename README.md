@@ -10,9 +10,10 @@
   </a>
 
   <br />
+  
 
 <!-- [![Demo Video](https://img.shields.io/badge/Demo%20Video-Coming%20Soon-FF0000?style=for-the-badge&logo=youtube&logoColor=white)](#) -->
-
+> **Demo credentials** &nbsp;|&nbsp; Email: `musa22205101869@diu.edu.bd` &nbsp;&nbsp; Password: `123456`
 </div>
 
 ## Table of Contents
@@ -140,9 +141,9 @@ BCRYPT_SALT_ROUNDS=10
 
 # JWT configuration for access and refresh tokens
 ACCESS_TOKEN_SECRET=
-ACCESS_TOKEN_LIFE=30d
+ACCESS_TOKEN_LIFE=
 REFRESH_TOKEN_SECRET=
-REFRESH_TOKEN_LIFE=100d
+REFRESH_TOKEN_LIFE=
 
 # Brevo credentials for transactional email
 BREVO_USER=
