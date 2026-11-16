@@ -1,7 +1,8 @@
 import axios from "axios";
 
 // const SERVER_URL = "http://localhost:4000/api/v1";
-const SERVER_URL = "https://cholodiu-production.up.railway.app/api/v1";
+const SERVER_URL =
+  import.meta.env.VITE_API_URL || "https://cholodiu-production.up.railway.app/api/v1";
 // const SERVER_URL = "https://api.cholodiu.xyz/api/v1";
 
 const apiClient = axios.create({
